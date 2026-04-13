@@ -1,0 +1,46 @@
+"""Common utilities and shared types for Vietnamese Legal AI."""
+
+from packages.common.config import Settings, get_settings
+from packages.common.types import (
+    ChatAnswer,
+    ChatRequest,
+    Citation,
+    ContextDocument,
+    ContractReviewRequest,
+    ContractReviewResult,
+    DocumentType,
+    EvidencePack,
+    HealthResponse,
+    IngestRequest,
+    IngestResponse,
+    LegalNode,
+    QueryPlan,
+    QueryStrategy,
+    RetrievedDocument,
+    ReviewFinding,
+    RiskLevel,
+    VerificationLevel,
+)
+
+__all__ = [
+    "Settings",
+    "get_settings",
+    "ChatAnswer",
+    "ChatRequest",
+    "Citation",
+    "ContextDocument",
+    "ContractReviewRequest",
+    "ContractReviewResult",
+    "DocumentType",
+    "EvidencePack",
+    "HealthResponse",
+    "IngestRequest",
+    "IngestResponse",
+    "LegalNode",
+    "QueryPlan",
+    "QueryStrategy",
+    "RetrievedDocument",
+    "ReviewFinding",
+    "RiskLevel",
+    "VerificationLevel",
+]

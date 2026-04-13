@@ -1,0 +1,54 @@
+HỢP ĐỒNG DỊCH VỤ PHẦN MỀM
+
+Số: 01/2026/HĐDVPM
+
+Căn cứ nhu cầu và khả năng của hai bên, hôm nay, ngày 12 tháng 4 năm 2026, chúng tôi gồm:
+
+BÊN A: CÔNG TY ABC
+Địa chỉ: 123 Nguyễn Huệ, Quận 1, TP. Hồ Chí Minh
+Đại diện: Nguyễn Văn A
+Chức vụ: Giám đốc
+
+BÊN B: CÔNG TY XYZ
+Địa chỉ: 456 Lê Lợi, Quận 3, TP. Hồ Chí Minh
+Đại diện: Trần Thị B
+Chức vụ: Giám đốc
+
+Hai bên thỏa thuận ký kết hợp đồng dịch vụ phần mềm với các điều khoản sau:
+
+Điều 1. Đối tượng hợp đồng
+Bên B cung cấp dịch vụ thiết kế, phát triển và bàn giao phần mềm quản lý bán hàng cho Bên A theo phạm vi công việc tại Phụ lục 01 kèm theo hợp đồng này.
+
+Điều 2. Tiến độ và nghiệm thu
+Bên B bàn giao bản thử nghiệm trong vòng 20 ngày kể từ ngày hợp đồng có hiệu lực.
+Bên A có 05 ngày làm việc để phản hồi nghiệm thu hoặc yêu cầu chỉnh sửa.
+Nếu Bên A không phản hồi trong thời hạn này thì kết quả bàn giao được coi là tạm chấp nhận.
+
+Điều 3. Thanh toán
+Bên A thanh toán 40% giá trị hợp đồng trong vòng 05 ngày kể từ ngày ký.
+60% còn lại thanh toán trong vòng 07 ngày kể từ ngày nghiệm thu cuối cùng.
+
+Điều 4. Phạt vi phạm
+Nếu Bên B chậm bàn giao quá 10 ngày, Bên B phải chịu phạt vi phạm bằng 12% giá trị phần nghĩa vụ bị vi phạm.
+Ngoài khoản phạt nêu trên, Bên B phải tiếp tục hoàn thành nghĩa vụ bàn giao và bồi thường thiệt hại thực tế cho Bên A.
+
+Điều 5. Bảo mật
+Hai bên có nghĩa vụ bảo mật toàn bộ tài liệu, dữ liệu khách hàng, mã nguồn, kiến trúc hệ thống và thông tin thương mại tiếp cận được trong quá trình thực hiện hợp đồng.
+Nghĩa vụ bảo mật kéo dài 03 năm kể từ ngày chấm dứt hợp đồng.
+
+Điều 6. Quyền sở hữu kết quả công việc
+Sau khi Bên A hoàn tất thanh toán đầy đủ, toàn bộ sản phẩm, mã nguồn và tài liệu bàn giao thuộc quyền sở hữu và sử dụng của Bên A, trừ các thư viện bên thứ ba có giấy phép riêng.
+
+Điều 7. Chấm dứt hợp đồng
+Một bên có quyền chấm dứt hợp đồng nếu bên kia vi phạm nghiêm trọng nghĩa vụ và không khắc phục trong vòng 07 ngày kể từ khi nhận thông báo bằng văn bản.
+
+Điều 8. Giải quyết tranh chấp
+Mọi tranh chấp phát sinh từ hợp đồng này trước hết được giải quyết bằng thương lượng.
+Nếu không đạt được thỏa thuận trong vòng 30 ngày, tranh chấp được đưa ra Tòa án có thẩm quyền tại TP. Hồ Chí Minh.
+
+Điều 9. Điều khoản chung
+Hợp đồng này có hiệu lực kể từ ngày ký.
+Hợp đồng được lập thành 02 bản có giá trị pháp lý như nhau, mỗi bên giữ 01 bản.
+
+ĐẠI DIỆN BÊN A                         ĐẠI DIỆN BÊN B
+(Ký, ghi rõ họ tên)                    (Ký, ghi rõ họ tên)

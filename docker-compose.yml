@@ -1,0 +1,176 @@
+version: "3.8"
+
+services:
+  # Qdrant - Vector Database
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: vietnamese-legal-qdrant
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    volumes:
+      - qdrant_storage:/qdrant/storage
+    environment:
+      - QDRANT__SERVICE__HTTP_PORT=6333
+      - QDRANT__SERVICE__GRPC_PORT=6334
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:6333/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    networks:
+      - legal-ai-network
+
+  # OpenSearch - Full-text search and hybrid retrieval
+  opensearch:
+    image: opensearchproject/opensearch:latest
+    container_name: vietnamese-legal-opensearch
+    environment:
+      - discovery.type=single-node
+      - plugins.security.disabled=true
+      - bootstrap.memory_lock=true
+      - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m"
+      - OPENSEARCH_INITIAL_ADMIN_PASSWORD=admin
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    ports:
+      - "9200:9200"
+      - "9600:9600"
+    volumes:
+      - opensearch_data:/usr/share/opensearch/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9200/_cluster/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    networks:
+      - legal-ai-network
+
+  # PostgreSQL - Metadata storage
+  postgres:
+    image: postgres:15-alpine
+    container_name: vietnamese-legal-postgres
+    environment:
+      - POSTGRES_DB=legal_review
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d legal_review"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - legal-ai-network
+
+  # Redis - Caching and task queue
+  redis:
+    image: redis:7-alpine
+    container_name: vietnamese-legal-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+    networks:
+      - legal-ai-network
+
+  # Neo4j - Graph database (Phase 2)
+  # Uncomment when ready for graph implementation
+  # neo4j:
+  #   image: neo4j:5-community
+  #   container_name: vietnamese-legal-neo4j
+  #   environment:
+  #     - NEO4J_AUTH=neo4j/password
+  #     - NEO4J_PLUGINS=["apoc", "gds"]
+  #     - NEO4J_dbms_memory_heap_initial__size=512m
+  #     - NEO4J_dbms_memory_heap_max__size=1G
+  #   ports:
+  #     - "7474:7474"
+  #     - "7687:7687"
+  #   volumes:
+  #     - neo4j_data:/data
+  #     - neo4j_logs:/logs
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "cypher-shell -u neo4j -p password 'RETURN 1' || exit 1"]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 5
+  #     start_period: 30s
+  #   networks:
+  #     - legal-ai-network
+
+  # Prometheus - Metrics collection (optional, uncomment to enable)
+  # prometheus:
+  #   image: prom/prometheus:latest
+  #   container_name: vietnamese-legal-prometheus
+  #   volumes:
+  #     - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+  #     - ./monitoring/alert_rules.yml:/etc/prometheus/alert_rules.yml
+  #     - prometheus_data:/prometheus
+  #   command:
+  #     - '--config.file=/etc/prometheus/prometheus.yml'
+  #     - '--storage.tsdb.path=/prometheus'
+  #     - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+  #     - '--web.console.templates=/usr/share/prometheus/consoles'
+  #   ports:
+  #     - "9090:9090"
+  #   networks:
+  #     - legal-ai-network
+
+  # Grafana - Visualization (optional, uncomment to enable)
+  # grafana:
+  #   image: grafana/grafana:latest
+  #   container_name: vietnamese-legal-grafana
+  #   ports:
+  #     - "3001:3000"
+  #   volumes:
+  #     - grafana_data:/var/lib/grafana
+  #     - ./monitoring/grafana/dashboard.json:/var/lib/grafana/dashboards/legal_review.json
+  #   environment:
+  #     - GF_SECURITY_ADMIN_USER=admin
+  #     - GF_SECURITY_ADMIN_PASSWORD=admin
+  #     - GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH=/var/lib/grafana/dashboards/legal_review.json
+  #   depends_on:
+  #     - prometheus
+  #   networks:
+  #     - legal-ai-network
+
+volumes:
+  qdrant_storage:
+    driver: local
+  opensearch_data:
+    driver: local
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  # neo4j_data:
+  #   driver: local
+  # neo4j_logs:
+  #   driver: local
+  # prometheus_data:
+  #   driver: local
+  # grafana_data:
+  #   driver: local
+
+networks:
+  legal-ai-network:
+    driver: bridge

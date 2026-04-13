@@ -1,0 +1,337 @@
+{
+  "dashboard": {
+    "id": null,
+    "title": "Vietnamese Legal Contract Review - API Metrics",
+    "tags": ["legal", "api", "monitoring"],
+    "timezone": "browser",
+    "schemaVersion": 36,
+    "refresh": "15s",
+    "panels": [
+      {
+        "id": 1,
+        "title": "Pipeline Stage Latencies",
+        "type": "stat",
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0},
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, rate(query_planning_duration_seconds_bucket[5m]))",
+            "legendFormat": "Query Planning P95",
+            "refId": "A"
+          },
+          {
+            "expr": "histogram_quantile(0.95, rate(hybrid_search_duration_seconds_bucket[5m]))",
+            "legendFormat": "Hybrid Search P95",
+            "refId": "B"
+          },
+          {
+            "expr": "histogram_quantile(0.95, rate(reranker_duration_seconds_bucket[5m]))",
+            "legendFormat": "Reranker P95",
+            "refId": "C"
+          },
+          {
+            "expr": "histogram_quantile(0.95, rate(review_pipeline_duration_seconds_bucket[5m]))",
+            "legendFormat": "Review Pipeline P95",
+            "refId": "D"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "s",
+            "thresholds": {
+              "steps": [
+                {"color": "green", "value": null},
+                {"color": "yellow", "value": 0.5},
+                {"color": "red", "value": 1.0}
+              ]
+            }
+          }
+        }
+      },
+      {
+        "id": 2,
+        "title": "P95 Latency Over Time",
+        "type": "timeseries",
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0},
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, rate(hybrid_search_duration_seconds_bucket[5m]))",
+            "legendFormat": "Hybrid Search",
+            "refId": "A"
+          },
+          {
+            "expr": "histogram_quantile(0.95, rate(reranker_duration_seconds_bucket[5m]))",
+            "legendFormat": "Reranker",
+            "refId": "B"
+          },
+          {
+            "expr": "histogram_quantile(0.95, rate(review_pipeline_duration_seconds_bucket[5m]))",
+            "legendFormat": "Review Pipeline",
+            "refId": "C"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "s",
+            "custom": {
+              "lineWidth": 2,
+              "fillOpacity": 10
+            }
+          }
+        },
+        "options": {
+          "legend": {
+            "displayMode": "table",
+            "placement": "right"
+          }
+        }
+      },
+      {
+        "id": 3,
+        "title": "Request Rate",
+        "type": "timeseries",
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 8},
+        "targets": [
+          {
+            "expr": "rate(http_requests_total[5m])",
+            "legendFormat": "{{method}} {{handler}}",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "reqps"
+          }
+        },
+        "options": {
+          "legend": {
+            "displayMode": "table",
+            "placement": "right"
+          }
+        }
+      },
+      {
+        "id": 4,
+        "title": "Error Rate",
+        "type": "gauge",
+        "gridPos": {"h": 8, "w": 6, "x": 12, "y": 8},
+        "targets": [
+          {
+            "expr": "rate(http_requests_total{status=~\"5..\"}[5m]) / rate(http_requests_total[5m])",
+            "legendFormat": "Error Rate",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percentunit",
+            "min": 0,
+            "max": 1,
+            "thresholds": {
+              "steps": [
+                {"color": "green", "value": null},
+                {"color": "yellow", "value": 0.01},
+                {"color": "red", "value": 0.05}
+              ]
+            }
+          }
+        },
+        "options": {
+          "showThresholdLabels": true,
+          "showThresholdMarkers": true
+        }
+      },
+      {
+        "id": 5,
+        "title": "Cache Hit Rate",
+        "type": "gauge",
+        "gridPos": {"h": 8, "w": 6, "x": 18, "y": 8},
+        "targets": [
+          {
+            "expr": "rate(cache_hits_total[5m]) / (rate(cache_hits_total[5m]) + rate(cache_misses_total[5m]))",
+            "legendFormat": "Cache Hit Rate",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "percentunit",
+            "min": 0,
+            "max": 1,
+            "thresholds": {
+              "steps": [
+                {"color": "red", "value": null},
+                {"color": "yellow", "value": 0.5},
+                {"color": "green", "value": 0.8}
+              ]
+            }
+          }
+        },
+        "options": {
+          "showThresholdLabels": true,
+          "showThresholdMarkers": true
+        }
+      },
+      {
+        "id": 6,
+        "title": "Groq API Latency",
+        "type": "timeseries",
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 16},
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.50, rate(groq_api_duration_seconds_bucket[5m]))",
+            "legendFormat": "P50",
+            "refId": "A"
+          },
+          {
+            "expr": "histogram_quantile(0.95, rate(groq_api_duration_seconds_bucket[5m]))",
+            "legendFormat": "P95",
+            "refId": "B"
+          },
+          {
+            "expr": "histogram_quantile(0.99, rate(groq_api_duration_seconds_bucket[5m]))",
+            "legendFormat": "P99",
+            "refId": "C"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "s"
+          }
+        },
+        "options": {
+          "legend": {
+            "displayMode": "table",
+            "placement": "right"
+          }
+        }
+      },
+      {
+        "id": 7,
+        "title": "Groq API Errors",
+        "type": "timeseries",
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 16},
+        "targets": [
+          {
+            "expr": "rate(groq_api_errors_total[5m])",
+            "legendFormat": "Errors/sec",
+            "refId": "A"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "reqps",
+            "thresholds": {
+              "steps": [
+                {"color": "green", "value": null},
+                {"color": "red", "value": 0.1}
+              ]
+            }
+          }
+        },
+        "options": {
+          "legend": {
+            "displayMode": "table",
+            "placement": "right"
+          }
+        }
+      },
+      {
+        "id": 8,
+        "title": "BM25 vs Dense Search Latency",
+        "type": "timeseries",
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 24},
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, rate(bm25_search_duration_seconds_bucket[5m]))",
+            "legendFormat": "BM25 P95",
+            "refId": "A"
+          },
+          {
+            "expr": "histogram_quantile(0.95, rate(dense_search_duration_seconds_bucket[5m]))",
+            "legendFormat": "Dense P95",
+            "refId": "B"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "s"
+          }
+        },
+        "options": {
+          "legend": {
+            "displayMode": "table",
+            "placement": "right"
+          }
+        }
+      },
+      {
+        "id": 9,
+        "title": "RRF Fusion Latency",
+        "type": "timeseries",
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 24},
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, rate(rrf_fusion_duration_seconds_bucket[5m]))",
+            "legendFormat": "RRF P95",
+            "refId": "A"
+          },
+          {
+            "expr": "histogram_quantile(0.50, rate(rrf_fusion_duration_seconds_bucket[5m]))",
+            "legendFormat": "RRF P50",
+            "refId": "B"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "s"
+          }
+        },
+        "options": {
+          "legend": {
+            "displayMode": "table",
+            "placement": "right"
+          }
+        }
+      },
+      {
+        "id": 10,
+        "title": "Reranker Stage Breakdown",
+        "type": "timeseries",
+        "gridPos": {"h": 8, "w": 24, "x": 0, "y": 32},
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, rate(reranker_duration_seconds_bucket{stage=\"stage1_position_decay\"}[5m]))",
+            "legendFormat": "Stage 1 (Position Decay) P95",
+            "refId": "A"
+          },
+          {
+            "expr": "histogram_quantile(0.95, rate(reranker_duration_seconds_bucket{stage=\"stage2_model_rerank\"}[5m]))",
+            "legendFormat": "Stage 2 (Model Rerank) P95",
+            "refId": "B"
+          },
+          {
+            "expr": "histogram_quantile(0.95, rate(reranker_duration_seconds_bucket{stage=\"simple_rerank\"}[5m]))",
+            "legendFormat": "Simple Rerank P95",
+            "refId": "C"
+          }
+        ],
+        "fieldConfig": {
+          "defaults": {
+            "unit": "s"
+          }
+        },
+        "options": {
+          "legend": {
+            "displayMode": "table",
+            "placement": "right"
+          }
+        }
+      }
+    ],
+    "time": {
+      "from": "now-1h",
+      "to": "now"
+    }
+  },
+  "overwrite": true
+}
