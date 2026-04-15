@@ -10,6 +10,7 @@ Target: <100ms total for reranking top-20 candidates.
 
 from __future__ import annotations
 
+import os
 import logging
 import time
 from typing import TYPE_CHECKING
@@ -22,6 +23,11 @@ if TYPE_CHECKING:
     from collections.abc import Sequence
 
 logger = logging.getLogger(__name__)
+
+# Prevent transformers from probing TensorFlow at import time.
+os.environ.setdefault("TRANSFORMERS_NO_TF", "1")
+os.environ.setdefault("TRANSFORMERS_NO_FLAX", "1")
+os.environ.setdefault("USE_TF", "0")
 
 RERANK_DURATION = Histogram(
     "reranker_duration_seconds",

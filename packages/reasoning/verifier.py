@@ -114,6 +114,9 @@ class LegalVerifier:
         - Negation mismatch (one has "không/cấm", other doesn't in same context) -> contradicted
         - Number mismatch (different amounts, dates, percentages) -> contradicted
         """
+        # Handle None or empty inputs
+        if not clause or not regulation:
+            return None
         clause_lower = clause.lower().strip()
         regulation_lower = regulation.lower().strip()
         
@@ -296,7 +299,7 @@ Respond only with the structured format above."""
             level = level_map.get(level_str, VerificationLevel.NO_REFERENCE)
         
         # Parse CONFIDENCE
-        confidence_match = re.search(r'CONFIDENCE:\s*(\d+\.?\d*)', response_text, re.IGNORECASE)
+        confidence_match = re.search(r'CONFIDENCE:\s*(-?\d+\.?\d*)', response_text, re.IGNORECASE)
         if confidence_match:
             try:
                 confidence = float(confidence_match.group(1))

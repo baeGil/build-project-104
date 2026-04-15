@@ -1,7 +1,7 @@
 """Neo4j graph for legal document relationships."""
 
 import logging
-from typing import Optional
+from typing import Any, Optional
 
 from packages.common.config import Settings
 from packages.common.types import LegalNode
@@ -50,6 +50,22 @@ class LegalGraphClient:
             await self._driver.close()
             self._driver = None
             logger.info("Neo4j driver closed")
+
+    async def ping(self) -> bool:
+        """Check whether Neo4j is reachable."""
+        try:
+            async with self.driver.session() as session:
+                result = await session.run("RETURN 1 AS ok")
+                record = await result.single()
+                return bool(record and record["ok"] == 1)
+        except Exception as e:
+            logger.warning(f"Neo4j ping failed: {e}")
+            return False
+
+    async def ensure_schema(self) -> None:
+        """Ensure the graph constraints and indexes exist."""
+        await self.create_constraints()
+        await self.create_indexes()
     
     # --- Schema Management ---
     
@@ -126,7 +142,7 @@ class LegalGraphClient:
             logger.debug(f"Upserted document: {record['id'] if record else 'unknown'}")
             return record["id"] if record else None
     
-    async def upsert_article(self, doc_id: str, article_id: str, number: int, title: str, content: str):
+    async def upsert_article(self, doc_id: str, article_id: str, number: int | str, title: str, content: str):
         """Create article node linked to parent document."""
         query = """
         MATCH (d:Document {id: $doc_id})
@@ -150,6 +166,36 @@ class LegalGraphClient:
             result = await session.run(query, params)
             record = await result.single()
             logger.debug(f"Upserted article: {record['id'] if record else 'unknown'}")
+            return record["id"] if record else None
+
+    async def upsert_subsection(
+        self,
+        article_id: str,
+        subsection_id: str,
+        number: int | str,
+        content: str,
+    ):
+        """Create subsection node linked to parent article."""
+        query = """
+        MATCH (a:Article {id: $article_id})
+        MERGE (s:Subsection {id: $subsection_id})
+        SET s.number = $number,
+            s.content = $content
+        MERGE (a)-[:HAS_SUBSECTION]->(s)
+        RETURN s.id as id
+        """
+
+        params = {
+            "article_id": article_id,
+            "subsection_id": subsection_id,
+            "number": str(number),
+            "content": content,
+        }
+
+        async with self.driver.session() as session:
+            result = await session.run(query, params)
+            record = await result.single()
+            logger.debug(f"Upserted subsection: {record['id'] if record else 'unknown'}")
             return record["id"] if record else None
     
     async def create_amendment_link(self, source_id: str, target_id: str, effective_date: str = None):
@@ -261,9 +307,9 @@ class LegalGraphClient:
             return amendments
     
     async def get_citing_articles(self, article_id: str) -> list[dict]:
-        """Get articles that cite this article."""
+        """Get nodes that cite or reference this node."""
         query = """
-        MATCH (citing)-[:CITES]->(a:Article {id: $article_id})
+        MATCH (citing)-[:CITES|REFERENCES]->(target {id: $article_id})
         RETURN citing.id as id,
                citing.title as title,
                citing.content as content
@@ -280,6 +326,110 @@ class LegalGraphClient:
                     "content": record["content"],
                 })
             return articles
+
+    async def resolve_document_reference(
+        self,
+        doc_type: str | None = None,
+        year: int | None = None,
+        document_number: str | None = None,
+        reference_text: str | None = None,
+    ) -> Optional[dict[str, Any]]:
+        """Resolve a best-effort document reference to an existing graph node."""
+        query = """
+        MATCH (d:Document)
+        WHERE ($doc_type IS NULL OR d.doc_type = $doc_type)
+          AND ($year IS NULL OR d.year = $year)
+          AND (
+            $document_number IS NULL
+            OR d.document_number = $document_number
+            OR d.document_number CONTAINS $document_number
+          )
+          AND (
+            $reference_text IS NULL
+            OR toLower(d.title) CONTAINS toLower($reference_text)
+          )
+        RETURN d.id as id,
+               d.title as title,
+               d.document_number as document_number,
+               d.year as year,
+               d.doc_type as doc_type
+        ORDER BY
+          CASE
+            WHEN $document_number IS NOT NULL AND d.document_number = $document_number THEN 0
+            ELSE 1
+          END,
+          CASE
+            WHEN $year IS NOT NULL AND d.year = $year THEN 0
+            ELSE 1
+          END
+        LIMIT 1
+        """
+
+        async with self.driver.session() as session:
+            result = await session.run(
+                query,
+                {
+                    "doc_type": doc_type,
+                    "year": year,
+                    "document_number": document_number,
+                    "reference_text": reference_text,
+                },
+            )
+            record = await result.single()
+            if not record:
+                return None
+            return {
+                "id": record["id"],
+                "title": record["title"],
+                "document_number": record["document_number"],
+                "year": record["year"],
+                "doc_type": record["doc_type"],
+            }
+
+    async def resolve_article_reference(
+        self,
+        article_number: str,
+        doc_type: str | None = None,
+        year: int | None = None,
+        document_number: str | None = None,
+    ) -> Optional[dict[str, Any]]:
+        """Resolve an article reference by article number and optional document filters."""
+        query = """
+        MATCH (d:Document)-[:CONTAINS]->(a:Article)
+        WHERE a.number = $article_number
+          AND ($doc_type IS NULL OR d.doc_type = $doc_type)
+          AND ($year IS NULL OR d.year = $year)
+          AND (
+            $document_number IS NULL
+            OR d.document_number = $document_number
+            OR d.document_number CONTAINS $document_number
+          )
+        RETURN a.id as article_id,
+               a.title as article_title,
+               d.id as document_id,
+               d.title as document_title
+        LIMIT 1
+        """
+
+        async with self.driver.session() as session:
+            result = await session.run(
+                query,
+                {
+                    "article_number": str(article_number),
+                    "doc_type": doc_type,
+                    "year": year,
+                    "document_number": document_number,
+                },
+            )
+            record = await result.single()
+            if not record:
+                return None
+            return {
+                "article_id": record["article_id"],
+                "article_title": record["article_title"],
+                "document_id": record["document_id"],
+                "document_title": record["document_title"],
+            }
     
     async def get_related_by_topic(self, doc_id: str, max_hops: int = 2) -> list[dict]:
         """Multi-hop graph traversal for related documents."""
@@ -387,4 +537,3 @@ class LegalGraphClient:
                     "seed_count": record["seed_count"],
                 })
             return documents
-

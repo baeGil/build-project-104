@@ -24,7 +24,7 @@ class Settings(BaseSettings):
     opensearch_port: int = 9200
     opensearch_index: str = "legal_docs"
     opensearch_user: str = "admin"
-    opensearch_password: str = "admin"
+    opensearch_password: str = "SecureP@ssw0rd!2024"
     
     # PostgreSQL
     postgres_host: str = "localhost"

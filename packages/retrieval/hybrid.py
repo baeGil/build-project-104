@@ -8,6 +8,7 @@ from prometheus_client import Histogram
 
 from packages.common.config import Settings
 from packages.common.types import QueryPlan, RetrievedDocument
+from packages.common.score_normalizer import RRFNormalizer
 from packages.retrieval.embedding import EmbeddingService
 from packages.retrieval.rrf import reciprocal_rank_fusion
 
@@ -40,11 +41,18 @@ class HybridSearchEngine:
     Target: <150ms for parallel retrieval + 20ms for RRF fusion
     """
 
-    def __init__(self, settings: Settings):
+    def __init__(
+        self,
+        settings: Settings,
+        normalize_scores: bool = True,
+        score_scale: int = 100,
+    ):
         """Initialize the hybrid search engine.
 
         Args:
             settings: Application settings with DB connection info
+            normalize_scores: Whether to normalize RRF scores (default: True)
+            score_scale: Target scale for normalized scores (100 for 0-100, 10 for 0-10)
         """
         self.settings = settings
         self._qdrant_client = None
@@ -53,6 +61,13 @@ class HybridSearchEngine:
             model_name=settings.embedding_model
         )
         self._postgres_pool = None
+        
+        # Score normalizer for better UX
+        self._normalize_scores = normalize_scores
+        self._score_normalizer = RRFNormalizer(
+            scale=score_scale,
+            method="centered",  # Preserve distribution, avoid skew
+        ) if normalize_scores else None
 
     async def _get_qdrant_client(self):
         """Get or create async Qdrant client."""
@@ -126,11 +141,13 @@ class HybridSearchEngine:
         dense_candidates: int = 100,
         rrf_k: int = 60,
         filters: dict | None = None,
+        sandwich_reorder: bool = True,
     ) -> list[RetrievedDocument]:
         """Execute hybrid search: parallel BM25 + dense -> RRF fusion.
 
         Uses asyncio.gather for parallel execution.
         Applies metadata filters to both searches.
+        Optionally applies sandwich reordering to combat lost-in-the-middle attention decay.
 
         Args:
             query: Search query text
@@ -140,6 +157,7 @@ class HybridSearchEngine:
             dense_candidates: Number of dense candidates to retrieve
             rrf_k: RRF constant for fusion
             filters: Optional metadata filters
+            sandwich_reorder: Whether to apply sandwich reordering (default: True)
 
         Returns:
             List of retrieved documents with fused scores
@@ -178,6 +196,23 @@ class HybridSearchEngine:
                         top_n=top_k * 2,  # Fetch more for reranking
                     )
 
+                # Normalize RRF scores if enabled (adaptive, no hardcoding!)
+                if self._normalize_scores and self._score_normalizer and fused_results:
+                    raw_scores = [score for _, score in fused_results]
+                    normalized_scores = self._score_normalizer.normalize_rrf_scores(raw_scores)
+                    
+                    # Replace scores with normalized versions
+                    fused_results = [
+                        (doc_id, norm_score)
+                        for (doc_id, _), norm_score in zip(fused_results, normalized_scores)
+                    ]
+                    
+                    logger.debug(
+                        f"Scores normalized: "
+                        f"raw=[{min(raw_scores):.4f}-{max(raw_scores):.4f}] → "
+                        f"normalized=[{min(normalized_scores):.1f}-{max(normalized_scores):.1f}]"
+                    )
+
                 # Fetch full documents
                 doc_ids = [doc_id for doc_id, _ in fused_results]
                 fused_scores = {doc_id: score for doc_id, score in fused_results}
@@ -189,11 +224,55 @@ class HybridSearchEngine:
                     doc.bm25_score = bm25_scores.get(doc.doc_id)
                     doc.dense_score = dense_scores.get(doc.doc_id)
 
+                # Apply sandwich reordering if enabled
+                if sandwich_reorder and len(documents) > 2:
+                    documents = self._apply_sandwich_reorder(documents)
+
                 return documents[:top_k]
 
             except Exception as e:
                 logger.error(f"Hybrid search failed: {e}")
                 raise
+
+    def _apply_sandwich_reorder(
+        self, documents: list[RetrievedDocument]
+    ) -> list[RetrievedDocument]:
+        """Reorder documents to combat LLM attention decay (lost-in-the-middle).
+
+        Algorithm: Sort by score, then interleave: [1st, 3rd, 5th, ..., 6th, 4th, 2nd]
+        This places most relevant docs at the start and end, with less relevant in the middle.
+
+        Args:
+            documents: List of retrieved documents (assumed to be sorted by score descending)
+
+        Returns:
+            Reordered list of documents
+        """
+        if len(documents) <= 2:
+            return documents
+
+        # Sort by score descending to ensure proper ordering
+        sorted_docs = sorted(documents, key=lambda d: d.score, reverse=True)
+
+        n = len(sorted_docs)
+
+        # Split into odd and even indices (1-indexed for clarity)
+        # Odd positions (1st, 3rd, 5th...) go first in order
+        odd_positions = [sorted_docs[i] for i in range(0, n, 2)]
+        # Even positions (2nd, 4th, 6th...) go last in reverse order
+        even_positions = [sorted_docs[i] for i in range(1, n, 2)]
+        even_positions.reverse()
+
+        # Combine: high relevance at start and end
+        reordered = odd_positions + even_positions
+
+        logger.debug(
+            f"Sandwich reorder: {n} documents reordered from "
+            f"[{sorted_docs[0].doc_id}, ..., {sorted_docs[-1].doc_id}] to "
+            f"[{reordered[0].doc_id}, ..., {reordered[-1].doc_id}]"
+        )
+
+        return reordered
 
     async def _bm25_search(
         self,
@@ -361,14 +440,27 @@ class HybridSearchEngine:
                 for doc_id in doc_ids:
                     row = row_lookup.get(doc_id)
                     if row:
+                        # Parse metadata - can be dict, JSON string, or None
+                        metadata_value = row.get("metadata")
+                        if isinstance(metadata_value, str):
+                            try:
+                                import json
+                                parsed_metadata = json.loads(metadata_value)
+                            except (json.JSONDecodeError, TypeError):
+                                parsed_metadata = {}
+                        elif isinstance(metadata_value, dict):
+                            parsed_metadata = metadata_value
+                        else:
+                            parsed_metadata = {}
+                        
                         doc = RetrievedDocument(
                             doc_id=doc_id,
                             content=row["content"],
                             title=row["title"],
                             score=scores.get(doc_id, 0.0),
                             metadata={
-                                "doc_type": row["doc_type"],
-                                **(row["metadata"] or {}),
+                                "doc_type": row.get("doc_type", "unknown"),
+                                **parsed_metadata,
                             },
                         )
                         documents.append(doc)

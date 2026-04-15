@@ -113,12 +113,21 @@ class ContextDocument(BaseModel):
     title: Optional[str] = None
 
 
+class WebSearchResult(BaseModel):
+    """Result from a web search for legal information."""
+    title: str
+    snippet: str
+    url: str
+    source: str  # domain name
+
+
 class EvidencePack(BaseModel):
     """Pre-assembled evidence bundle for the generator. Generator NEVER searches on its own."""
     clause: str
     retrieved_documents: list[RetrievedDocument] = Field(default_factory=list)
     context_documents: list[ContextDocument] = Field(default_factory=list)
     citations: list[Citation] = Field(default_factory=list)
+    web_sources: list[WebSearchResult] = Field(default_factory=list)
     verification_level: Optional[VerificationLevel] = None
     verification_confidence: float = 0.0
     verification_reasoning: Optional[str] = None
@@ -136,6 +145,9 @@ class ReviewFinding(BaseModel):
     revision_suggestion: Optional[str] = None
     negotiation_note: Optional[str] = None
     
+    # Inline citation map: maps [n] markers to citation info
+    inline_citation_map: dict[int, dict[str, Any]] = Field(default_factory=dict)
+    
     # Audit trail
     evidence_pack: Optional[EvidencePack] = None
     latency_ms: float = 0.0
@@ -150,6 +162,9 @@ class ContractReviewResult(BaseModel):
     risk_summary: dict[str, int] = Field(default_factory=dict)  # risk_level -> count
     total_latency_ms: float = 0.0
     timestamp: datetime = Field(default_factory=datetime.utcnow)
+    
+    # References section: all unique cited documents across findings
+    references: list[dict[str, Any]] = Field(default_factory=list)
 
 
 class ChatAnswer(BaseModel):
