@@ -155,7 +155,7 @@ class TestGenerateReviewSummary:
         """Test summary generation with empty findings list."""
         result = await generator.generate_review_summary([])
 
-        assert result == "No findings to summarize."
+        assert result == "Không có kết quả để tóm tắt."
 
     async def test_generate_summary_error_handling(
         self,
@@ -171,7 +171,7 @@ class TestGenerateReviewSummary:
             findings = [sample_review_finding]
             result = await generator.generate_review_summary(findings)
 
-            assert "Summary generation failed" in result
+            assert "Tạo tóm tắt thất bại" in result
             assert "high" in result.lower() or "Risk distribution" in result
 
 

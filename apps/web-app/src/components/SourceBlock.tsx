@@ -20,6 +20,7 @@ export function SourceBlock({
   defaultExpanded = true
 }: SourceBlockProps) {
   const [isExpanded, setIsExpanded] = useState(defaultExpanded);
+  const [expandedQuotes, setExpandedQuotes] = useState<Record<number, boolean>>({});
 
   if (!references || references.length === 0) {
     return null;
@@ -62,9 +63,8 @@ export function SourceBlock({
         <ol className="space-y-2">
           {references.map((ref, index) => (
             <li key={`${ref.article_id}-${index}`}>
-              <button
-                onClick={() => handleReferenceClick(ref)}
-                disabled={!onCitationClick}
+              <div
+                onClick={() => onCitationClick && handleReferenceClick(ref)}
                 className={`
                   w-full text-left
                   p-3 rounded-lg
@@ -98,11 +98,28 @@ export function SourceBlock({
                 
                 {/* Quote preview */}
                 {ref.quote && (
-                  <p className="text-xs text-slate-600 mt-2 line-clamp-2 italic border-l-2 border-slate-200 pl-2">
-                    "{ref.quote.substring(0, 150)}{ref.quote.length > 150 ? "..." : ""}"
-                  </p>
+                  <div className="mt-2">
+                    <p className="text-xs text-slate-600 italic border-l-2 border-slate-200 pl-2">
+                      "{expandedQuotes[index] ? ref.quote : ref.quote.substring(0, 150)}
+                      {!expandedQuotes[index] && ref.quote.length > 150 ? "..." : ""}"
+                    </p>
+                    {ref.quote.length > 150 && (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setExpandedQuotes(prev => ({
+                            ...prev,
+                            [index]: !prev[index]
+                          }));
+                        }}
+                        className="mt-1 text-xs text-primary hover:text-primary/80 transition-colors"
+                      >
+                        {expandedQuotes[index] ? "Thu gọn" : "Xem thêm"}
+                      </button>
+                    )}
+                  </div>
                 )}
-              </button>
+              </div>
             </li>
           ))}
         </ol>

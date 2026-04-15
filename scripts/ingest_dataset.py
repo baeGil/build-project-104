@@ -12,6 +12,7 @@ Usage:
 
 import asyncio
 import concurrent.futures
+import json
 import logging
 import re
 import sys
@@ -19,7 +20,7 @@ import time
 from concurrent.futures import ThreadPoolExecutor
 from io import BytesIO
 from pathlib import Path
-from typing import Any
+from typing import Any, Optional
 
 # Add project root to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -213,8 +214,9 @@ def clean_html_batch(html_contents: list[str], max_workers: int = 4) -> list[str
 def load_and_merge_with_polars(
     metadata_path: Path,
     content_path: Path,
+    relationships_path: Path | None = None,
     limit: int | None = None,
-) -> list[dict[str, Any]]:
+) -> tuple[list[dict[str, Any]], Optional["pl.DataFrame"]]:
     """Load parquet files with Polars and merge on ID.
 
     This function:
@@ -228,10 +230,11 @@ def load_and_merge_with_polars(
     Args:
         metadata_path: Path to metadata parquet file
         content_path: Path to content parquet file
+        relationships_path: Path to relationships parquet file (optional)
         limit: Optional limit on number of documents
 
     Returns:
-        List of merged document dictionaries
+        Tuple of (merged document dictionaries, relationships DataFrame or None)
     """
     import polars as pl
 
@@ -337,10 +340,73 @@ def load_and_merge_with_polars(
     if skipped_empty > 0:
         print_console(f"    ⚠️  Skipped {skipped_empty} documents with empty/short content", style="yellow")
 
+    # Step 7: Load and process relationships if provided
+    relationships_df: pl.DataFrame | None = None
+    if relationships_path and relationships_path.exists():
+        step_start = time.time()
+        print_console("\n  📊 Processing relationships.parquet...", style="bold yellow")
+
+        # Load relationships
+        print_console("    → Reading relationships.parquet with Polars...", style="dim")
+        relationships_raw = pl.read_parquet(relationships_path)
+        total_relationships = len(relationships_raw)
+        print_console(f"    ✓ Relationships loaded: {total_relationships} rows", style="green")
+
+        # Cast ID columns to String for consistency
+        print_console("    → Casting ID columns to String...", style="dim")
+        relationships_raw = relationships_raw.with_columns([
+            pl.col("doc_id").cast(pl.Utf8).alias("doc_id"),
+            pl.col("other_doc_id").cast(pl.Utf8).alias("other_doc_id"),
+        ])
+
+        # Get the set of valid document IDs from merged documents
+        valid_doc_ids = set(doc["id"] for doc in documents)
+
+        # Filter relationships: both doc_id AND other_doc_id must exist in document set
+        print_console("    → Filtering relationships to valid document IDs...", style="dim")
+        relationships_df = relationships_raw.filter(
+            pl.col("doc_id").is_in(valid_doc_ids) & pl.col("other_doc_id").is_in(valid_doc_ids)
+        )
+
+        filtered_count = len(relationships_df)
+        filtered_out = total_relationships - filtered_count
+
+        elapsed = time.time() - step_start
+        print_console(
+            f"    ✓ Relationships filtered: {filtered_count}/{total_relationships} "
+            f"({filtered_out} removed, {elapsed:.2f}s)",
+            style="green"
+        )
+
+        # Print relationship statistics
+        print_console("\n  📈 Relationship Statistics:", style="bold cyan")
+        print_console(f"    Total loaded:     {total_relationships:,}")
+        print_console(f"    After filtering:  {filtered_count:,} ({filtered_out:,} filtered out)")
+
+        if filtered_count > 0:
+            # Unique relationship types with counts
+            rel_types = relationships_df.group_by("relationship").len().sort("len", descending=True)
+            print_console("\n    Relationship types:", style="cyan")
+            for row in rel_types.iter_rows(named=True):
+                rel_type = row["relationship"] or "(unknown)"
+                count = row["len"]
+                print_console(f"      • {rel_type}: {count:,}", style="dim")
+
+            # Coverage: what % of documents have at least one relationship
+            docs_with_rel = relationships_df.select("doc_id").unique().height
+            coverage = (docs_with_rel / len(documents) * 100) if documents else 0
+            print_console(f"\n    Document coverage:", style="cyan")
+            print_console(f"      Documents with relationships: {docs_with_rel:,} / {len(documents):,} ({coverage:.1f}%)", style="dim")
+        else:
+            print_console("    ⚠️  No valid relationships after filtering", style="yellow")
+
+        elapsed_total = time.time() - step_start
+        print_console(f"\n    ✓ Relationships processing complete ({elapsed_total:.2f}s)", style="green")
+
     total_elapsed = time.time() - start_time
     print_console(f"\n  ✅ Phase 2 complete: {len(documents)} documents ready ({total_elapsed:.1f}s total)", style="bold green")
 
-    return documents
+    return documents, relationships_df
 
 
 async def ingest_dataset_optimized(
@@ -372,6 +438,7 @@ async def ingest_dataset_optimized(
 
     metadata_url = get_parquet_url(dataset_name, "metadata")
     content_url = get_parquet_url(dataset_name, "content")
+    relationships_url = get_parquet_url(dataset_name, "relationships")
 
     try:
         # Phase 1: Download parquet files with REAL progress
@@ -398,7 +465,17 @@ async def ingest_dataset_optimized(
         )
         print_console("  ✅ Content downloaded\n", style="green")
 
-        print_console("✅ Phase 1 complete: Files downloaded", style="bold green")
+        print_console("  ⬇️  Downloading relationships.parquet...")
+        await download_file_with_progress(
+            relationships_url,
+            filename="relationships.parquet",
+            description="Downloading relationships.parquet",
+            color="magenta",
+            use_cache=use_cache,
+        )
+        print_console("  ✅ Relationships downloaded\n", style="green")
+
+        print_console("✅ Phase 1 complete: All files downloaded", style="bold green")
         print_console()
 
         # Phase 2: Load and merge with Polars (OPTIMIZED!)
@@ -407,16 +484,23 @@ async def ingest_dataset_optimized(
 
         metadata_path = CACHE_DIR / "metadata.parquet"
         content_path = CACHE_DIR / "content.parquet"
+        relationships_path = CACHE_DIR / "relationships.parquet"
 
-        merged_docs = load_and_merge_with_polars(
+        merged_docs, relationships_df = load_and_merge_with_polars(
             metadata_path=metadata_path,
             content_path=content_path,
+            relationships_path=relationships_path,
             limit=limit,
         )
 
         if not merged_docs:
             print_console("\n❌ No documents to ingest after processing", style="bold red")
             return
+
+        # Store relationships for Phase 4 (relationship ingestion)
+        # relationships_df is a Polars DataFrame with columns: doc_id, other_doc_id, relationship
+        # Both ID columns are cast to String for consistency with document IDs
+        # Relationships are filtered to only include rows where BOTH IDs exist in merged_docs
 
         # Phase 3: Ingest into databases with OPTIMIZED batch processing
         print_console("\n💾 Phase 3: Ingesting into databases (BATCH MODE)", style="bold yellow")
@@ -433,9 +517,9 @@ async def ingest_dataset_optimized(
         
         total_elapsed = time.time() - start_time
 
-        # Print summary
+        # Print document ingestion summary
         print_console("\n" + "=" * 70)
-        print_console("✅ INGESTION COMPLETE", style="bold green")
+        print_console("✅ PHASE 3 COMPLETE: Document Ingestion", style="bold green")
         print_console("=" * 70)
         print_console()
 
@@ -479,6 +563,85 @@ async def ingest_dataset_optimized(
                 print(f"\nErrors (first 5):")
                 for error in stats["errors"][:5]:
                     print(f"  • {error}")
+
+        print_console()
+
+        # Phase 4: Relationship Ingestion
+        print_console("\n🔗 Phase 4: Syncing documents to Neo4j and ingesting relationships", style="bold yellow")
+        print_console()
+
+        # Step 4a: Sync documents to Neo4j first
+        print_console("  📄 Step 4a: Syncing documents to Neo4j...", style="dim")
+        neo4j_doc_count = 0
+        try:
+            from packages.graph.legal_graph import LegalGraphClient
+            from packages.common.types import LegalNode, DocumentType
+
+            graph = LegalGraphClient(pipeline.settings)
+            await graph.create_indexes()
+
+            doc_synced = 0
+            for doc in merged_docs:
+                # Create LegalNode from document dict
+                # Handle invalid DocumentType gracefully
+                doc_type_str = doc.get("doc_type", "unknown")
+                try:
+                    doc_type = DocumentType(doc_type_str) if doc_type_str else None
+                except ValueError:
+                    doc_type = DocumentType.OTHER  # Fallback for unknown types
+                
+                node = LegalNode(
+                    id=doc["id"],
+                    title=doc.get("title", ""),
+                    content=doc.get("content", "")[:5000],  # Limit content size
+                    doc_type=doc_type,
+                    metadata=doc.get("metadata", {}),
+                )
+                await graph.upsert_document(node)
+                doc_synced += 1
+
+            print_console(f"  ✓ Neo4j: {doc_synced} documents synced", style="green")
+            neo4j_doc_count = doc_synced
+            
+            await graph.close()
+
+        except Exception as e:
+            logger.warning(f"Neo4j document sync skipped: {e}")
+            print_console(f"  ⚠️  Neo4j document sync skipped: {type(e).__name__}", style="yellow")
+
+        # Step 4b: Ingest relationships
+        print_console("\n  🔗 Step 4b: Ingesting relationships...", style="dim")
+
+        rel_stats = await ingest_relationships_phase4(
+            relationships_df=relationships_df,
+            pipeline=pipeline,
+            batch_size=500,
+        )
+
+        # Print final summary
+        print_console("\n" + "=" * 70)
+        print_console("✅ INGESTION COMPLETE", style="bold green")
+        print_console("=" * 70)
+        print_console()
+
+        if HAS_RICH:
+            final_table = Table(show_header=True, header_style="bold magenta")
+            final_table.add_column("Phase", style="cyan")
+            final_table.add_column("Status", style="green")
+            final_table.add_column("Details", style="dim")
+
+            final_table.add_row("Phase 1", "✅ Complete", "Downloaded 3 parquet files")
+            final_table.add_row("Phase 2", "✅ Complete", f"Processed {len(merged_docs)} documents")
+            final_table.add_row("Phase 3", "✅ Complete", f"Ingested {stats['success']} documents")
+            final_table.add_row("Phase 4", "✅ Complete" if rel_stats["postgres_inserted"] >= 0 else "⚠️ Skipped", 
+                              f"{rel_stats['postgres_inserted']} relationships, Neo4j docs: {neo4j_doc_count}, rels: {rel_stats['neo4j_synced']}")
+
+            print_console(final_table)
+        else:
+            print(f"\nPhase 1: Downloaded parquet files")
+            print(f"Phase 2: Processed {len(merged_docs)} documents")
+            print(f"Phase 3: Ingested {stats['success']} documents")
+            print(f"Phase 4: {rel_stats['postgres_inserted']} relationships")
 
         print_console()
 
@@ -568,6 +731,280 @@ def clear_cache() -> None:
         print_console(f"  Deleted {f.name} ({file_type})", style="dim")
 
     print_console("✅ Cache cleared\n", style="green")
+
+
+async def ingest_relationships_phase4(
+    relationships_df: Any,
+    pipeline: IngestionPipeline,
+    batch_size: int = 500,
+) -> dict[str, Any]:
+    """Phase 4: Ingest document relationships into PostgreSQL and Neo4j.
+
+    Args:
+        relationships_df: Polars DataFrame with columns (doc_id, other_doc_id, relationship)
+        pipeline: IngestionPipeline instance (reuse PostgreSQL connection)
+        batch_size: Batch size for bulk operations
+
+    Returns:
+        Stats dict with insertion counts
+    """
+    stats = {
+        "total": 0,
+        "postgres_inserted": 0,
+        "neo4j_synced": 0,
+        "metadata_updated": 0,
+        "errors": [],
+    }
+
+    # Check if relationships exist
+    if relationships_df is None or len(relationships_df) == 0:
+        print_console("  ⚠️  No relationships to ingest", style="yellow")
+        return stats
+
+    total_rels = len(relationships_df)
+    stats["total"] = total_rels
+    print_console(f"  📊 Processing {total_rels:,} relationships...", style="dim")
+
+    # Step 1: Batch insert into PostgreSQL
+    print_console("  → Inserting into PostgreSQL...", style="dim")
+    try:
+        pool = await pipeline._get_postgres_pool()
+
+        # Convert Polars DataFrame to list of tuples
+        rel_tuples = [
+            (str(row["doc_id"]), str(row["other_doc_id"]), row["relationship"])
+            for row in relationships_df.iter_rows(named=True)
+        ]
+
+        inserted = 0
+
+        if HAS_RICH:
+            with Progress(
+                SpinnerColumn(),
+                TextColumn("[yellow]{task.description}"),
+                BarColumn(),
+                TaskProgressColumn(),
+                TimeElapsedColumn(),
+                console=console,
+            ) as progress:
+                task = progress.add_task("Inserting relationships", total=len(rel_tuples))
+
+                for batch_start in range(0, len(rel_tuples), batch_size):
+                    batch = rel_tuples[batch_start:batch_start + batch_size]
+
+                    async with pool.acquire() as conn:
+                        await conn.executemany(
+                            """
+                            INSERT INTO document_relationships (source_doc_id, target_doc_id, relationship_type)
+                            VALUES ($1, $2, $3)
+                            ON CONFLICT (source_doc_id, target_doc_id, relationship_type) DO NOTHING
+                            """,
+                            batch
+                        )
+                        # Count attempted inserts (actual inserts may be less due to ON CONFLICT)
+                        inserted += len(batch)
+
+                    progress.update(task, advance=len(batch))
+        else:
+            for batch_start in range(0, len(rel_tuples), batch_size):
+                batch = rel_tuples[batch_start:batch_start + batch_size]
+                async with pool.acquire() as conn:
+                    await conn.executemany(
+                        """
+                        INSERT INTO document_relationships (source_doc_id, target_doc_id, relationship_type)
+                        VALUES ($1, $2, $3)
+                        ON CONFLICT (source_doc_id, target_doc_id, relationship_type) DO NOTHING
+                        """,
+                        batch
+                    )
+                inserted += len(batch)
+                if batch_start % (batch_size * 10) == 0:
+                    print(f"    Inserted {inserted:,}/{total_rels:,}...")
+
+        stats["postgres_inserted"] = inserted
+        print_console(f"  ✓ PostgreSQL: {inserted:,} relationships processed", style="green")
+
+    except Exception as e:
+        error_msg = f"PostgreSQL relationship insert failed: {e}"
+        logger.error(error_msg)
+        stats["errors"].append(error_msg)
+        print_console(f"  ❌ PostgreSQL failed: {e}", style="red")
+
+    # Step 2: Sync to Neo4j (optional, non-blocking)
+    print_console("  → Syncing to Neo4j...", style="dim")
+    try:
+        from neo4j import AsyncGraphDatabase
+
+        driver = AsyncGraphDatabase.driver(
+            pipeline.settings.neo4j_uri,
+            auth=(pipeline.settings.neo4j_user, pipeline.settings.neo4j_password),
+        )
+
+        async with driver as driver_obj:
+            # Test connectivity
+            await driver_obj.verify_connectivity()
+            print_console("    ✓ Connected to Neo4j", style="dim")
+
+            neo4j_inserted = 0
+
+            if HAS_RICH:
+                with Progress(
+                    SpinnerColumn(),
+                    TextColumn("[magenta]{task.description}"),
+                    BarColumn(),
+                    TaskProgressColumn(),
+                    TimeElapsedColumn(),
+                    console=console,
+                ) as progress:
+                    task = progress.add_task("Syncing to Neo4j", total=len(rel_tuples))
+
+                    for batch_start in range(0, len(rel_tuples), batch_size):
+                        batch = rel_tuples[batch_start:batch_start + batch_size]
+
+                        # Use UNWIND for batch processing
+                        params = {
+                            "relationships": [
+                                {
+                                    "source_id": r[0],
+                                    "target_id": r[1],
+                                    "rel_type": r[2],
+                                }
+                                for r in batch
+                            ]
+                        }
+
+                        cypher = """
+                        UNWIND $relationships AS rel
+                        MATCH (s:Document {id: rel.source_id})
+                        MATCH (t:Document {id: rel.target_id})
+                        MERGE (s)-[r:RELATES_TO {type: rel.rel_type}]->(t)
+                        ON CREATE SET r.created_at = datetime()
+                        RETURN count(r) AS count
+                        """
+
+                        async with driver_obj.session() as session:
+                            result = await session.run(cypher, params)
+                            record = await result.single()
+                            if record:
+                                neo4j_inserted += record["count"]
+
+                        progress.update(task, advance=len(batch))
+            else:
+                for batch_start in range(0, len(rel_tuples), batch_size):
+                    batch = rel_tuples[batch_start:batch_start + batch_size]
+                    params = {
+                        "relationships": [
+                            {"source_id": r[0], "target_id": r[1], "rel_type": r[2]}
+                            for r in batch
+                        ]
+                    }
+
+                    async with driver_obj.session() as session:
+                        await session.run(
+                            """
+                            UNWIND $relationships AS rel
+                            MATCH (s:Document {id: rel.source_id})
+                            MATCH (t:Document {id: rel.target_id})
+                            MERGE (s)-[r:RELATES_TO {type: rel.rel_type}]->(t)
+                            """,
+                            params
+                        )
+                        neo4j_inserted += len(batch)
+
+            stats["neo4j_synced"] = neo4j_inserted
+            print_console(f"  ✓ Neo4j: {neo4j_inserted:,} relationships synced", style="green")
+
+    except ImportError:
+        print_console("  ⚠️  Neo4j driver not installed, skipping", style="yellow")
+    except Exception as e:
+        # Non-blocking - continue if Neo4j unavailable
+        logger.debug(f"Neo4j sync skipped: {e}")
+        print_console(f"  ⚠️  Neo4j sync skipped (unavailable): {type(e).__name__}", style="yellow")
+
+    # Step 3: Update document metadata in PostgreSQL
+    print_console("  → Updating document metadata...", style="dim")
+    try:
+        pool = await pipeline._get_postgres_pool()
+
+        # Build relationship counts per document
+        import polars as pl
+
+        # Get all relationships for each document (both as source and target)
+        source_counts = relationships_df.group_by("doc_id").agg([
+            pl.col("relationship").count().alias("count"),
+            pl.col("relationship").unique().alias("types"),
+        ])
+        source_counts = source_counts.rename({"doc_id": "id"})
+
+        target_counts = relationships_df.group_by("other_doc_id").agg([
+            pl.col("relationship").count().alias("count"),
+            pl.col("relationship").unique().alias("types"),
+        ])
+        target_counts = target_counts.rename({"other_doc_id": "id"})
+
+        # Combine source and target counts
+        all_doc_ids = set(relationships_df["doc_id"].unique().to_list()) | set(
+            relationships_df["other_doc_id"].unique().to_list()
+        )
+
+        updated_count = 0
+
+        async with pool.acquire() as conn:
+            for doc_id in all_doc_ids:
+                # Count relationships and collect types
+                source_rels = relationships_df.filter(pl.col("doc_id") == doc_id)
+                target_rels = relationships_df.filter(pl.col("other_doc_id") == doc_id)
+
+                rel_count = len(source_rels) + len(target_rels)
+                rel_types = list(
+                    set(source_rels["relationship"].unique().to_list()) |
+                    set(target_rels["relationship"].unique().to_list())
+                )
+                
+                # Filter out None values and ensure all strings
+                rel_types = [str(rt) for rt in rel_types if rt is not None]
+                
+                # Debug logging
+                logger.debug(f"Updating metadata for doc {doc_id}: count={rel_count}, types={rel_types}")
+
+                # Update metadata JSONB field
+                await conn.execute(
+                    """
+                    UPDATE legal_documents
+                    SET metadata = jsonb_set(
+                        COALESCE(metadata, '{}'::jsonb),
+                        '{related_doc_count}',
+                        to_jsonb($2::integer)
+                    ) || jsonb_build_object('relationship_types', $3::text::jsonb)
+                    WHERE id = $1::text
+                    """,
+                    doc_id,
+                    rel_count,
+                    json.dumps(rel_types),
+                )
+                updated_count += 1
+
+        stats["metadata_updated"] = updated_count
+        print_console(f"  ✓ Metadata updated for {updated_count:,} documents", style="green")
+
+    except Exception as e:
+        error_msg = f"Metadata update failed: {e}"
+        logger.error(error_msg, exc_info=True)
+        stats["errors"].append(error_msg)
+        print_console(f"  ⚠️  Metadata update failed: {e}", style="yellow")
+
+    # Print summary
+    print_console()
+    print_console("  📊 Relationship Ingestion Summary:", style="bold cyan")
+    print_console(f"    Total relationships:    {stats['total']:,}", style="dim")
+    print_console(f"    PostgreSQL inserted:   {stats['postgres_inserted']:,}", style="dim")
+    print_console(f"    Neo4j synced:          {stats['neo4j_synced']:,}", style="dim")
+    print_console(f"    Metadata updated:      {stats['metadata_updated']:,} docs", style="dim")
+
+    if stats["errors"]:
+        print_console(f"    Errors: {len(stats['errors'])}", style="yellow")
+
+    return stats
 
 
 def main() -> None:

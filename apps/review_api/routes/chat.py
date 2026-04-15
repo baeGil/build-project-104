@@ -37,14 +37,90 @@ def _coerce_retrieved_document(doc: RetrievedDocument | dict, index: int) -> Ret
     )
 
 
-async def _build_context_documents(app_state, settings, retrieved_documents: list[RetrievedDocument]):
-    """Build graph-augmented context for generation."""
+def _build_citations_with_relationships(
+    documents: list[RetrievedDocument],
+    include_related: bool = True,
+) -> list[Citation]:
+    """Build citations including related document references.
+    
+    Args:
+        documents: List of retrieved documents to build citations for
+        include_related: Whether to include related documents in citations
+    
+    Returns:
+        List of Citation objects, potentially including related documents
+    """
+    citations = []
+    seen_doc_ids = set()
+
+    for doc in documents:
+        if doc.doc_id in seen_doc_ids:
+            continue
+        seen_doc_ids.add(doc.doc_id)
+
+        citations.append(
+            Citation(
+                article_id=doc.doc_id,
+                law_id=doc.metadata.get("law_id", "unknown"),
+                quote=doc.content[:200],
+                document_title=doc.title,
+            )
+        )
+
+        # Include related documents as additional citations if available
+        if include_related and doc.related_documents:
+            for related in doc.related_documents[:2]:  # Max 2 related per doc
+                related_id = related.get("doc_id")
+                if related_id and related_id not in seen_doc_ids:
+                    seen_doc_ids.add(related_id)
+                    citations.append(
+                        Citation(
+                            article_id=related_id,
+                            law_id=related.get("relationship_type", "Văn bản liên quan"),
+                            quote=related.get("content", "")[:200],
+                            document_title=related.get("title"),
+                        )
+                    )
+
+    return citations
+
+
+async def _build_context_documents(
+    app_state,
+    settings,
+    retrieved_documents: list[RetrievedDocument],
+    include_relationships: bool = True,
+):
+    """Build graph-augmented context for generation with relationship enrichment.
+    
+    Args:
+        app_state: Application state with shared services
+        settings: Application settings
+        retrieved_documents: List of retrieved documents to enrich
+        include_relationships: Whether to include document relationships (default: True)
+    
+    Returns:
+        List of ContextDocument objects for generation
+    """
     if not retrieved_documents:
         return []
 
     context_injector = getattr(app_state, "context_injector", None) or ContextInjector(settings)
     try:
-        return await context_injector.inject_context(retrieved_documents, top_k=3)
+        context_docs = await context_injector.inject_context(
+            retrieved_documents,
+            top_k=3,
+            include_pg_relationships=include_relationships,
+        )
+
+        # Also enrich retrieved documents with their relationships for citations
+        if include_relationships:
+            for doc in retrieved_documents:
+                if not doc.related_documents:
+                    await context_injector.enrich_with_relationships(doc)
+
+
+        return context_docs
     except Exception as e:
         logger.debug("Context injection failed for chat request: %s", e)
         return []
@@ -73,11 +149,11 @@ async def legal_chat(request: ChatRequest, http_request: Request) -> ChatAnswer:
     try:
         settings = get_settings()
         app_state = http_request.app.state
-        
+
         # Plan query
         planner = getattr(app_state, "query_planner", None) or QueryPlanner()
         query_plan = planner.plan(request.query)
-        
+
         # Retrieve documents
         retriever = getattr(app_state, "hybrid_retriever", None) or HybridRetriever(settings)
         retrieved_docs = await retriever.search(
@@ -85,25 +161,23 @@ async def legal_chat(request: ChatRequest, http_request: Request) -> ChatAnswer:
             top_k=5,
             filters=request.filters or query_plan.search_filters,
         )
-        
+
         # Convert to RetrievedDocument objects
         retrieved_documents = [
             _coerce_retrieved_document(doc, i)
             for i, doc in enumerate(retrieved_docs)
         ]
-        
-        # Build citations
-        citations = [
-            Citation(
-                article_id=doc.doc_id,
-                law_id=doc.metadata.get("law_id", "unknown"),
-                quote=doc.content[:200],
-                document_title=doc.title,
-            )
-            for doc in retrieved_documents[:3]
-        ]
-        context_documents = await _build_context_documents(app_state, settings, retrieved_documents)
-        
+
+        # Build context with relationship enrichment
+        context_documents = await _build_context_documents(
+            app_state, settings, retrieved_documents, request.include_relationships
+        )
+
+        # Build citations (including related documents if available)
+        citations = _build_citations_with_relationships(
+            retrieved_documents[:3], include_related=request.include_relationships
+        )
+
         # Assemble EvidencePack
         evidence_pack = EvidencePack(
             clause=request.query,
@@ -112,16 +186,16 @@ async def legal_chat(request: ChatRequest, http_request: Request) -> ChatAnswer:
             citations=citations,
             verification_confidence=retrieved_documents[0].score if retrieved_documents else 0.0,
         )
-        
+
         # Generate answer
         generator = getattr(app_state, "legal_generator", None) or LegalGenerator(settings)
         answer = await generator.generate_chat_answer(
             query=request.query,
             evidence_pack=evidence_pack,
         )
-        
+
         return answer
-    
+
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -150,12 +224,12 @@ async def legal_chat_stream(request: ChatRequest, http_request: Request) -> Stre
     try:
         settings = get_settings()
         app_state = http_request.app.state
-        
+
         # Plan query
         logger.info(f"Chat stream: planning query '{request.query[:50]}...'" )
         planner = getattr(app_state, "query_planner", None) or QueryPlanner()
         query_plan = planner.plan(request.query)
-        
+
         # Retrieve documents
         logger.info(f"Chat stream: retrieving documents for '{query_plan.normalized_query[:50]}...'")
         retriever = getattr(app_state, "hybrid_retriever", None) or HybridRetriever(settings)
@@ -164,27 +238,25 @@ async def legal_chat_stream(request: ChatRequest, http_request: Request) -> Stre
             top_k=5,
             filters=request.filters or query_plan.search_filters,
         )
-        
+
         # Convert to RetrievedDocument objects
         retrieved_documents = [
             _coerce_retrieved_document(doc, i)
             for i, doc in enumerate(retrieved_docs)
         ]
-        
+
         logger.info(f"Chat stream: retrieved {len(retrieved_docs)} documents, starting stream")
-        
-        # Build citations
-        citations = [
-            Citation(
-                article_id=doc.doc_id,
-                law_id=doc.metadata.get("law_id", "unknown"),
-                quote=doc.content[:200],
-                document_title=doc.title,
-            )
-            for doc in retrieved_documents[:3]
-        ]
-        context_documents = await _build_context_documents(app_state, settings, retrieved_documents)
-        
+
+        # Build context with relationship enrichment
+        context_documents = await _build_context_documents(
+            app_state, settings, retrieved_documents, request.include_relationships
+        )
+
+        # Build citations (including related documents if available)
+        citations = _build_citations_with_relationships(
+            retrieved_documents[:3], include_related=request.include_relationships
+        )
+
         # Assemble EvidencePack
         evidence_pack = EvidencePack(
             clause=request.query,
@@ -193,10 +265,10 @@ async def legal_chat_stream(request: ChatRequest, http_request: Request) -> Stre
             citations=citations,
             verification_confidence=retrieved_documents[0].score if retrieved_documents else 0.0,
         )
-        
+
         # Stream answer
         generator = getattr(app_state, "legal_generator", None) or LegalGenerator(settings)
-        
+
         async def event_generator():
             """Generate SSE events."""
             try:
@@ -206,7 +278,7 @@ async def legal_chat_stream(request: ChatRequest, http_request: Request) -> Stre
                 ):
                     # SSE format: data: <content>\n\n
                     yield f"data: {token}\n\n"
-                
+
                 # Send citations as final event
                 citation_data = "[CITATIONS] " + json.dumps(
                     [
@@ -226,7 +298,7 @@ async def legal_chat_stream(request: ChatRequest, http_request: Request) -> Stre
                 logger.error(f"Chat streaming error: {e}")
                 yield f"data: [ERROR] {str(e)}\n\n"
                 yield "data: [DONE]\n\n"
-        
+
         return StreamingResponse(
             event_generator(),
             media_type="text/event-stream",
@@ -236,7 +308,7 @@ async def legal_chat_stream(request: ChatRequest, http_request: Request) -> Stre
                 "X-Accel-Buffering": "no",  # Disable nginx buffering
             },
         )
-    
+
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,

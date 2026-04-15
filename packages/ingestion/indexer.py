@@ -214,12 +214,15 @@ class QdrantIndexer:
         self,
         nodes: list[LegalNode],
         batch_size: int | None = None,
+        relationship_metadata: dict[str, dict[str, Any]] | None = None,
     ) -> int:
         """Batch embed and upsert documents into Qdrant.
 
         Args:
             nodes: List of LegalNode objects to index.
             batch_size: Batch size for upsert operations (uses instance default if None).
+            relationship_metadata: Optional dict mapping doc_id to relationship metadata:
+                {"doc_id": {"related_doc_ids": [...], "relationship_types": [...], "related_doc_count": N}}
 
         Returns:
             Number of documents successfully indexed.
@@ -269,6 +272,13 @@ class QdrantIndexer:
                         "citation_refs": node.citation_refs,
                         "keywords": node.keywords,
                     }
+
+                    # Enrich with relationship metadata if provided
+                    if relationship_metadata and node.id in relationship_metadata:
+                        rel_meta = relationship_metadata[node.id]
+                        payload["related_doc_ids"] = rel_meta.get("related_doc_ids", [])
+                        payload["relationship_types"] = rel_meta.get("relationship_types", [])
+                        payload["related_doc_count"] = rel_meta.get("related_doc_count", 0)
 
                     points.append(
                         PointStruct(
@@ -452,6 +462,10 @@ class OpenSearchIndexer:
                             "keywords": {"type": "keyword"},
                             "parent_id": {"type": "keyword"},
                             "children_ids": {"type": "keyword"},
+                            # Relationship metadata fields
+                            "related_doc_ids": {"type": "keyword"},
+                            "relationship_types": {"type": "keyword"},
+                            "related_doc_count": {"type": "integer"},
                         },
                     },
                 }
@@ -468,12 +482,15 @@ class OpenSearchIndexer:
         self,
         nodes: list[LegalNode],
         batch_size: int | None = None,
+        relationship_metadata: dict[str, dict[str, Any]] | None = None,
     ) -> int:
         """Bulk index documents into OpenSearch.
 
         Args:
             nodes: List of LegalNode objects to index.
             batch_size: Batch size for bulk operations (uses instance default if None).
+            relationship_metadata: Optional dict mapping doc_id to relationship metadata:
+                {"doc_id": {"related_doc_ids": [...], "relationship_types": [...], "related_doc_count": N}}
 
         Returns:
             Number of documents successfully indexed.
@@ -495,25 +512,34 @@ class OpenSearchIndexer:
 
             def generate_actions():
                 for node in nodes:
+                    source = {
+                        "title": node.title,
+                        "content": node.content,
+                        "doc_type": node.doc_type.value,
+                        "level": node.level,
+                        "publish_date": node.publish_date.isoformat() if node.publish_date else None,
+                        "effective_date": node.effective_date.isoformat() if node.effective_date else None,
+                        "expiry_date": node.expiry_date.isoformat() if node.expiry_date else None,
+                        "issuing_body": node.issuing_body,
+                        "document_number": node.document_number,
+                        "keywords": node.keywords,
+                        "parent_id": node.parent_id,
+                        "children_ids": node.children_ids,
+                        "amendment_refs": node.amendment_refs,
+                        "citation_refs": node.citation_refs,
+                    }
+
+                    # Enrich with relationship metadata if provided
+                    if relationship_metadata and node.id in relationship_metadata:
+                        rel_meta = relationship_metadata[node.id]
+                        source["related_doc_ids"] = rel_meta.get("related_doc_ids", [])
+                        source["relationship_types"] = rel_meta.get("relationship_types", [])
+                        source["related_doc_count"] = rel_meta.get("related_doc_count", 0)
+
                     yield {
                         "_index": index_name,
                         "_id": node.id,
-                        "_source": {
-                            "title": node.title,
-                            "content": node.content,
-                            "doc_type": node.doc_type.value,
-                            "level": node.level,
-                            "publish_date": node.publish_date.isoformat() if node.publish_date else None,
-                            "effective_date": node.effective_date.isoformat() if node.effective_date else None,
-                            "expiry_date": node.expiry_date.isoformat() if node.expiry_date else None,
-                            "issuing_body": node.issuing_body,
-                            "document_number": node.document_number,
-                            "keywords": node.keywords,
-                            "parent_id": node.parent_id,
-                            "children_ids": node.children_ids,
-                            "amendment_refs": node.amendment_refs,
-                            "citation_refs": node.citation_refs,
-                        },
+                        "_source": source,
                     }
 
             # Perform bulk indexing with retry
@@ -620,11 +646,17 @@ class DocumentIndexer:
             max_retries=max_retries,
         )
 
-    async def index(self, documents: list[LegalNode]) -> dict[str, Any]:
+    async def index(
+        self,
+        documents: list[LegalNode],
+        relationship_metadata: dict[str, dict[str, Any]] | None = None,
+    ) -> dict[str, Any]:
         """Index a batch of documents into all backends.
 
         Args:
             documents: List of parsed and normalized LegalNode documents.
+            relationship_metadata: Optional dict mapping doc_id to relationship metadata:
+                {"doc_id": {"related_doc_ids": [...], "relationship_types": [...], "related_doc_count": N}}
 
         Returns:
             Indexing result with success/failure counts per backend.
@@ -646,7 +678,9 @@ class DocumentIndexer:
 
         # Index to Qdrant
         try:
-            result["qdrant_indexed"] = await self.qdrant_indexer.index_documents(documents)
+            result["qdrant_indexed"] = await self.qdrant_indexer.index_documents(
+                documents, relationship_metadata=relationship_metadata
+            )
             logger.info(f"✓ Qdrant indexing successful: {result['qdrant_indexed']} docs")
         except ImportError as e:
             logger.warning(f"⚠️  Qdrant skipped (not installed): {e}")
@@ -658,7 +692,9 @@ class DocumentIndexer:
 
         # Index to OpenSearch
         try:
-            result["opensearch_indexed"] = await self.opensearch_indexer.index_documents(documents)
+            result["opensearch_indexed"] = await self.opensearch_indexer.index_documents(
+                documents, relationship_metadata=relationship_metadata
+            )
             logger.info(f"✓ OpenSearch indexing successful: {result['opensearch_indexed']} docs")
         except ImportError as e:
             logger.warning(f"⚠️  OpenSearch skipped (not installed): {e}")

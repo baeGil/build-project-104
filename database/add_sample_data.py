@@ -7,6 +7,54 @@ import json
 from packages.common.config import get_settings
 
 
+async def add_sample_relationships(pool, documents):
+    """Add sample relationships between documents for testing."""
+    if len(documents) < 2:
+        print("Not enough documents to create relationships")
+        return
+    
+    # Create sample relationships
+    sample_relationships = [
+        {
+            "source_doc_id": documents[0]["id"],  # Civil Code 2015
+            "target_doc_id": documents[1]["id"],  # Enterprise Law 2020
+            "relationship_type": "cited_by"
+        },
+        {
+            "source_doc_id": documents[1]["id"],  # Enterprise Law 2020
+            "target_doc_id": documents[0]["id"],  # Civil Code 2015
+            "relationship_type": "cites"
+        },
+        {
+            "source_doc_id": documents[0]["id"],  # Civil Code 2015
+            "target_doc_id": documents[2]["id"],  # Labor Code 2019
+            "relationship_type": "related_to"
+        },
+    ]
+    
+    async with pool.acquire() as conn:
+        for rel in sample_relationships:
+            try:
+                await conn.execute(
+                    """
+                    INSERT INTO document_relationships (source_doc_id, target_doc_id, relationship_type)
+                    VALUES ($1, $2, $3)
+                    ON CONFLICT (source_doc_id, target_doc_id, relationship_type) DO NOTHING
+                    """,
+                    rel["source_doc_id"],
+                    rel["target_doc_id"],
+                    rel["relationship_type"]
+                )
+                print(f"Added relationship: {rel['source_doc_id'][:8]}... -> {rel['target_doc_id'][:8]}... ({rel['relationship_type']})")
+            except Exception as e:
+                print(f"Error adding relationship: {e}")
+    
+    # Count total relationships
+    async with pool.acquire() as conn:
+        count = await conn.fetchval("SELECT COUNT(*) FROM document_relationships")
+        print(f"\nTotal relationships in database: {count}")
+
+
 async def add_sample_documents():
     """Add sample legal documents for testing."""
     settings = get_settings()
@@ -69,8 +117,11 @@ async def add_sample_documents():
             count = await conn.fetchval("SELECT COUNT(*) FROM legal_documents")
             print(f"\nTotal documents in database: {count}")
         
+        # Add sample relationships between documents
+        await add_sample_relationships(pool, sample_docs)
+        
         await pool.close()
-        print("\nSample documents added successfully!")
+        print("\nSample documents and relationships added successfully!")
         
     except Exception as e:
         print(f"Error adding sample documents: {e}")

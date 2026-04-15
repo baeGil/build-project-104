@@ -2,7 +2,7 @@
 import logging
 from typing import Any
 
-from fastapi import APIRouter, Depends, HTTPException, Path, Request, status
+from fastapi import APIRouter, Depends, HTTPException, Path, Query, Request, status
 
 from packages.common.config import Settings, get_settings
 from packages.common.types import ContextDocument
@@ -149,3 +149,75 @@ async def get_citation_context(
         "graph_available": True,
         "warning": None,
     }
+
+
+@router.get(
+    "/citations/{doc_id}/full-text",
+    response_model=dict,
+    status_code=status.HTTP_200_OK,
+    summary="Get full document text",
+    description="Retrieve full content of a cited document.",
+)
+async def get_citation_full_text(
+    doc_id: str = Path(..., description="Document ID to get full text for"),
+    settings: Settings = Depends(get_settings),
+) -> dict:
+    """Get full document content for citation display.
+    
+    This endpoint returns the complete document text when users click
+    "Xem thêm" on citations, solving the UX issue of truncated content.
+    
+    Args:
+        doc_id: ID of the document
+        
+    Returns:
+        Dict with full_text, title, metadata
+    """
+    try:
+        import asyncpg
+        
+        pool = await asyncpg.create_pool(settings.postgres_dsn)
+        
+        async with pool.acquire() as conn:
+            row = await conn.fetchrow(
+                """
+                SELECT id, title, content, doc_type, metadata
+                FROM legal_documents
+                WHERE id = $1
+                """,
+                doc_id
+            )
+        
+        await pool.close()
+        
+        if not row:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Document {doc_id} not found"
+            )
+        
+        # Parse metadata if it's a string
+        import json
+        metadata = row["metadata"]
+        if isinstance(metadata, str):
+            try:
+                metadata = json.loads(metadata)
+            except (json.JSONDecodeError, TypeError):
+                metadata = {}
+        
+        return {
+            "doc_id": row["id"],
+            "title": row["title"],
+            "full_text": row["content"],  # Full content, not truncated!
+            "doc_type": row["doc_type"],
+            "metadata": metadata,
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error fetching full text for {doc_id}: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to retrieve full text: {str(e)}"
+        )

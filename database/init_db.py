@@ -39,6 +39,8 @@ async def init_database():
         print("Database initialized successfully!")
         print("Created table: legal_documents")
         print("Created indexes: idx_legal_documents_doc_type, idx_legal_documents_created_at, idx_legal_documents_metadata")
+        print("Created table: document_relationships")
+        print("Created indexes: idx_rel_source, idx_rel_target, idx_rel_type")
         
         # Close the pool
         await pool.close()

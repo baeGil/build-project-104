@@ -151,9 +151,9 @@ export function InlineCitation({ text, citationMap = {}, onCitationClick }: Inli
               <p className="font-semibold mb-1 truncate">
                 {citationInfo.title}
               </p>
-              <p className="text-slate-300 line-clamp-3">
-                {citationInfo.content.substring(0, 150)}
-                {citationInfo.content.length > 150 ? "..." : ""}
+              <p className="text-slate-300 line-clamp-6 max-h-36 overflow-y-auto">
+                {citationInfo.content.substring(0, 400)}
+                {citationInfo.content.length > 400 ? "..." : ""}
               </p>
             </div>
           </div>

@@ -1,7 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import { Citation } from "@/lib/types";
-import { BookOpen, ExternalLink } from "lucide-react";
+import { BookOpen, ExternalLink, ChevronDown, ChevronUp } from "lucide-react";
 
 interface CitationCardProps {
   citation: Citation;
@@ -10,6 +11,8 @@ interface CitationCardProps {
 }
 
 export function CitationCard({ citation, onClick, compact = false }: CitationCardProps) {
+  const [isExpanded, setIsExpanded] = useState(false);
+  
   if (compact) {
     return (
       <button
@@ -53,10 +56,33 @@ export function CitationCard({ citation, onClick, compact = false }: CitationCar
         <ExternalLink className="w-4 h-4 text-muted flex-shrink-0" />
       </div>
       {citation.quote && (
-        <blockquote className="mt-3 text-sm text-slate-700 italic border-l-2 border-primary/30 pl-3">
-          &ldquo;{citation.quote.substring(0, 150)}
-          {citation.quote.length > 150 ? "..." : ""}&rdquo;
-        </blockquote>
+        <div className="mt-3">
+          <blockquote className="text-sm text-slate-700 italic border-l-2 border-primary/30 pl-3">
+            &ldquo;{isExpanded ? citation.quote : citation.quote.substring(0, 150)}
+            {!isExpanded && citation.quote.length > 150 ? "..." : ""}&rdquo;
+          </blockquote>
+          {citation.quote.length > 150 && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsExpanded(!isExpanded);
+              }}
+              className="mt-2 text-xs text-primary hover:text-primary/80 flex items-center gap-1 transition-colors"
+            >
+              {isExpanded ? (
+                <>
+                  <ChevronUp className="w-3 h-3" />
+                  Thu gọn
+                </>
+              ) : (
+                <>
+                  <ChevronDown className="w-3 h-3" />
+                  Xem thêm
+                </>
+              )}
+            </button>
+          )}
+        </div>
       )}
     </button>
   );

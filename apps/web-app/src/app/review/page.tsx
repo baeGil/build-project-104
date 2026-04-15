@@ -255,6 +255,7 @@ export default function ReviewPage() {
   };
 
   const handleCitationClick = async (citation: Citation) => {
+    console.log("🔵 handleCitationClick called with:", citation);
     try {
       const detail = await getCitation(citation.article_id);
       setSelectedCitation(detail);
@@ -268,6 +269,7 @@ export default function ReviewPage() {
   };
 
   const handleInlineCitationClick = (citationInfo: InlineCitationInfo, _num: number) => {
+    console.log("🟢 handleInlineCitationClick called with:", citationInfo);
     // Convert InlineCitationInfo to CitationDetail for the panel
     setSelectedCitation({
       article_id: citationInfo.doc_id,
@@ -279,6 +281,7 @@ export default function ReviewPage() {
   };
 
   const handleReferenceClick = async (ref: Reference) => {
+    console.log("🟡 handleReferenceClick called with:", ref);
     try {
       const detail = await getCitation(ref.article_id);
       setSelectedCitation(detail);
@@ -686,14 +689,17 @@ const FindingCard = memo(function FindingCard({
                   Trích dẫn pháp lý ({finding.citations.length})
                 </h4>
                 <div className="grid gap-2">
-                  {finding.citations.map((citation, i) => (
-                    <CitationCard
-                      key={i}
-                      citation={citation}
-                      onClick={() => onCitationClick(citation)}
-                      compact
-                    />
-                  ))}
+                  {finding.citations.map((citation, i) => {
+                    console.log(`📝 Citation ${i} in finding ${index}:`, citation);
+                    return (
+                      <CitationCard
+                        key={i}
+                        citation={citation}
+                        onClick={() => onCitationClick(citation)}
+                        compact
+                      />
+                    );
+                  })}
                 </div>
               </div>
             )}

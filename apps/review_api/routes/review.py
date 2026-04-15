@@ -8,7 +8,7 @@ from fastapi.responses import StreamingResponse
 logger = logging.getLogger(__name__)
 
 from packages.common.config import get_settings
-from packages.common.types import ContractReviewRequest, ContractReviewResult, Citation
+from packages.common.types import ContractReviewRequest, ContractReviewResult
 from packages.reasoning.review_pipeline import ContractReviewPipeline
 
 router = APIRouter(tags=["review"])
@@ -39,21 +39,22 @@ async def review_contract(
     try:
         settings = get_settings()
         pipeline = getattr(http_request.app.state, "review_pipeline", None) or ContractReviewPipeline(settings)
-        
+
         result = await pipeline.review_contract(
             contract_text=request.contract_text,
             filters=request.filters or None,
+            include_relationships=request.include_relationships,
         )
-        
+
         # Override with provided contract_id if any
         if request.contract_id:
             result.contract_id = request.contract_id
-        
+
         # Collect unique references across all findings
         result.references = _collect_unique_references(result.findings)
-        
+
         return result
-    
+
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -65,7 +66,7 @@ def _collect_unique_references(findings: list) -> list[dict]:
     """Collect unique references from all findings."""
     seen_article_ids: set[str] = set()
     references: list[dict] = []
-    
+
     for finding in findings:
         for citation in finding.citations:
             if citation.article_id not in seen_article_ids:
@@ -76,7 +77,7 @@ def _collect_unique_references(findings: list) -> list[dict]:
                     "document_title": citation.document_title,
                     "quote": citation.quote,
                 })
-    
+
     return references
 
 
@@ -113,13 +114,14 @@ async def review_contract_stream(
     try:
         settings = get_settings()
         pipeline = getattr(http_request.app.state, "review_pipeline", None) or ContractReviewPipeline(settings)
-        
+
         async def event_generator():
             """Generate SSE events from streaming review."""
             try:
                 async for event in pipeline.review_contract_stream(
                     contract_text=request.contract_text,
                     filters=request.filters or None,
+                    include_relationships=request.include_relationships,
                 ):
                     # SSE format: data: <json>\n\n
                     yield f"data: {json.dumps(event)}\n\n"
@@ -127,7 +129,7 @@ async def review_contract_stream(
                 logger.error(f"Streaming review error: {e}")
                 error_event = {"type": "error", "data": {"message": str(e)}}
                 yield f"data: {json.dumps(error_event)}\n\n"
-        
+
         return StreamingResponse(
             event_generator(),
             media_type="text/event-stream",
@@ -137,7 +139,7 @@ async def review_contract_stream(
                 "X-Accel-Buffering": "no",  # Disable nginx buffering
             },
         )
-    
+
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,

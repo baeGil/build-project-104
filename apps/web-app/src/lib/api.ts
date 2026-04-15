@@ -167,6 +167,19 @@ export async function getCitation(nodeId: string): Promise<CitationDetail> {
   );
 }
 
+// Get full document text for citation (NEW - solves truncation issue)
+export async function getCitationFullText(docId: string): Promise<{
+  doc_id: string;
+  title: string;
+  full_text: string;
+  doc_type: string;
+  metadata: Record<string, any>;
+}> {
+  return fetchWithError(
+    `${API_BASE_URL}/api/v1/citations/${docId}/full-text`
+  );
+}
+
 // Parse citations from SSE data
 export function parseCitations(data: string): Citation[] | null {
   if (data.startsWith("[CITATIONS] ")) {

@@ -819,6 +819,145 @@ class IngestionPipeline:
         logger.info(f"Batch ingestion complete: {stats['processed']}/{stats['total']} documents")
         return stats
 
+    async def ingest_relationships(
+        self,
+        relationships: list[dict],
+        batch_size: int = 500,
+        progress_callback: Optional[Callable[[int, int, str], None]] = None,
+    ) -> dict[str, Any]:
+        """Ingest document relationships into PostgreSQL and Neo4j.
+
+        Args:
+            relationships: List of relationship dicts with keys:
+                - source_doc_id: Source document ID
+                - target_doc_id: Target document ID
+                - relationship_type: Type of relationship
+            batch_size: Batch size for bulk operations (default: 500)
+            progress_callback: Optional callback for progress updates
+
+        Returns:
+            Stats dict: {"total": N, "postgres_inserted": N, "neo4j_synced": N, "errors": []}
+        """
+        logger.info(f"Starting relationship ingestion of {len(relationships)} relationships")
+
+        stats = {
+            "total": len(relationships),
+            "postgres_inserted": 0,
+            "neo4j_synced": 0,
+            "errors": [],
+        }
+
+        if not relationships:
+            logger.info("No relationships to ingest")
+            return stats
+
+        # Step 1: Batch insert into PostgreSQL
+        if progress_callback:
+            progress_callback(0, len(relationships), "Inserting into PostgreSQL...")
+
+        try:
+            pool = await self._get_postgres_pool()
+
+            # Prepare batch data
+            rel_tuples = [
+                (r["source_doc_id"], r["target_doc_id"], r["relationship_type"])
+                for r in relationships
+            ]
+
+            inserted = 0
+            total = len(rel_tuples)
+
+            for batch_start in range(0, total, batch_size):
+                batch = rel_tuples[batch_start:batch_start + batch_size]
+
+                async with pool.acquire() as conn:
+                    result = await conn.executemany(
+                        """
+                        INSERT INTO document_relationships (source_doc_id, target_doc_id, relationship_type)
+                        VALUES ($1, $2, $3)
+                        ON CONFLICT (source_doc_id, target_doc_id, relationship_type) DO NOTHING
+                        """,
+                        batch
+                    )
+                    inserted += len(batch)
+
+                if progress_callback:
+                    progress_callback(min(batch_start + batch_size, total), total, "Inserting into PostgreSQL...")
+
+            stats["postgres_inserted"] = inserted
+            logger.info(f"Inserted {inserted} relationships into PostgreSQL")
+
+        except Exception as e:
+            error_msg = f"PostgreSQL relationship insert failed: {e}"
+            logger.error(error_msg)
+            stats["errors"].append(error_msg)
+
+        # Step 2: Sync to Neo4j (optional, non-blocking)
+        if progress_callback:
+            progress_callback(0, len(relationships), "Syncing to Neo4j...")
+
+        try:
+            from neo4j import AsyncGraphDatabase
+
+            driver = AsyncGraphDatabase.driver(
+                self.settings.neo4j_uri,
+                auth=(self.settings.neo4j_user, self.settings.neo4j_password),
+            )
+
+            async with driver as driver_obj:
+                await driver_obj.verify_connectivity()
+
+                neo4j_inserted = 0
+                total = len(rel_tuples)
+
+                for batch_start in range(0, total, batch_size):
+                    batch = rel_tuples[batch_start:batch_start + batch_size]
+
+                    # Use UNWIND for batch processing
+                    params = {
+                        "relationships": [
+                            {
+                                "source_id": r[0],
+                                "target_id": r[1],
+                                "rel_type": r[2],
+                            }
+                            for r in batch
+                        ]
+                    }
+
+                    cypher = """
+                    UNWIND $relationships AS rel
+                    MATCH (s:Document {id: rel.source_id})
+                    MATCH (t:Document {id: rel.target_id})
+                    MERGE (s)-[r:RELATES_TO {type: rel.rel_type}]->(t)
+                    ON CREATE SET r.created_at = datetime()
+                    RETURN count(r) AS count
+                    """
+
+                    async with driver_obj.session() as session:
+                        result = await session.run(cypher, params)
+                        record = await result.single()
+                        if record:
+                            neo4j_inserted += record["count"]
+
+                    if progress_callback:
+                        progress_callback(min(batch_start + batch_size, total), total, "Syncing to Neo4j...")
+
+                stats["neo4j_synced"] = neo4j_inserted
+                logger.info(f"Synced {neo4j_inserted} relationships to Neo4j")
+
+        except ImportError:
+            logger.warning("Neo4j driver not installed, skipping Neo4j sync")
+        except Exception as e:
+            # Non-blocking - continue if Neo4j unavailable
+            logger.debug(f"Neo4j sync skipped: {type(e).__name__}: {e}")
+
+        if progress_callback:
+            progress_callback(len(relationships), len(relationships), "Complete")
+
+        logger.info(f"Relationship ingestion complete: {stats['postgres_inserted']} PostgreSQL, {stats['neo4j_synced']} Neo4j")
+        return stats
+
     async def close(self):
         """Close all connections with proper error handling."""
         errors = []

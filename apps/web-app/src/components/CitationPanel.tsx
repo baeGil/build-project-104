@@ -1,7 +1,9 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { CitationDetail } from "@/lib/types";
-import { X, BookOpen, FileText, Link2, History } from "lucide-react";
+import { getCitationFullText } from "@/lib/api";
+import { X, BookOpen, FileText, Link2, History, Loader2 } from "lucide-react";
 
 interface CitationPanelProps {
   citation: CitationDetail | null;
@@ -9,6 +11,99 @@ interface CitationPanelProps {
 }
 
 export function CitationPanel({ citation, onClose }: CitationPanelProps) {
+  const [fullText, setFullText] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  // Debug: Log citation when it changes
+  useEffect(() => {
+    if (citation) {
+      console.log("📋 CitationPanel opened with:", {
+        article_id: citation.article_id,
+        law_id: citation.law_id,
+        document_title: citation.document_title,
+        has_full_text: !!citation.full_text,
+        quote_length: citation.quote?.length,
+        // Check if it's a CitationDetail (from getCitation API)
+        has_node_id: !!(citation as any).node_id,
+        has_hierarchy: !!(citation as any).hierarchy,
+      });
+    }
+  }, [citation]);
+
+  // Fetch full text when citation changes
+  useEffect(() => {
+    if (!citation) {
+      setFullText(null);
+      setError(null);
+      return;
+    }
+
+    // Handle CitationDetail type (from getCitation API)
+    const citationDetail = citation as any;
+    if (citationDetail.node_id) {
+      // This is a CitationDetail from /citations/{node_id} API
+      const docId = citationDetail.node_id;
+      const title = citationDetail.hierarchy?.title || citation.document_title || "Unknown";
+      
+      console.log("📄 CitationDetail detected, fetching full text for:", docId);
+      
+      setFullText(null);
+      setIsLoading(true);
+      setError(null);
+      
+      // Fetch full text from PostgreSQL
+      getCitationFullText(docId)
+        .then(data => {
+          console.log("✅ Full text loaded:", data.full_text?.length, "chars");
+          setFullText(data.full_text);
+        })
+        .catch(err => {
+          console.error("❌ Failed to fetch full text:", err);
+          setError("Không thể tải nội dung đầy đủ");
+          setFullText(title); // Fallback to title
+        })
+        .finally(() => setIsLoading(false));
+      
+      return;
+    }
+
+    // Validate article_id for regular Citation type
+    if (!citation.article_id) {
+      console.error("Citation missing article_id:", citation);
+      setError("Thiếu thông tin document ID");
+      setFullText(citation.quote || "Không có nội dung");
+      return;
+    }
+
+    // If we already have full_text, use it
+    if (citation.full_text) {
+      setFullText(citation.full_text);
+      return;
+    }
+
+    // Fetch from API for regular Citation type
+    const fetchFullText = async () => {
+      setIsLoading(true);
+      setError(null);
+      
+      try {
+        console.log("Fetching full text for:", citation.article_id);
+        const data = await getCitationFullText(citation.article_id);
+        console.log("Full text loaded:", data.full_text?.length, "chars");
+        setFullText(data.full_text);
+      } catch (err) {
+        console.error("Failed to fetch full text:", err);
+        setError("Không thể tải nội dung đầy đủ");
+        setFullText(citation.quote); // Fallback to quote
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchFullText();
+  }, [citation]);
+
   if (!citation) return null;
 
   return (
@@ -53,9 +148,21 @@ export function CitationPanel({ citation, onClose }: CitationPanelProps) {
               Full Text
             </h3>
             <div className="bg-slate-50 rounded-lg p-4 border border-slate-200">
-              <p className="text-slate-700 leading-relaxed whitespace-pre-wrap">
-                {citation.full_text || citation.quote}
-              </p>
+              {isLoading ? (
+                <div className="flex items-center justify-center py-8">
+                  <Loader2 className="w-6 h-6 text-primary animate-spin" />
+                  <span className="ml-2 text-slate-600">Đang tải nội dung...</span>
+                </div>
+              ) : error ? (
+                <div className="text-red-600 text-sm">
+                  <p>{error}</p>
+                  <p className="text-xs mt-1 text-slate-500">Hiển thị đoạn trích dẫn thay thế</p>
+                </div>
+              ) : (
+                <p className="text-slate-700 leading-relaxed whitespace-pre-wrap">
+                  {fullText || citation.full_text || citation.quote}
+                </p>
+              )}
             </div>
           </section>
 

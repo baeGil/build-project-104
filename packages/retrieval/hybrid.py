@@ -7,7 +7,7 @@ from typing import Any
 from prometheus_client import Histogram
 
 from packages.common.config import Settings
-from packages.common.types import QueryPlan, RetrievedDocument
+from packages.common.types import DocumentRelationship, QueryPlan, RelationshipType, RetrievedDocument
 from packages.common.score_normalizer import RRFNormalizer
 from packages.retrieval.embedding import EmbeddingService
 from packages.retrieval.rrf import reciprocal_rank_fusion
@@ -555,6 +555,245 @@ class HybridSearchEngine:
         if self._postgres_pool:
             await self._postgres_pool.close()
             self._postgres_pool = None
+
+    async def search_with_relationships(
+        self,
+        query: str,
+        query_plan: QueryPlan | None = None,
+        top_k: int = 5,
+        seed_doc_ids: list[str] | None = None,
+        relationship_types: list[str] | None = None,
+        relationship_boost: float = 1.2,
+        bm25_candidates: int = 100,
+        dense_candidates: int = 100,
+        rrf_k: int = 60,
+        filters: dict | None = None,
+        sandwich_reorder: bool = True,
+    ) -> list[RetrievedDocument]:
+        """Execute hybrid search with relationship-aware boosting.
+
+        If seed_doc_ids are provided, first fetches their related documents from PostgreSQL
+        and uses them as a boosting signal in the hybrid search. This enables
+        "find documents related to what I already found" queries.
+
+        Args:
+            query: Search query text
+            query_plan: Optional query plan for search strategy
+            top_k: Number of results to return
+            seed_doc_ids: Optional list of document IDs to find related documents for
+            relationship_types: Optional filter by relationship types (e.g., ["Văn bản căn cứ"])
+            relationship_boost: Score multiplier for documents related to seed docs (default: 1.2)
+            bm25_candidates: Number of BM25 candidates to retrieve
+            dense_candidates: Number of dense candidates to retrieve
+            rrf_k: RRF constant for fusion
+            filters: Optional metadata filters
+            sandwich_reorder: Whether to apply sandwich reordering
+
+        Returns:
+            List of retrieved documents with fused scores, potentially boosted by relationships
+        """
+        start_time = time.perf_counter()
+        related_doc_ids: set[str] = set()
+
+        # If seed documents provided, fetch their related documents from PostgreSQL
+        if seed_doc_ids:
+            try:
+                related_doc_ids = await self._get_related_doc_ids_from_pg(
+                    seed_doc_ids, relationship_types
+                )
+                logger.info(
+                    f"Found {len(related_doc_ids)} related documents from {len(seed_doc_ids)} seed docs"
+                )
+            except Exception as e:
+                logger.warning(f"Failed to fetch related documents: {e}")
+
+        # Build filters with relationship awareness if specified
+        search_filters = filters.copy() if filters else {}
+
+        # If relationship_types specified, add filter for related_doc_ids field
+        if relationship_types and not seed_doc_ids:
+            # Filter to only documents that have these relationship types
+            search_filters["relationship_types"] = relationship_types
+
+        # Execute standard hybrid search
+        documents = await self.search(
+            query=query,
+            query_plan=query_plan,
+            top_k=top_k * 2,  # Fetch more for potential boosting
+            bm25_candidates=bm25_candidates,
+            dense_candidates=dense_candidates,
+            rrf_k=rrf_k,
+            filters=search_filters if search_filters else None,
+            sandwich_reorder=False,  # We'll do our own reordering
+        )
+
+        # Apply relationship boosting if we have related documents
+        if related_doc_ids:
+            documents = self._apply_relationship_boosting(
+                documents, related_doc_ids, relationship_boost
+            )
+
+        # Apply sandwich reordering if enabled
+        if sandwich_reorder and len(documents) > 2:
+            documents = self._apply_sandwich_reorder(documents)
+
+        total_time = (time.perf_counter() - start_time) * 1000
+        logger.info(f"Relationship-aware search completed in {total_time:.2f}ms")
+
+        return documents[:top_k]
+
+    async def _get_related_doc_ids_from_pg(
+        self,
+        seed_doc_ids: list[str],
+        relationship_types: list[str] | None = None,
+    ) -> set[str]:
+        """Fetch related document IDs from PostgreSQL.
+
+        Args:
+            seed_doc_ids: List of seed document IDs
+            relationship_types: Optional filter by relationship types
+
+        Returns:
+            Set of related document IDs
+        """
+        if not seed_doc_ids:
+            return set()
+
+        try:
+            pool = await self._get_postgres_pool()
+            related_ids: set[str] = set()
+
+            async with pool.acquire() as conn:
+                # Build relationship type filter if provided
+                type_filter = ""
+                params = [seed_doc_ids]
+                if relationship_types:
+                    type_filter = " AND relationship_type = ANY($2)"
+                    params.append(relationship_types)
+
+                # Query outgoing relationships
+                outgoing_query = f"""
+                    SELECT DISTINCT target_doc_id as related_id
+                    FROM document_relationships
+                    WHERE source_doc_id = ANY($1){type_filter}
+                """
+                rows = await conn.fetch(outgoing_query, *params)
+                for row in rows:
+                    related_ids.add(row["related_id"])
+
+                # Query incoming relationships
+                incoming_query = f"""
+                    SELECT DISTINCT source_doc_id as related_id
+                    FROM document_relationships
+                    WHERE target_doc_id = ANY($1){type_filter}
+                """
+                rows = await conn.fetch(incoming_query, *params)
+                for row in rows:
+                    related_ids.add(row["related_id"])
+
+            return related_ids
+
+        except Exception as e:
+            logger.error(f"Error fetching related document IDs: {e}")
+            return set()
+
+    def _apply_relationship_boosting(
+        self,
+        documents: list[RetrievedDocument],
+        related_doc_ids: set[str],
+        boost_factor: float = 1.2,
+    ) -> list[RetrievedDocument]:
+        """Boost scores of documents that are related to seed documents.
+
+        Args:
+            documents: List of retrieved documents
+            related_doc_ids: Set of document IDs to boost
+            boost_factor: Multiplier for related document scores
+
+        Returns:
+            Re-sorted list with boosted scores
+        """
+        for doc in documents:
+            if doc.doc_id in related_doc_ids:
+                original_score = doc.score
+                doc.score *= boost_factor
+                # Mark in metadata that this was boosted
+                doc.metadata["relationship_boosted"] = True
+                doc.metadata["original_score"] = original_score
+                logger.debug(f"Boosted {doc.doc_id}: {original_score:.4f} -> {doc.score:.4f}")
+
+        # Re-sort by boosted scores
+        documents.sort(key=lambda d: d.score, reverse=True)
+
+        return documents
+
+    async def fetch_related_documents_for_results(
+        self,
+        documents: list[RetrievedDocument],
+        relationship_types: list[str] | None = None,
+        max_related_per_doc: int = 3,
+    ) -> list[RetrievedDocument]:
+        """Enrich retrieved documents with their related documents from PostgreSQL.
+
+        This method populates the related_documents field of each RetrievedDocument.
+
+        Args:
+            documents: List of retrieved documents to enrich
+            relationship_types: Optional filter by relationship types
+            max_related_per_doc: Maximum number of related documents per result
+
+        Returns:
+            The same documents with related_documents populated
+        """
+        try:
+            pool = await self._get_postgres_pool()
+
+            async with pool.acquire() as conn:
+                for doc in documents:
+                    try:
+                        # Build relationship type filter if provided
+                        type_filter = ""
+                        params = [doc.doc_id, max_related_per_doc]
+                        if relationship_types:
+                            type_filter = " AND dr.relationship_type = ANY($3)"
+                            params.append(relationship_types)
+
+                        # Query related documents with limit
+                        query = f"""
+                            SELECT 
+                                dr.target_doc_id as related_doc_id,
+                                dr.relationship_type,
+                                ld.title,
+                                LEFT(ld.content, 300) as content_preview,
+                                'outgoing' as direction
+                            FROM document_relationships dr
+                            LEFT JOIN legal_documents ld ON dr.target_doc_id = ld.id
+                            WHERE dr.source_doc_id = $1{type_filter}
+                            LIMIT $2
+                        """
+
+                        rows = await conn.fetch(query, *params)
+                        related = []
+                        for row in rows:
+                            related.append({
+                                "doc_id": row["related_doc_id"],
+                                "title": row["title"] or "",
+                                "content": row["content_preview"] or "",
+                                "relationship_type": row["relationship_type"],
+                                "direction": row["direction"],
+                            })
+
+                        doc.related_documents = related
+
+                    except Exception as e:
+                        logger.warning(f"Failed to fetch related docs for {doc.doc_id}: {e}")
+                        doc.related_documents = []
+
+            return documents
+
+        except Exception as e:
+            logger.error(f"Error enriching documents with relationships: {e}")
+            return documents
 
 
 # Backward compatibility alias

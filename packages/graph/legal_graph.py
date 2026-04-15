@@ -283,8 +283,13 @@ class LegalGraphClient:
     
     async def get_amendments(self, doc_id: str, max_depth: int = 2) -> list[dict]:
         """Get amendment chain for a document (up to max_depth hops)."""
-        query = """
-        MATCH path = (d:Document {id: $doc_id})-[:AMENDED_BY*1..$max_depth]->(amendment:Document)
+        # Neo4j doesn't allow parameters in variable-length relationships, so we use string formatting
+        # But we sanitize max_depth to prevent injection
+        if not isinstance(max_depth, int) or max_depth < 1 or max_depth > 10:
+            max_depth = 2  # Safe default
+        
+        query = f"""
+        MATCH path = (d:Document {{id: $doc_id}})-[:AMENDED_BY*1..{max_depth}]->(amendment:Document)
         RETURN amendment.id as id,
                amendment.title as title,
                amendment.content as content,
@@ -294,7 +299,7 @@ class LegalGraphClient:
         """
         
         async with self.driver.session() as session:
-            result = await session.run(query, {"doc_id": doc_id, "max_depth": max_depth})
+            result = await session.run(query, {"doc_id": doc_id})
             amendments = []
             async for record in result:
                 amendments.append({
@@ -433,8 +438,12 @@ class LegalGraphClient:
     
     async def get_related_by_topic(self, doc_id: str, max_hops: int = 2) -> list[dict]:
         """Multi-hop graph traversal for related documents."""
-        query = """
-        MATCH path = (d:Document {id: $doc_id})-[:REFERENCES|CITES*1..$max_hops]-(related:Document)
+        # Neo4j doesn't allow parameters in variable-length relationships
+        if not isinstance(max_hops, int) or max_hops < 1 or max_hops > 10:
+            max_hops = 2
+        
+        query = f"""
+        MATCH path = (d:Document {{id: $doc_id}})-[:REFERENCES|CITES*1..{max_hops}]-(related:Document)
         WHERE related.id <> $doc_id
         RETURN related.id as id,
                related.title as title,
@@ -446,7 +455,7 @@ class LegalGraphClient:
         """
         
         async with self.driver.session() as session:
-            result = await session.run(query, {"doc_id": doc_id, "max_hops": max_hops})
+            result = await session.run(query, {"doc_id": doc_id})
             documents = []
             async for record in result:
                 documents.append({
@@ -460,30 +469,51 @@ class LegalGraphClient:
     
     async def get_document_hierarchy(self, doc_id: str) -> dict:
         """Get full hierarchy: document -> articles -> subsections."""
-        query = """
+        # Step 1: Get document and articles
+        query_doc = """
         MATCH (d:Document {id: $doc_id})
         OPTIONAL MATCH (d)-[:CONTAINS]->(a:Article)
-        OPTIONAL MATCH (a)-[:HAS_SUBSECTION]->(s:Subsection)
         RETURN d.id as doc_id,
                d.title as doc_title,
-               collect(DISTINCT {
-                   id: a.id,
-                   number: a.number,
-                   title: a.title,
-                   subsections: collect(DISTINCT {id: s.id, number: s.number, content: s.content})
-               }) as articles
+               collect(DISTINCT {id: a.id, number: a.number, title: a.title}) as articles
         """
         
         async with self.driver.session() as session:
-            result = await session.run(query, {"doc_id": doc_id})
+            result = await session.run(query_doc, {"doc_id": doc_id})
             record = await result.single()
-            if record:
-                return {
-                    "id": record["doc_id"],
-                    "title": record["doc_title"],
-                    "articles": record["articles"],
-                }
-            return {"id": doc_id, "title": None, "articles": []}
+            
+            if not record:
+                return {"id": doc_id, "title": None, "articles": []}
+            
+            doc_id_result = record["doc_id"]
+            doc_title = record["doc_title"]
+            articles = record["articles"]
+            
+            # Step 2: Get subsections for each article
+            articles_with_subsections = []
+            for article in articles:
+                if article.get("id"):  # Skip null articles from OPTIONAL MATCH
+                    query_sub = """
+                    MATCH (a:Article {id: $article_id})
+                    OPTIONAL MATCH (a)-[:HAS_SUBSECTION]->(s:Subsection)
+                    RETURN collect(DISTINCT {id: s.id, number: s.number, content: s.content}) as subsections
+                    """
+                    sub_result = await session.run(query_sub, {"article_id": article["id"]})
+                    sub_record = await sub_result.single()
+                    
+                    article_data = {
+                        "id": article["id"],
+                        "number": article["number"],
+                        "title": article["title"],
+                        "subsections": sub_record["subsections"] if sub_record else []
+                    }
+                    articles_with_subsections.append(article_data)
+            
+            return {
+                "id": doc_id_result,
+                "title": doc_title,
+                "articles": articles_with_subsections,
+            }
     
     # --- GraphRAG for Multi-hop Queries ---
     
@@ -501,10 +531,14 @@ class LegalGraphClient:
         3. Collect expanded set of related documents
         4. Return for reranking
         """
-        query = """
+        # Neo4j doesn't allow parameters in variable-length relationships
+        if not isinstance(max_hops, int) or max_hops < 1 or max_hops > 10:
+            max_hops = 2
+        
+        query = f"""
         UNWIND $seed_ids as seed_id
-        MATCH (seed {id: seed_id})
-        OPTIONAL MATCH path = (seed)-[:AMENDED_BY|CITES|REFERENCES*1..$max_hops]-(related)
+        MATCH (seed {{id: seed_id}})
+        OPTIONAL MATCH path = (seed)-[:AMENDED_BY|CITES|REFERENCES*1..{max_hops}]-(related)
         WHERE related.id <> seed_id AND NOT related.id IN $seed_ids
         WITH related, min(length(path)) as distance, count(DISTINCT seed_id) as seed_count
         RETURN related.id as id,
@@ -522,7 +556,6 @@ class LegalGraphClient:
                 query,
                 {
                     "seed_ids": seed_doc_ids,
-                    "max_hops": max_hops,
                     "max_results": max_results,
                 }
             )
