@@ -7,13 +7,86 @@ This module handles indexing of parsed legal documents into:
 
 from __future__ import annotations
 
+import asyncio
 import logging
-from typing import Any
+import os
+import random
+from typing import Any, Callable
 
 from packages.common.config import Settings
 from packages.common.types import LegalNode
 
 logger = logging.getLogger(__name__)
+
+# Prevent transformers from probing TensorFlow at import time.
+os.environ.setdefault("TRANSFORMERS_NO_TF", "1")
+os.environ.setdefault("TRANSFORMERS_NO_FLAX", "1")
+os.environ.setdefault("USE_TF", "0")
+
+
+async def _retry_with_backoff(
+    coro_func: Callable[[], Any],
+    max_retries: int = 3,
+    base_delay: float = 1.0,
+    max_delay: float = 30.0,
+    operation_name: str = "operation",
+) -> Any:
+    """Execute a coroutine with exponential backoff retry logic.
+    
+    Args:
+        coro_func: Async function to execute.
+        max_retries: Maximum number of retry attempts.
+        base_delay: Base delay in seconds for exponential backoff.
+        max_delay: Maximum delay between retries.
+        operation_name: Name of operation for logging.
+        
+    Returns:
+        Result of the coroutine.
+        
+    Raises:
+        Last exception if all retries fail.
+    """
+    last_exception = None
+    
+    for attempt in range(max_retries + 1):
+        try:
+            return await coro_func()
+        except (
+            ConnectionError,
+            TimeoutError,
+            OSError,
+            ConnectionResetError,
+            BrokenPipeError,
+        ) as e:
+            last_exception = e
+            if attempt < max_retries:
+                delay = min(base_delay * (2 ** attempt) + random.uniform(0, 1), max_delay)
+                logger.warning(
+                    f"{operation_name} failed (attempt {attempt + 1}/{max_retries + 1}): {e}. "
+                    f"Retrying in {delay:.2f}s..."
+                )
+                await asyncio.sleep(delay)
+            else:
+                logger.error(f"{operation_name} failed after {max_retries + 1} attempts: {e}")
+                raise
+        except Exception as e:
+            # Check if it's a retryable error message
+            error_str = str(e).lower()
+            if any(x in error_str for x in ["connection reset", "timeout", "timed out", "broken pipe"]):
+                last_exception = e
+                if attempt < max_retries:
+                    delay = min(base_delay * (2 ** attempt) + random.uniform(0, 1), max_delay)
+                    logger.warning(
+                        f"{operation_name} failed (attempt {attempt + 1}/{max_retries + 1}): {e}. "
+                        f"Retrying in {delay:.2f}s..."
+                    )
+                    await asyncio.sleep(delay)
+                    continue
+            # Non-retryable exceptions
+            logger.error(f"{operation_name} failed with non-retryable error: {e}")
+            raise
+    
+    raise last_exception
 
 
 class QdrantIndexer:
@@ -23,18 +96,33 @@ class QdrantIndexer:
     Uses sentence-transformers with Vietnamese legal embedding models.
     """
 
-    def __init__(self, settings: Settings) -> None:
+    def __init__(
+        self,
+        settings: Settings,
+        batch_size: int = 50,
+        connect_timeout: int = 10,
+        request_timeout: int = 30,
+        max_retries: int = 3,
+    ) -> None:
         """Initialize the Qdrant indexer.
 
         Args:
             settings: Application settings containing Qdrant configuration.
+            batch_size: Batch size for upsert operations (default: 50).
+            connect_timeout: Connection timeout in seconds (default: 10).
+            request_timeout: Request timeout in seconds (default: 30).
+            max_retries: Maximum retry attempts for transient failures (default: 3).
         """
         self.settings = settings
         self._client: Any = None
         self._embedding_model: Any = None
+        self._batch_size = batch_size
+        self._connect_timeout = connect_timeout
+        self._request_timeout = request_timeout
+        self._max_retries = max_retries
 
     async def _get_client(self) -> Any:
-        """Get or create Qdrant client.
+        """Get or create Qdrant client with connection pool reuse.
 
         Returns:
             Qdrant client instance.
@@ -46,9 +134,16 @@ class QdrantIndexer:
                 self._client = QdrantClient(
                     host=self.settings.qdrant_host,
                     port=self.settings.qdrant_port,
+                    timeout=self._request_timeout,
                 )
-            except ImportError:
-                logger.error("qdrant-client not installed")
+                logger.info(f"Created Qdrant client (timeout: {self._request_timeout}s)")
+            except ImportError as e:
+                logger.error(f"qdrant-client not installed: {e}")
+                logger.error(f"Python executable: {__import__('sys').executable}")
+                logger.error(f"Python path: {__import__('sys').path[:3]}")
+                raise
+            except Exception as e:
+                logger.error(f"Failed to create Qdrant client: {type(e).__name__}: {e}")
                 raise
         return self._client
 
@@ -115,12 +210,16 @@ class QdrantIndexer:
             logger.error(f"Failed to ensure Qdrant collection: {e}")
             raise
 
-    async def index_documents(self, nodes: list[LegalNode], batch_size: int = 64) -> int:
+    async def index_documents(
+        self,
+        nodes: list[LegalNode],
+        batch_size: int | None = None,
+    ) -> int:
         """Batch embed and upsert documents into Qdrant.
 
         Args:
             nodes: List of LegalNode objects to index.
-            batch_size: Batch size for embedding generation.
+            batch_size: Batch size for upsert operations (uses instance default if None).
 
         Returns:
             Number of documents successfully indexed.
@@ -131,6 +230,7 @@ class QdrantIndexer:
         client = await self._get_client()
         model = await self._get_embedding_model()
         collection_name = self.settings.qdrant_collection
+        batch_size = batch_size or self._batch_size
 
         # Ensure collection exists
         await self.ensure_collection()
@@ -159,10 +259,14 @@ class QdrantIndexer:
                         "content": node.content,
                         "doc_type": node.doc_type.value,
                         "level": node.level,
+                        "parent_id": node.parent_id,
+                        "children_ids": node.children_ids,
                         "publish_date": node.publish_date.isoformat() if node.publish_date else None,
                         "effective_date": node.effective_date.isoformat() if node.effective_date else None,
                         "issuing_body": node.issuing_body,
                         "document_number": node.document_number,
+                        "amendment_refs": node.amendment_refs,
+                        "citation_refs": node.citation_refs,
                         "keywords": node.keywords,
                     }
 
@@ -174,10 +278,17 @@ class QdrantIndexer:
                         )
                     )
 
-                # Upsert to Qdrant
-                client.upsert(
-                    collection_name=collection_name,
-                    points=points,
+                # Upsert to Qdrant with retry
+                async def _do_upsert():
+                    client.upsert(
+                        collection_name=collection_name,
+                        points=points,
+                    )
+
+                await _retry_with_backoff(
+                    _do_upsert,
+                    max_retries=self._max_retries,
+                    operation_name=f"Qdrant upsert batch {i//batch_size + 1}",
                 )
 
                 indexed_count += len(batch)
@@ -202,6 +313,17 @@ class QdrantIndexer:
             logger.error(f"Failed to delete Qdrant collection: {e}")
             raise
 
+    async def close(self) -> None:
+        """Close Qdrant client connection."""
+        if self._client is not None:
+            try:
+                self._client.close()
+                logger.info("Qdrant client closed")
+            except Exception as e:
+                logger.warning(f"Error closing Qdrant client: {e}")
+            finally:
+                self._client = None
+
 
 class OpenSearchIndexer:
     """Manages OpenSearch index for full-text BM25 search.
@@ -209,17 +331,32 @@ class OpenSearchIndexer:
     Handles bulk indexing with Vietnamese-optimized text analysis.
     """
 
-    def __init__(self, settings: Settings) -> None:
+    def __init__(
+        self,
+        settings: Settings,
+        batch_size: int = 100,
+        connect_timeout: int = 10,
+        request_timeout: int = 30,
+        max_retries: int = 3,
+    ) -> None:
         """Initialize the OpenSearch indexer.
 
         Args:
             settings: Application settings containing OpenSearch configuration.
+            batch_size: Batch size for bulk operations (default: 100).
+            connect_timeout: Connection timeout in seconds (default: 10).
+            request_timeout: Request timeout in seconds (default: 30).
+            max_retries: Maximum retry attempts for transient failures (default: 3).
         """
         self.settings = settings
         self._client: Any = None
+        self._batch_size = batch_size
+        self._connect_timeout = connect_timeout
+        self._request_timeout = request_timeout
+        self._max_retries = max_retries
 
     async def _get_client(self) -> Any:
-        """Get or create OpenSearch client.
+        """Get or create OpenSearch client with connection pool reuse.
 
         Returns:
             OpenSearch client instance.
@@ -239,9 +376,18 @@ class OpenSearchIndexer:
                     ),
                     use_ssl=False,
                     verify_certs=False,
+                    timeout=self._request_timeout,
+                    max_retries=0,  # We handle retries ourselves
+                    retry_on_timeout=False,
                 )
-            except ImportError:
-                logger.error("opensearch-py not installed")
+                logger.info(f"Created OpenSearch client (timeout: {self._request_timeout}s)")
+            except ImportError as e:
+                logger.error(f"opensearch-py not installed: {e}")
+                logger.error(f"Python executable: {__import__('sys').executable}")
+                logger.error(f"Python path: {__import__('sys').path[:3]}")
+                raise
+            except Exception as e:
+                logger.error(f"Failed to create OpenSearch client: {type(e).__name__}: {e}")
                 raise
         return self._client
 
@@ -318,12 +464,16 @@ class OpenSearchIndexer:
             logger.error(f"Failed to ensure OpenSearch index: {e}")
             raise
 
-    async def index_documents(self, nodes: list[LegalNode], batch_size: int = 100) -> int:
+    async def index_documents(
+        self,
+        nodes: list[LegalNode],
+        batch_size: int | None = None,
+    ) -> int:
         """Bulk index documents into OpenSearch.
 
         Args:
             nodes: List of LegalNode objects to index.
-            batch_size: Batch size for bulk operations.
+            batch_size: Batch size for bulk operations (uses instance default if None).
 
         Returns:
             Number of documents successfully indexed.
@@ -333,6 +483,7 @@ class OpenSearchIndexer:
 
         client = await self._get_client()
         index_name = self.settings.opensearch_index
+        batch_size = batch_size or self._batch_size
 
         # Ensure index exists
         await self.ensure_index()
@@ -365,12 +516,21 @@ class OpenSearchIndexer:
                         },
                     }
 
-            # Perform bulk indexing
-            success, errors = bulk(
-                client,
-                generate_actions(),
-                chunk_size=batch_size,
-                raise_on_error=False,
+            # Perform bulk indexing with retry
+            async def _do_bulk():
+                def _bulk_op():
+                    return bulk(
+                        client,
+                        generate_actions(),
+                        chunk_size=batch_size,
+                        raise_on_error=False,
+                    )
+                return await asyncio.to_thread(_bulk_op)
+
+            success, errors = await _retry_with_backoff(
+                _do_bulk,
+                max_retries=self._max_retries,
+                operation_name="OpenSearch bulk index",
             )
 
             indexed_count = success
@@ -397,6 +557,17 @@ class OpenSearchIndexer:
             logger.error(f"Failed to delete OpenSearch index: {e}")
             raise
 
+    async def close(self) -> None:
+        """Close OpenSearch client connection."""
+        if self._client is not None:
+            try:
+                self._client.close()
+                logger.info("OpenSearch client closed")
+            except Exception as e:
+                logger.warning(f"Error closing OpenSearch client: {e}")
+            finally:
+                self._client = None
+
 
 class DocumentIndexer:
     """Indexer for legal documents.
@@ -408,12 +579,25 @@ class DocumentIndexer:
     Also handles embedding generation using Vietnamese legal embedding models.
     """
 
-    def __init__(self, settings: Settings | None = None) -> None:
+    def __init__(
+        self,
+        settings: Settings | None = None,
+        qdrant_batch_size: int = 50,
+        opensearch_batch_size: int = 100,
+        connect_timeout: int = 10,
+        request_timeout: int = 30,
+        max_retries: int = 3,
+    ) -> None:
         """Initialize the document indexer.
 
         Args:
             settings: Optional application settings. If not provided,
                      will load from environment.
+            qdrant_batch_size: Batch size for Qdrant upsert operations.
+            opensearch_batch_size: Batch size for OpenSearch bulk operations.
+            connect_timeout: Connection timeout in seconds.
+            request_timeout: Request timeout in seconds.
+            max_retries: Maximum retry attempts for transient failures.
         """
         if settings is None:
             from packages.common.config import get_settings
@@ -421,8 +605,20 @@ class DocumentIndexer:
             settings = get_settings()
 
         self.settings = settings
-        self.qdrant_indexer = QdrantIndexer(settings)
-        self.opensearch_indexer = OpenSearchIndexer(settings)
+        self.qdrant_indexer = QdrantIndexer(
+            settings,
+            batch_size=qdrant_batch_size,
+            connect_timeout=connect_timeout,
+            request_timeout=request_timeout,
+            max_retries=max_retries,
+        )
+        self.opensearch_indexer = OpenSearchIndexer(
+            settings,
+            batch_size=opensearch_batch_size,
+            connect_timeout=connect_timeout,
+            request_timeout=request_timeout,
+            max_retries=max_retries,
+        )
 
     async def index(self, documents: list[LegalNode]) -> dict[str, Any]:
         """Index a batch of documents into all backends.
@@ -451,16 +647,26 @@ class DocumentIndexer:
         # Index to Qdrant
         try:
             result["qdrant_indexed"] = await self.qdrant_indexer.index_documents(documents)
+            logger.info(f"✓ Qdrant indexing successful: {result['qdrant_indexed']} docs")
+        except ImportError as e:
+            logger.warning(f"⚠️  Qdrant skipped (not installed): {e}")
+            result["qdrant_indexed"] = 0
+            result["warnings"] = result.get("warnings", []) + [f"Qdrant not available: {str(e)}"]
         except Exception as e:
-            logger.error(f"Qdrant indexing failed: {e}")
-            result["errors"].append(f"Qdrant: {str(e)}")
+            logger.error(f"❌ Qdrant indexing failed: {type(e).__name__}: {e}")
+            result["errors"] = result.get("errors", []) + [f"Qdrant: {str(e)}"]
 
         # Index to OpenSearch
         try:
             result["opensearch_indexed"] = await self.opensearch_indexer.index_documents(documents)
+            logger.info(f"✓ OpenSearch indexing successful: {result['opensearch_indexed']} docs")
+        except ImportError as e:
+            logger.warning(f"⚠️  OpenSearch skipped (not installed): {e}")
+            result["opensearch_indexed"] = 0
+            result["warnings"] = result.get("warnings", []) + [f"OpenSearch not available: {str(e)}"]
         except Exception as e:
-            logger.error(f"OpenSearch indexing failed: {e}")
-            result["errors"].append(f"OpenSearch: {str(e)}")
+            logger.error(f"❌ OpenSearch indexing failed: {type(e).__name__}: {e}")
+            result["errors"] = result.get("errors", []) + [f"OpenSearch: {str(e)}"]
 
         return result
 
@@ -486,5 +692,96 @@ class DocumentIndexer:
         Returns:
             Deletion result.
         """
-        # TODO: Implement deletion logic
-        raise NotImplementedError("Document deletion not yet implemented")
+        if not doc_ids:
+            return {
+                "total_documents": 0,
+                "qdrant_deleted": 0,
+                "opensearch_deleted": 0,
+                "errors": [],
+            }
+
+        result = {
+            "total_documents": len(doc_ids),
+            "qdrant_deleted": 0,
+            "opensearch_deleted": 0,
+            "errors": [],
+        }
+
+        async def delete_qdrant() -> None:
+            try:
+                client = await self.qdrant_indexer._get_client()
+                collection_name = self.settings.qdrant_collection
+
+                def _delete() -> int:
+                    collections = client.get_collections()
+                    collection_names = [c.name for c in collections.collections]
+                    if collection_name not in collection_names:
+                        return 0
+
+                    client.delete(
+                        collection_name=collection_name,
+                        points_selector=doc_ids,
+                        wait=True,
+                    )
+                    return len(doc_ids)
+
+                result["qdrant_deleted"] = await asyncio.to_thread(_delete)
+            except Exception as e:
+                logger.error(f"Qdrant deletion failed: {e}")
+                result["errors"].append(f"Qdrant: {str(e)}")
+
+        async def delete_opensearch() -> None:
+            try:
+                client = await self.opensearch_indexer._get_client()
+                index_name = self.settings.opensearch_index
+
+                def _delete() -> int:
+                    if not client.indices.exists(index=index_name):
+                        return 0
+
+                    from opensearchpy.helpers import bulk
+
+                    def generate_actions():
+                        for doc_id in doc_ids:
+                            yield {
+                                "_op_type": "delete",
+                                "_index": index_name,
+                                "_id": doc_id,
+                            }
+
+                    success, errors = bulk(
+                        client,
+                        generate_actions(),
+                        chunk_size=1000,
+                        raise_on_error=False,
+                    )
+                    if errors:
+                        logger.warning(f"{len(errors)} documents failed to delete from OpenSearch")
+                    return success
+
+                result["opensearch_deleted"] = await asyncio.to_thread(_delete)
+            except Exception as e:
+                logger.error(f"OpenSearch deletion failed: {e}")
+                result["errors"].append(f"OpenSearch: {str(e)}")
+
+        await asyncio.gather(delete_qdrant(), delete_opensearch())
+        return result
+
+    async def close(self) -> None:
+        """Close all indexer connections."""
+        errors = []
+        
+        try:
+            await self.qdrant_indexer.close()
+        except Exception as e:
+            logger.error(f"Error closing Qdrant indexer: {e}")
+            errors.append(f"Qdrant: {e}")
+        
+        try:
+            await self.opensearch_indexer.close()
+        except Exception as e:
+            logger.error(f"Error closing OpenSearch indexer: {e}")
+            errors.append(f"OpenSearch: {e}")
+        
+        if errors:
+            logger.warning(f"Errors during indexer cleanup: {errors}")

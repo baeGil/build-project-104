@@ -16,17 +16,17 @@ from packages.common.types import DocumentType, LegalNode
 
 # Regex patterns for Vietnamese legal document structure
 ARTICLE_PATTERN = re.compile(
-    r"Điều\s+(\d+)\s*[\.:\-\s]*\s*(.*)",
-    re.IGNORECASE | re.UNICODE,
+    r"^\s*Điều\s+(\d+)\s*(?:[\.:\-]\s*(.*)|\s*$)",
+    re.IGNORECASE | re.UNICODE | re.MULTILINE,
 )
 
 SUBSECTION_PATTERN = re.compile(
-    r"^(\d+)\.\s+(.*)",
+    r"^\s*(\d+)\.\s+(.*)",
     re.MULTILINE | re.UNICODE,
 )
 
 CLAUSE_PATTERN = re.compile(
-    r"^([a-zđ])\)\s+(.*)",
+    r"^\s*([a-zđ])\)\s+(.*)",
     re.MULTILINE | re.UNICODE,
 )
 
@@ -38,7 +38,7 @@ DATE_PATTERN = re.compile(
 
 # Amendment references
 AMENDMENT_PATTERN = re.compile(
-    r"sửa\s+đổi.*?(Luật|Nghị\s+định|Thông\s+tư|Quyết\s+định).*?(\d+/\d+|số\s+\d+)",
+    r"sửa\s+đổi.*?(Luật|Nghị\s+định|Thông\s+tư|Quyết\s+định).*?(\d{4}|\d+/[\w\-]+|số\s+\d+)",
     re.IGNORECASE | re.UNICODE,
 )
 
@@ -69,7 +69,7 @@ DOC_TYPE_PATTERNS = {
 
 # Document number patterns
 DOC_NUMBER_PATTERN = re.compile(
-    r"(?:số|Số)\s*[:\s]\s*(\d{2,4}/[\w\-]+(?:/\w+)?|\d+/\w+(?:/\w+)?)",
+    r"(?:số|Số)\s*[:\s]\s*(\d{2,4}/[\w\-]+(?:/[\w\-]+)?)",
     re.IGNORECASE | re.UNICODE,
 )
 
@@ -93,9 +93,16 @@ def infer_document_type(title: str) -> DocumentType:
     Returns:
         Detected DocumentType enum value.
     """
+    # Find the first match in the text (by position), not by pattern order
+    first_match: tuple[int, DocumentType] | None = None
     for doc_type, pattern in DOC_TYPE_PATTERNS.items():
-        if pattern.search(title):
-            return doc_type
+        match = pattern.search(title)
+        if match:
+            if first_match is None or match.start() < first_match[0]:
+                first_match = (match.start(), doc_type)
+    
+    if first_match:
+        return first_match[1]
     return DocumentType.OTHER
 
 

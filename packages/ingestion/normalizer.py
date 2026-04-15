@@ -248,7 +248,8 @@ def detect_missing_diacritics(text: str) -> bool:
         undiacritized = unicodedata.normalize("NFD", word)
         undiacritized = "".join(c for c in undiacritized if unicodedata.category(c) != "Mn")
 
-        if undiacritized in sample:
+        # Use word boundary matching to avoid matching substrings
+        if re.search(r'\b' + re.escape(undiacritized) + r'\b', sample):
             total_check_words += 1
             # If we see the undiacritized version but not the proper one
             if word not in sample:
@@ -342,10 +343,17 @@ class TextNormalizer:
         text = normalize_whitespace(text)
         # Expand abbreviations in citation
         text = expand_abbreviations(text, self.custom_abbreviations)
-        # Standardize case for document types
+        # Standardize case for document types and "Điều"
         text = re.sub(
             r"\b(luật|nghị\s+định|thông\s+tư|quyết\s+định)\b",
             lambda m: m.group(0).title(),
+            text,
+            flags=re.IGNORECASE | re.UNICODE,
+        )
+        # Capitalize "Điều" at the beginning of the citation
+        text = re.sub(
+            r"^điều\b",
+            "Điều",
             text,
             flags=re.IGNORECASE | re.UNICODE,
         )

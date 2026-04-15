@@ -34,8 +34,6 @@ from packages.ingestion.parser import (
     infer_document_type,
     parse_legal_document,
 )
-from packages.ingestion.pipeline import IngestionPipeline
-
 __all__ = [
     # Parser
     "DocumentParser",
@@ -61,3 +59,12 @@ __all__ = [
     # Pipeline
     "IngestionPipeline",
 ]
+
+
+def __getattr__(name: str):
+    """Lazily import heavy modules to avoid package import cycles."""
+    if name == "IngestionPipeline":
+        from packages.ingestion.pipeline import IngestionPipeline
+
+        return IngestionPipeline
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
