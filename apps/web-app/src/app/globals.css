@@ -1,6 +1,20 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+  /* Custom colors */
+  --color-sidebar: #1e293b;
+  --color-sidebar-foreground: #f8fafc;
+  --color-primary: #2563eb;
+  --color-primary-foreground: #ffffff;
+  --color-success: #22c55e;
+  --color-success-light: #dcfce7;
+  --color-warning: #f59e0b;
+  --color-warning-light: #fef3c7;
+  --color-danger: #ef4444;
+  --color-danger-light: #fee2e2;
+  --color-muted: #64748b;
+  --color-muted-foreground: #94a3b8;
+}
 
 :root {
   --foreground-rgb: 15, 23, 42;

@@ -35,7 +35,7 @@ export function HealthStatus() {
     return (
       <div className="flex items-center gap-2 text-muted">
         <Loader2 className="w-4 h-4 animate-spin" />
-        <span className="text-sm">Checking...</span>
+        <span className="text-sm">Đang kiểm tra...</span>
       </div>
     );
   }
@@ -44,7 +44,7 @@ export function HealthStatus() {
     return (
       <div className="flex items-center gap-2 text-red-600">
         <AlertCircle className="w-4 h-4" />
-        <span className="text-sm font-medium">Offline</span>
+        <span className="text-sm font-medium">Ngoại tuyến</span>
       </div>
     );
   }
@@ -55,7 +55,7 @@ export function HealthStatus() {
     <div className={`flex items-center gap-2 ${isHealthy ? "text-green-600" : "text-yellow-600"}`}>
       <CheckCircle className="w-4 h-4" />
       <span className="text-sm font-medium">
-        Online {health.version && `(v${health.version})`}
+        Trực tuyến {health.version && `(v${health.version})`}
       </span>
     </div>
   );

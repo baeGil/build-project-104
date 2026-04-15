@@ -11,10 +11,10 @@ import {
 } from "lucide-react";
 
 const navItems = [
-  { href: "/", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/review", label: "Contract Review", icon: FileText },
-  { href: "/chat", label: "Legal Chat", icon: MessageSquare },
-  { href: "/ingest", label: "Ingest (Admin)", icon: Upload },
+  { href: "/", label: "Trang chủ", icon: LayoutDashboard },
+  { href: "/review", label: "Rà soát hợp đồng", icon: FileText },
+  { href: "/chat", label: "Tư vấn pháp lý", icon: MessageSquare },
+  { href: "/ingest", label: "Nhập liệu (Quản trị)", icon: Upload },
 ];
 
 export function Sidebar() {
@@ -30,10 +30,10 @@ export function Sidebar() {
           </div>
           <div>
             <h1 className="text-white font-bold text-lg leading-tight">
-              Legal AI
+              AI Pháp lý
             </h1>
             <p className="text-muted-foreground text-xs">
-              Vietnamese Contract Review
+              Rà soát Hợp đồng Việt Nam
             </p>
           </div>
         </div>
@@ -68,7 +68,7 @@ export function Sidebar() {
       {/* Footer */}
       <div className="p-4 border-t border-slate-700">
         <div className="text-xs text-muted-foreground">
-          <p>Vietnamese Legal Contract Review</p>
+          <p>AI Rà soát Hợp đồng Pháp lý Việt Nam</p>
           <p className="mt-1">v0.1.0</p>
         </div>
       </div>

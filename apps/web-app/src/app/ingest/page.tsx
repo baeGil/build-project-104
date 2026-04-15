@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { usePersistedState } from "@/lib/hooks";
 import {
   Upload,
   Database,
@@ -20,10 +21,10 @@ interface DocumentForm {
   lawId: string;
 }
 
+const defaultDocument: DocumentForm = { id: "1", title: "", content: "", docType: "luat", lawId: "" };
+
 export default function IngestPage() {
-  const [documents, setDocuments] = useState<DocumentForm[]>([
-    { id: "1", title: "", content: "", docType: "luat", lawId: "" },
-  ]);
+  const [documents, setDocuments] = usePersistedState<DocumentForm[]>("ingest_documents", [defaultDocument]);
   const [source, setSource] = useState("manual");
   const [batchSize, setBatchSize] = useState(100);
   const [loading, setLoading] = useState(false);
@@ -60,7 +61,7 @@ export default function IngestPage() {
     if (validDocs.length === 0) {
       setResult({
         success: false,
-        message: "Please add at least one valid document with title and content",
+        message: "Vui lòng thêm ít nhất một tài liệu hợp lệ với tiêu đề và nội dung",
       });
       return;
     }
@@ -72,10 +73,10 @@ export default function IngestPage() {
     setTimeout(() => {
       setResult({
         success: true,
-        message: `Successfully queued ${validDocs.length} documents for ingestion. Task ID: task-${Date.now()}`,
+        message: `Đã xếp hàng ${validDocs.length} tài liệu để nhập liệu thành công. Mã tác vụ: task-${Date.now()}`,
       });
       setLoading(false);
-      setDocuments([{ id: "1", title: "", content: "", docType: "luat", lawId: "" }]);
+      setDocuments([defaultDocument]);
     }, 1500);
   };
 
@@ -83,9 +84,9 @@ export default function IngestPage() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-slate-900">Ingest Documents</h1>
+        <h1 className="text-3xl font-bold text-slate-900">Nhập liệu Tài liệu</h1>
         <p className="text-muted mt-1">
-          Add new legal documents to the corpus for retrieval and analysis
+          Thêm tài liệu pháp lý mới vào hệ thống để truy xuất và phân tích
         </p>
       </div>
 
@@ -98,7 +99,7 @@ export default function IngestPage() {
             </div>
             <div>
               <p className="text-2xl font-bold text-slate-900">12,458</p>
-              <p className="text-sm text-muted">Total Documents</p>
+              <p className="text-sm text-muted">Tổng tài liệu</p>
             </div>
           </div>
         </div>
@@ -109,7 +110,7 @@ export default function IngestPage() {
             </div>
             <div>
               <p className="text-2xl font-bold text-slate-900">12,400</p>
-              <p className="text-sm text-muted">Indexed</p>
+              <p className="text-sm text-muted">Đã lập chỉ mục</p>
             </div>
           </div>
         </div>
@@ -120,7 +121,7 @@ export default function IngestPage() {
             </div>
             <div>
               <p className="text-2xl font-bold text-slate-900">58</p>
-              <p className="text-sm text-muted">Pending</p>
+              <p className="text-sm text-muted">Đang chờ</p>
             </div>
           </div>
         </div>
@@ -129,24 +130,24 @@ export default function IngestPage() {
       {/* Configuration */}
       <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
         <h2 className="text-lg font-semibold text-slate-900 mb-4">
-          Ingestion Settings
+          Cấu hình nhập liệu
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-2">
-              Source
+              Nguồn
             </label>
             <input
               type="text"
               value={source}
               onChange={(e) => setSource(e.target.value)}
               className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
-              placeholder="e.g., manual, import, api"
+              placeholder="ví dụ: thủ công, nhập khẩu, api"
             />
           </div>
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-2">
-              Batch Size
+              Kích thước lô
             </label>
             <input
               type="number"
@@ -164,14 +165,14 @@ export default function IngestPage() {
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-semibold text-slate-900">
-            Documents ({documents.length})
+            Tài liệu ({documents.length})
           </h2>
           <button
             onClick={addDocument}
             className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
           >
             <Plus className="w-4 h-4" />
-            Add Document
+            Thêm tài liệu
           </button>
         </div>
 
@@ -184,13 +185,14 @@ export default function IngestPage() {
               <div className="flex items-center gap-2">
                 <FileText className="w-5 h-5 text-primary" />
                 <span className="font-medium text-slate-900">
-                  Document {index + 1}
+                  Tài liệu {index + 1}
                 </span>
               </div>
               {documents.length > 1 && (
                 <button
                   onClick={() => removeDocument(doc.id)}
                   className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                  title="Xóa"
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>
@@ -200,33 +202,33 @@ export default function IngestPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-2">
-                  Title
+                  Tiêu đề
                 </label>
                 <input
                   type="text"
                   value={doc.title}
                   onChange={(e) => updateDocument(doc.id, "title", e.target.value)}
                   className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
-                  placeholder="Document title"
+                  placeholder="Tiêu đề tài liệu"
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-2">
-                  Law ID
+                  Mã luật
                 </label>
                 <input
                   type="text"
                   value={doc.lawId}
                   onChange={(e) => updateDocument(doc.id, "lawId", e.target.value)}
                   className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
-                  placeholder="e.g., luat-2023-01"
+                  placeholder="ví dụ: luat-2023-01"
                 />
               </div>
             </div>
 
             <div className="mb-4">
               <label className="block text-sm font-medium text-slate-700 mb-2">
-                Document Type
+                Loại tài liệu
               </label>
               <select
                 value={doc.docType}
@@ -238,20 +240,20 @@ export default function IngestPage() {
                 <option value="thong_tu">Thông tư (Circular)</option>
                 <option value="quyet_dinh">Quyết định (Decision)</option>
                 <option value="nghi_quyet">Nghị quyết (Resolution)</option>
-                <option value="other">Other</option>
+                <option value="other">Khác</option>
               </select>
             </div>
 
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-2">
-                Content
+                Nội dung
               </label>
               <textarea
                 value={doc.content}
                 onChange={(e) => updateDocument(doc.id, "content", e.target.value)}
                 rows={6}
                 className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary font-mono text-sm"
-                placeholder="Paste document content here..."
+                placeholder="Dán nội dung tài liệu vào đây..."
               />
             </div>
           </div>
@@ -286,12 +288,12 @@ export default function IngestPage() {
           {loading ? (
             <>
               <Loader2 className="w-5 h-5 animate-spin" />
-              Processing...
+              Đang xử lý...
             </>
           ) : (
             <>
               <Upload className="w-5 h-5" />
-              Ingest Documents
+              Bắt đầu nhập liệu
             </>
           )}
         </button>

@@ -13,10 +13,10 @@ import {
 
 // Mock stats - in real app these would come from API
 const stats = [
-  { label: "Documents Ingested", value: "12,458", icon: Database, trend: "+234 this week" },
-  { label: "Recent Reviews", value: "156", icon: FileText, trend: "+12 today" },
-  { label: "Avg Latency", value: "1.2s", icon: Clock, trend: "-0.3s vs last week" },
-  { label: "System Health", value: "98.5%", icon: Activity, trend: "Operational" },
+  { label: "Tài liệu đã nhập", value: "12,458", icon: Database, trend: "+234 tuần này" },
+  { label: "Rà soát gần đây", value: "156", icon: FileText, trend: "+12 hôm nay" },
+  { label: "Độ trễ trung bình", value: "1.2s", icon: Clock, trend: "-0.3s so với tuần trước" },
+  { label: "Tình trạng hệ thống", value: "98.5%", icon: Activity, trend: "Hoạt động bình thường" },
 ];
 
 export default function DashboardPage() {
@@ -25,13 +25,13 @@ export default function DashboardPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900">Dashboard</h1>
+          <h1 className="text-3xl font-bold text-slate-900">Trang chủ</h1>
           <p className="text-muted mt-1">
-            Vietnamese Legal Contract Review System
+            Hệ thống AI Rà soát Hợp đồng Pháp lý Việt Nam
           </p>
         </div>
         <div className="flex items-center gap-4 bg-white px-4 py-2 rounded-lg border border-slate-200">
-          <span className="text-sm text-muted">API Status:</span>
+          <span className="text-sm text-muted">Tình trạng API:</span>
           <HealthStatus />
         </div>
       </div>
@@ -76,11 +76,11 @@ export default function DashboardPage() {
             </div>
             <div className="flex-1">
               <h3 className="text-lg font-semibold text-slate-900 group-hover:text-primary transition-colors">
-                Review Contract
+                Rà soát hợp đồng
               </h3>
               <p className="text-muted mt-1">
-                Upload or paste contract text to analyze compliance with
-                Vietnamese law.
+                Tải lên hoặc dán nội dung hợp đồng để phân tích tuân thủ
+                pháp luật Việt Nam.
               </p>
             </div>
             <ArrowRight className="w-5 h-5 text-muted group-hover:text-primary group-hover:translate-x-1 transition-all" />
@@ -97,11 +97,11 @@ export default function DashboardPage() {
             </div>
             <div className="flex-1">
               <h3 className="text-lg font-semibold text-slate-900 group-hover:text-primary transition-colors">
-                Ask Legal Question
+                Tư vấn pháp lý
               </h3>
               <p className="text-muted mt-1">
-                Chat with AI about Vietnamese legal matters and get cited
-                answers from the legal corpus.
+                Trò chuyện với AI về các vấn đề pháp lý Việt Nam và nhận câu trả lời
+                có trích dẫn từ hệ thống pháp luật.
               </p>
             </div>
             <ArrowRight className="w-5 h-5 text-muted group-hover:text-primary group-hover:translate-x-1 transition-all" />
@@ -113,29 +113,29 @@ export default function DashboardPage() {
       <div className="bg-white rounded-xl border border-slate-200 shadow-sm">
         <div className="p-6 border-b border-slate-200">
           <h2 className="text-lg font-semibold text-slate-900">
-            Recent Activity
+            Hoạt động gần đây
           </h2>
         </div>
         <div className="p-6">
           <div className="space-y-4">
             {[
               {
-                action: "Contract reviewed",
-                detail: "Software Service Agreement - 12 clauses analyzed",
-                time: "2 minutes ago",
-                status: "Completed",
+                action: "Hợp đồng đã rà soát",
+                detail: "Thỏa thuận Dịch vụ Phần mềm - 12 điều khoản đã phân tích",
+                time: "2 phút trước",
+                status: "Hoàn thành",
               },
               {
-                action: "Legal query answered",
-                detail: "Question about labor contract termination",
-                time: "15 minutes ago",
-                status: "Completed",
+                action: "Câu hỏi pháp lý đã trả lời",
+                detail: "Câu hỏi về chấm dứt hợp đồng lao động",
+                time: "15 phút trước",
+                status: "Hoàn thành",
               },
               {
-                action: "Documents ingested",
-                detail: "50 new legal documents added to corpus",
-                time: "1 hour ago",
-                status: "Completed",
+                action: "Tài liệu đã nhập liệu",
+                detail: "50 tài liệu pháp lý mới đã thêm vào hệ thống",
+                time: "1 giờ trước",
+                status: "Hoàn thành",
               },
             ].map((activity, index) => (
               <div

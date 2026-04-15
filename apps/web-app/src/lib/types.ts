@@ -89,8 +89,18 @@ export interface ReviewFinding {
   citations: Citation[];
   revision_suggestion?: string;
   negotiation_note?: string;
+  // Inline citation map: maps [n] markers to citation info
+  inline_citation_map?: Record<number, InlineCitationInfo>;
   evidence_pack?: EvidencePack;
   latency_ms: number;
+}
+
+export interface InlineCitationInfo {
+  doc_id: string;
+  title: string;
+  content: string;
+  score: number;
+  metadata?: Record<string, unknown>;
 }
 
 export interface ContractReviewResult {
@@ -101,6 +111,15 @@ export interface ContractReviewResult {
   risk_summary: Record<RiskLevel, number>;
   total_latency_ms: number;
   timestamp: string;
+  // References section: all unique cited documents
+  references?: Reference[];
+}
+
+export interface Reference {
+  article_id: string;
+  law_id: string;
+  document_title?: string;
+  quote: string;
 }
 
 export interface ChatAnswer {
@@ -159,3 +178,48 @@ export interface CitationDetail extends Citation {
   related_amendments?: string[];
   original_source_url?: string;
 }
+
+// Streaming review event types
+export interface ReviewProgressEvent {
+  type: "progress";
+  data: {
+    phase: "analyzing" | "reviewing" | "summarizing" | "retrieving";
+    message: string;
+    total_clauses?: number;
+    current?: number;
+    total?: number;
+  };
+}
+
+export interface ReviewFindingEvent {
+  type: "finding";
+  data: ReviewFinding;
+}
+
+export interface ReviewSummaryEvent {
+  type: "summary";
+  data: {
+    summary: string;
+    risk_summary: Record<RiskLevel, number>;
+    references: Reference[];
+    total_clauses: number;
+    total_latency_ms: number;
+  };
+}
+
+export interface ReviewDoneEvent {
+  type: "done";
+  data: Record<string, never>;
+}
+
+export interface ReviewErrorEvent {
+  type: "error";
+  data: { message: string };
+}
+
+export type ReviewStreamEvent =
+  | ReviewProgressEvent
+  | ReviewFindingEvent
+  | ReviewSummaryEvent
+  | ReviewDoneEvent
+  | ReviewErrorEvent;

@@ -3,8 +3,8 @@ import "./globals.css";
 import { Sidebar } from "@/components/Sidebar";
 
 export const metadata: Metadata = {
-  title: "Vietnamese Legal Contract Review AI",
-  description: "AI-powered contract review for Vietnamese legal documents",
+  title: "AI Rà soát Hợp đồng Pháp lý Việt Nam",
+  description: "Hệ thống AI rà soát hợp đồng cho tài liệu pháp lý Việt Nam",
 };
 
 export default function RootLayout({
@@ -13,7 +13,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="vi">
       <body className="antialiased bg-slate-50">
         <div className="flex min-h-screen">
           <Sidebar />

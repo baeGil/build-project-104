@@ -18,25 +18,25 @@ const config: Record<
   }
 > = {
   high: {
-    label: "High Risk",
+    label: "Rủi ro cao",
     bgColor: "bg-red-100",
     textColor: "text-red-800",
     dotColor: "bg-red-500",
   },
   medium: {
-    label: "Medium Risk",
+    label: "Rủi ro trung bình",
     bgColor: "bg-yellow-100",
     textColor: "text-yellow-800",
     dotColor: "bg-yellow-500",
   },
   low: {
-    label: "Low Risk",
+    label: "Rủi ro thấp",
     bgColor: "bg-blue-100",
     textColor: "text-blue-800",
     dotColor: "bg-blue-500",
   },
   none: {
-    label: "No Risk",
+    label: "Không có rủi ro",
     bgColor: "bg-green-100",
     textColor: "text-green-800",
     dotColor: "bg-green-500",
