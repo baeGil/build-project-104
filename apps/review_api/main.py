@@ -1,4 +1,6 @@
 """FastAPI application for Vietnamese Legal Contract Review API."""
+import asyncio
+import logging
 from contextlib import asynccontextmanager
 from typing import AsyncGenerator
 
@@ -7,10 +9,20 @@ from fastapi.middleware.cors import CORSMiddleware
 from prometheus_fastapi_instrumentator import Instrumentator
 
 from apps.review_api.middleware.timing import TimingMiddleware
-from apps.review_api.routes import chat, citations, ingest, review
+from apps.review_api.routes import chat, citations, dataset_ingestion, graph, ingest, review
 from packages.common.config import get_settings
+from packages.graph.legal_graph import LegalGraphClient
+from packages.graph.sync import GraphSyncService
 from packages.common.types import HealthResponse
+from packages.reasoning.generator import LegalGenerator
+from packages.reasoning.planner import QueryPlanner
+from packages.reasoning.review_pipeline import ContractReviewPipeline
+from packages.reasoning.verifier import LegalVerifier
+from packages.retrieval.context import ContextInjector
+from packages.retrieval.embedding import EmbeddingService
+from packages.retrieval.hybrid import HybridRetriever
 
+logger = logging.getLogger(__name__)
 settings = get_settings()
 
 
@@ -18,10 +30,90 @@ settings = get_settings()
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     """Application lifespan handler for startup and shutdown."""
     # Startup
-    # TODO: Initialize database connections, load models, etc.
+    app.state.settings = settings
+    app.state.query_planner = QueryPlanner()
+    app.state.hybrid_retriever = HybridRetriever(settings)
+    app.state.legal_generator = LegalGenerator(settings)
+    app.state.legal_verifier = LegalVerifier(settings)
+    app.state.review_pipeline = ContractReviewPipeline(settings)
+    app.state.graph_client = LegalGraphClient(settings)
+    app.state.context_injector = ContextInjector(settings, graph_client=app.state.graph_client)
+    app.state.graph_sync = GraphSyncService(
+        settings,
+        graph_client=app.state.graph_client,
+        postgres_pool_getter=app.state.hybrid_retriever._get_postgres_pool,
+    )
+    app.state.review_pipeline.retriever = app.state.hybrid_retriever
+    app.state.review_pipeline.generator = app.state.legal_generator
+    app.state.review_pipeline.verifier = app.state.legal_verifier
+    app.state.review_pipeline.context_injector = app.state.context_injector
+    app.state.embedding_service = EmbeddingService.get_instance(settings.embedding_model)
+
+    warmup_tasks = (
+        app.state.hybrid_retriever._get_qdrant_client(),
+        app.state.hybrid_retriever._get_opensearch_client(),
+        app.state.hybrid_retriever._get_postgres_pool(),
+        app.state.graph_client.ping(),
+    )
+    results = await asyncio.gather(*warmup_tasks, return_exceptions=True)
+    for service_name, result in zip(("qdrant", "opensearch", "postgres", "neo4j"), results):
+        if isinstance(result, Exception):
+            logger.warning("Startup warmup skipped for %s: %s", service_name, result)
+    if results[3] is True:
+        try:
+            await app.state.graph_client.ensure_schema()
+        except Exception as exc:
+            logger.warning("Neo4j schema warmup skipped: %s", exc)
+
+    try:
+        # Increase warmup timeout to 2 minutes to handle slow downloads on first run
+        await asyncio.wait_for(
+            asyncio.to_thread(app.state.embedding_service._load_model),
+            timeout=120,  # 2 minutes - enough time for model download
+        )
+        await asyncio.wait_for(
+            asyncio.to_thread(app.state.embedding_service.encode_query, "Khoi dong he thong phap ly"),
+            timeout=60,  # 1 minute for encoding test
+        )
+    except asyncio.TimeoutError:
+        logger.warning(
+            "Embedding model warmup timed out after 120s; continuing without blocking startup."
+        )
+    except Exception as exc:
+        logger.warning("Embedding model warmup skipped: %s", exc)
+
+    # Perform a warmup retrieval query to eliminate cold start latency
+    # This ensures the first user request is fast (no embedding load delay)
+    logger.info("Performing retrieval warmup query...")
+    try:
+        warmup_start = asyncio.get_event_loop().time()
+        await app.state.hybrid_retriever.search(
+            query="khởi động hệ thống",
+            top_k=1,
+            bm25_candidates=1,
+            dense_candidates=1,
+        )
+        warmup_duration = asyncio.get_event_loop().time() - warmup_start
+        logger.info(f"✓ Retrieval warmup complete in {warmup_duration:.2f}s - First request will be fast!")
+    except Exception as exc:
+        logger.warning(f"Retrieval warmup query failed (non-critical): {exc}")
+
     yield
     # Shutdown
-    # TODO: Close database connections, cleanup resources
+    close_targets: list[object] = [
+        app.state.hybrid_retriever,
+        app.state.review_pipeline.retriever,
+        app.state.graph_client,
+        app.state.graph_sync,
+    ]
+    seen: set[int] = set()
+    for target in close_targets:
+        if id(target) in seen or not hasattr(target, "close"):
+            continue
+        seen.add(id(target))
+        close_result = target.close()
+        if asyncio.iscoroutine(close_result):
+            await close_result
 
 
 app = FastAPI(
@@ -53,26 +145,104 @@ app.include_router(ingest.router, prefix="/api/v1")
 app.include_router(review.router, prefix="/api/v1")
 app.include_router(chat.router, prefix="/api/v1")
 app.include_router(citations.router, prefix="/api/v1")
+app.include_router(dataset_ingestion.router, prefix="/api/v1")
+app.include_router(graph.router, prefix="/api/v1")
 
 
-@app.get("/health", response_model=HealthResponse, tags=["health"])
+@app.get("/api/v1/health", response_model=HealthResponse, tags=["health"])
 async def health_check() -> HealthResponse:
     """Health check endpoint.
     
     Returns:
         HealthResponse with status and service information
     """
+    retriever = getattr(app.state, "hybrid_retriever", None)
+
+    async def check_qdrant() -> str:
+        if retriever is None:
+            return "unavailable"
+        try:
+            client = await retriever._get_qdrant_client()
+            await client.get_collections()
+            return "ok"
+        except Exception as exc:
+            logger.warning("Qdrant health check failed: %s", exc)
+            return "unhealthy"
+
+    async def check_opensearch() -> str:
+        if retriever is None:
+            return "unavailable"
+        try:
+            client = await retriever._get_opensearch_client()
+            response = await client.cluster.health()
+            return response.get("status", "unknown")
+        except Exception as exc:
+            logger.warning("OpenSearch health check failed: %s", exc)
+            return "unhealthy"
+
+    async def check_postgres() -> str:
+        if retriever is None:
+            return "unavailable"
+        try:
+            pool = await retriever._get_postgres_pool()
+            async with pool.acquire() as conn:
+                await conn.fetchval("SELECT 1")
+            return "ok"
+        except Exception as exc:
+            logger.warning("PostgreSQL health check failed: %s", exc)
+            return "unhealthy"
+
+    async def check_redis() -> str:
+        try:
+            import redis.asyncio as redis
+        except Exception as exc:
+            logger.warning("Redis client unavailable: %s", exc)
+            return "unavailable"
+
+        client = redis.from_url(settings.redis_url)
+        try:
+            await client.ping()
+            return "ok"
+        except Exception as exc:
+            logger.warning("Redis health check failed: %s", exc)
+            return "unhealthy"
+        finally:
+            await client.aclose()
+
+    async def check_neo4j() -> str:
+        graph_client = getattr(app.state, "graph_client", None)
+        if graph_client is None:
+            return "unavailable"
+        try:
+            healthy = await graph_client.ping()
+            return "ok" if healthy else "unhealthy"
+        except Exception as exc:
+            logger.warning("Neo4j health check failed: %s", exc)
+            return "unhealthy"
+
+    qdrant_status, opensearch_status, postgres_status, redis_status, neo4j_status = await asyncio.gather(
+        check_qdrant(),
+        check_opensearch(),
+        check_postgres(),
+        check_redis(),
+        check_neo4j(),
+    )
+
+    services = {
+        "api": "ok",
+        "qdrant": qdrant_status,
+        "opensearch": opensearch_status,
+        "postgres": postgres_status,
+        "redis": redis_status,
+        "neo4j": neo4j_status,
+    }
+    healthy_states = {"ok", "green", "yellow"}
+    status = "ok" if all(value in healthy_states for value in services.values()) else "degraded"
+
     return HealthResponse(
-        status="ok",
+        status=status,
         version="0.1.0",
-        services={
-            "api": "ok",
-            # TODO: Add actual service health checks
-            "qdrant": "unknown",
-            "opensearch": "unknown",
-            "postgres": "unknown",
-            "redis": "unknown",
-        }
+        services=services,
     )
 
 

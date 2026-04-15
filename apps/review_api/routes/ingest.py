@@ -32,7 +32,10 @@ async def _process_ingestion_task(task_id: str, documents: list[dict[str, Any]],
         }
 
         pipeline = IngestionPipeline()
-        stats = await pipeline.ingest_from_text(documents)
+        try:
+            stats = await pipeline.ingest_from_text(documents)
+        finally:
+            await pipeline.close()
 
         _task_store[task_id] = {
             "status": "completed",
@@ -45,6 +48,49 @@ async def _process_ingestion_task(task_id: str, documents: list[dict[str, Any]],
 
     except Exception as e:
         error_msg = f"Ingestion failed: {str(e)}"
+        logger.error(error_msg)
+        _task_store[task_id] = {
+            "status": "failed",
+            "progress": 0,
+            "message": error_msg,
+        }
+
+
+async def _process_huggingface_task(
+    task_id: str, dataset: str, dataset_split: str, doc_limit: int | None
+) -> None:
+    """Background task to process HuggingFace dataset ingestion.
+
+    Args:
+        task_id: Unique task identifier.
+        dataset: Name of the HuggingFace dataset.
+        dataset_split: Dataset split to use.
+        doc_limit: Optional limit on number of documents.
+    """
+    try:
+        _task_store[task_id] = {
+            "status": "processing",
+            "progress": 0,
+            "message": f"Loading dataset: {dataset}",
+        }
+
+        pipeline = IngestionPipeline()
+        try:
+            stats = await pipeline.ingest_from_huggingface(dataset, dataset_split, doc_limit)
+        finally:
+            await pipeline.close()
+
+        _task_store[task_id] = {
+            "status": "completed",
+            "progress": 100,
+            "message": f"Successfully ingested from {dataset}",
+            "stats": stats,
+        }
+
+        logger.info(f"HuggingFace ingestion task {task_id} completed")
+
+    except Exception as e:
+        error_msg = f"HuggingFace ingestion failed: {str(e)}"
         logger.error(error_msg)
         _task_store[task_id] = {
             "status": "failed",
@@ -220,37 +266,6 @@ async def ingest_from_huggingface(
         Ingestion response with task ID.
     """
     task_id = str(uuid.uuid4())
-
-    async def _process_huggingface_task(
-        task_id: str, dataset: str, dataset_split: str, doc_limit: int | None
-    ) -> None:
-        try:
-            _task_store[task_id] = {
-                "status": "processing",
-                "progress": 0,
-                "message": f"Loading dataset: {dataset}",
-            }
-
-            pipeline = IngestionPipeline()
-            stats = await pipeline.ingest_from_huggingface(dataset, dataset_split, doc_limit)
-
-            _task_store[task_id] = {
-                "status": "completed",
-                "progress": 100,
-                "message": f"Successfully ingested from {dataset}",
-                "stats": stats,
-            }
-
-            logger.info(f"HuggingFace ingestion task {task_id} completed")
-
-        except Exception as e:
-            error_msg = f"HuggingFace ingestion failed: {str(e)}"
-            logger.error(error_msg)
-            _task_store[task_id] = {
-                "status": "failed",
-                "progress": 0,
-                "message": error_msg,
-            }
 
     if background_tasks:
         background_tasks.add_task(
