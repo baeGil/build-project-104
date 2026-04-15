@@ -1,9 +1,10 @@
-version: "3.8"
-
 services:
   # Qdrant - Vector Database
   qdrant:
-    image: qdrant/qdrant:latest
+    build:
+      context: .
+      dockerfile: docker/qdrant/Dockerfile
+    image: vietnamese-legal-qdrant:latest
     container_name: vietnamese-legal-qdrant
     ports:
       - "6333:6333"
@@ -31,7 +32,7 @@ services:
       - plugins.security.disabled=true
       - bootstrap.memory_lock=true
       - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m"
-      - OPENSEARCH_INITIAL_ADMIN_PASSWORD=admin
+      - OPENSEARCH_INITIAL_ADMIN_PASSWORD=SecureP@ssw0rd!2024
     ulimits:
       memlock:
         soft: -1
@@ -65,6 +66,7 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -d legal_review"]
       interval: 10s
@@ -92,30 +94,27 @@ services:
     networks:
       - legal-ai-network
 
-  # Neo4j - Graph database (Phase 2)
-  # Uncomment when ready for graph implementation
-  # neo4j:
-  #   image: neo4j:5-community
-  #   container_name: vietnamese-legal-neo4j
-  #   environment:
-  #     - NEO4J_AUTH=neo4j/password
-  #     - NEO4J_PLUGINS=["apoc", "gds"]
-  #     - NEO4J_dbms_memory_heap_initial__size=512m
-  #     - NEO4J_dbms_memory_heap_max__size=1G
-  #   ports:
-  #     - "7474:7474"
-  #     - "7687:7687"
-  #   volumes:
-  #     - neo4j_data:/data
-  #     - neo4j_logs:/logs
-  #   healthcheck:
-  #     test: ["CMD-SHELL", "cypher-shell -u neo4j -p password 'RETURN 1' || exit 1"]
-  #     interval: 30s
-  #     timeout: 10s
-  #     retries: 5
-  #     start_period: 30s
-  #   networks:
-  #     - legal-ai-network
+  # Neo4j - Graph database
+  neo4j:
+    image: neo4j:5-community
+    container_name: vietnamese-legal-neo4j
+    environment:
+      - NEO4J_AUTH=neo4j/password
+      - NEO4J_PLUGINS=["apoc", "graph-data-science"]
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    volumes:
+      - neo4j_data:/data
+      - neo4j_logs:/logs
+    healthcheck:
+      test: ["CMD-SHELL", "cypher-shell -u neo4j -p password 'RETURN 1' || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    networks:
+      - legal-ai-network
 
   # Prometheus - Metrics collection (optional, uncomment to enable)
   # prometheus:
@@ -162,10 +161,10 @@ volumes:
     driver: local
   redis_data:
     driver: local
-  # neo4j_data:
-  #   driver: local
-  # neo4j_logs:
-  #   driver: local
+  neo4j_data:
+    driver: local
+  neo4j_logs:
+    driver: local
   # prometheus_data:
   #   driver: local
   # grafana_data:

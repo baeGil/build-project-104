@@ -19,6 +19,7 @@ env/
 *.swp
 *.swo
 *~
+.qoder/
 
 # Environment
 .env
@@ -28,11 +29,12 @@ env/
 node_modules/
 .next/
 apps/web-app/dist/
-apps/web-app/.next/
 
 # Data
 data/legal_corpus/
+data/cache/**/*.parquet
 *.parquet
+data/parquet_cache/
 
 # OS
 .DS_Store
@@ -46,3 +48,20 @@ htmlcov/
 # Monitoring data
 grafana_data/
 prometheus_data/
+
+# Documentation build
+.qoder/repowiki/
+
+# Ruff cache
+.ruff_cache/
+
+# UV lock file (keep but ignore venv)
+# uv.lock - KEEP THIS
+
+# Test contracts (user data)
+test contracts/
+
+# Temporary files
+*.tmp
+*.log
+*.pid
