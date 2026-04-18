@@ -1,7 +1,7 @@
 "use client";
 
 interface ConfidenceBarProps {
-  confidence: number; // 0-1
+  confidence: number; // 0-100 (percentage)
   showLabel?: boolean;
   size?: "sm" | "md";
 }
@@ -11,7 +11,13 @@ export function ConfidenceBar({
   showLabel = true,
   size = "md",
 }: ConfidenceBarProps) {
-  const percentage = Math.round(confidence * 100);
+  // Backend sends confidence as 0-100, but component expects 0-1
+  // Normalize: if > 1, assume it's already percentage
+  const normalizedConfidence = confidence > 1 ? confidence / 100 : confidence;
+  const percentage = Math.round(normalizedConfidence * 100);
+  
+  // Clamp to 0-100 range
+  const clampedPercentage = Math.max(0, Math.min(100, percentage));
 
   const getColor = (p: number) => {
     if (p >= 80) return "bg-green-500";
@@ -32,15 +38,15 @@ export function ConfidenceBar({
           <span className="text-xs text-muted">Confidence</span>
         )}
         <span className="text-xs font-medium text-slate-700">
-          {percentage}%
+          {clampedPercentage}%
         </span>
       </div>
       <div className={`w-full bg-slate-200 rounded-full ${heightClasses[size]}`}>
         <div
           className={`${heightClasses[size]} rounded-full ${getColor(
-            percentage
+            clampedPercentage
           )} transition-all duration-500`}
-          style={{ width: `${percentage}%` }}
+          style={{ width: `${clampedPercentage}%` }}
         />
       </div>
     </div>

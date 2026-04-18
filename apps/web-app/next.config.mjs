@@ -6,6 +6,16 @@ const nextConfig = {
     unoptimized: true,
   },
   allowedDevOrigins: ["localhost"],
+  // Suppress verbose logging in development
+  logging: {
+    fetches: {
+      fullUrl: false,
+    },
+  },
+  // Turbopack configuration (Next.js 16+)
+  turbopack: {
+    // Suppress warnings
+  },
 };
 
 export default nextConfig;
