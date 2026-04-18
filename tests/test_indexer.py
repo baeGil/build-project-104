@@ -451,8 +451,8 @@ class TestDocumentIndexer:
         assert result["qdrant_indexed"] == 2
         assert result["opensearch_indexed"] == 2
         assert result["errors"] == []
-        mock_qdrant.assert_called_once_with(sample_nodes)
-        mock_opensearch.assert_called_once_with(sample_nodes)
+        mock_qdrant.assert_called_once_with(sample_nodes, relationship_metadata=None)
+        mock_opensearch.assert_called_once_with(sample_nodes, relationship_metadata=None)
 
     @pytest.mark.asyncio
     async def test_index_qdrant_failure(self, settings, sample_nodes):

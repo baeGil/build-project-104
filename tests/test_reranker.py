@@ -19,7 +19,7 @@ class TestLegalReranker:
     def test_init_default_budget(self):
         """Test initialization with default budget."""
         reranker = LegalReranker()
-        assert reranker.budget_ms == 150.0
+        assert reranker.budget_ms == 300
         assert reranker._colbert_model is None
         assert reranker._cross_encoder is None
 

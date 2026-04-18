@@ -97,7 +97,7 @@ async def test_semantic_search(retriever: HybridRetriever, query: str, top_k: in
             {
                 "title": doc.title,
                 "score": doc.score,
-                "doc_type": getattr(doc, 'doc_type', 'unknown'),
+                "doc_type": doc.metadata.get('doc_type', 'unknown'),
                 "doc_id": doc.doc_id,
             }
             for doc in results
@@ -136,7 +136,7 @@ async def test_fulltext_search(retriever: HybridRetriever, query: str, top_k: in
             {
                 "title": doc.title,
                 "score": doc.score,
-                "doc_type": getattr(doc, 'doc_type', 'unknown'),
+                "doc_type": doc.metadata.get('doc_type', 'unknown'),
                 "doc_id": doc.doc_id,
             }
             for doc in results
@@ -176,7 +176,7 @@ async def test_hybrid_search(retriever: HybridRetriever, query: str, top_k: int 
             {
                 "title": doc.title,
                 "score": doc.score,
-                "doc_type": getattr(doc, 'doc_type', 'unknown'),
+                "doc_type": doc.metadata.get('doc_type', 'unknown'),
                 "doc_id": doc.doc_id,
             }
             for doc in results
@@ -324,6 +324,23 @@ async def main():
     console.print("🔧 Initializing retriever...", style="dim")
     settings = get_settings()
     retriever = HybridRetriever(settings)
+    
+    # Optional warm-up phase (set to False to skip)
+    SKIP_WARMUP = True  # Set to False to enable warm-up
+    
+    if not SKIP_WARMUP:
+        # Warm-up phase to eliminate cold start
+        console.print("\n[bold yellow]🔥 WARM-UP PHASE[/bold yellow]")
+        console.print("Running warm-up query to load models and connections...\n")
+        
+        warmup_start = time.time()
+        await retriever.search("warm up", top_k=1, bm25_candidates=1, dense_candidates=1)
+        warmup_time = time.time() - warmup_start
+        
+        console.print(f"✅ Warm-up complete: {warmup_time:.2f}s")
+        console.print("   All models and connections are now loaded\n")
+    else:
+        console.print("[dim]⚠️  Warm-up skipped (first query will be slow)[/dim]\n")
     
     # Test 1: Semantic Search
     console.print("\n" + "=" * 80, style="bold yellow")

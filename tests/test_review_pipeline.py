@@ -10,6 +10,7 @@ from packages.common.types import (
     ContractReviewResult,
     QueryPlan,
     QueryStrategy,
+    RetrievedDocument,
     ReviewFinding,
     RiskLevel,
     VerificationLevel,
@@ -21,7 +22,20 @@ from packages.reasoning.review_pipeline import ContractReviewPipeline
 def mock_settings() -> Settings:
     """Create mock settings for testing."""
     settings = MagicMock(spec=Settings)
-    settings.groq_api_key = "test-api-key"
+    settings.llm_model = "test-model"
+    # Search configuration attributes
+    settings.search_reranker_budget_ms = 300
+    settings.search_reranker_input_k = 15
+    settings.search_bm25_candidates = 200
+    settings.search_dense_candidates = 200
+    settings.search_rrf_k = 60
+    settings.search_rrf_top_n = 200
+    settings.search_expansion_max_variants = 4
+    settings.search_expansion_boost = 0.7
+    settings.search_aggregation_threshold = 1.0
+    settings.search_chunk_size_tokens = 400
+    settings.search_chunk_overlap = 0.5
+    settings.search_min_chunk_tokens = 100
     return settings
 
 
@@ -258,13 +272,16 @@ class TestReviewSingleClause:
             normalized_query="cong ty co 2 thanh vien",
             strategy=QueryStrategy.SEMANTIC,
         ))
-        pipeline.retriever.search = AsyncMock(return_value=[{
-            "id": "art-46",
-            "content": "Công ty TNHH có thể có 1 hoặc nhiều thành viên",
-            "title": "Điều 46",
-            "score": 0.95,
-            "metadata": {"law_id": "law-2020-01-01"},
-        }])
+        # Return RetrievedDocument objects (not dicts) as the reranker expects .score attribute
+        pipeline.retriever.search = AsyncMock(return_value=[
+            RetrievedDocument(
+                doc_id="art-46",
+                content="Công ty TNHH có thể có 1 hoặc nhiều thành viên",
+                title="Điều 46",
+                score=0.95,
+                metadata={"law_id": "law-2020-01-01"},
+            )
+        ])
         pipeline.verifier.verify = AsyncMock(return_value={
             "level": VerificationLevel.ENTAILED,
             "confidence": 0.95,
@@ -349,7 +366,8 @@ class TestClauseErrorHandlingInReviewContract:
         contract = "Điều 1. First clause\nThis is the first clause content with enough length.\n\nĐiều 2. Second clause\nThis is the second clause content with enough length too."
 
         call_count = 0
-        async def mock_review_single_clause(index, text, filters=None):
+        # Mock must accept 4 positional args: clause_index, clause_text, filters, include_relationships
+        async def mock_review_single_clause(index, text, filters=None, include_relationships=True):
             nonlocal call_count
             call_count += 1
             if index == 0:

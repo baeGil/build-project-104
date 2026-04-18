@@ -27,10 +27,10 @@ class TestSettingsDefaults:
         """Test Settings instantiation with default values."""
         settings = create_isolated_settings()
 
-        # Groq defaults
-        assert settings.groq_api_key == ""
-        assert settings.groq_model_primary == "llama-3.1-8b-instant"
-        assert settings.groq_model_fallback == "llama-3.3-70b-versatile"
+        # LLM defaults
+        assert settings.llm_base_url == "https://openrouter.ai/api/v1"
+        assert settings.llm_api_key == ""
+        assert settings.llm_model == "thudm/glm-4-9b"
 
         # Qdrant defaults
         assert settings.qdrant_host == "localhost"
@@ -90,11 +90,11 @@ class TestSettingsDefaults:
 class TestSettingsEnvironmentVariables:
     """Tests for Settings loading from environment variables."""
 
-    def test_groq_api_key_from_env(self, monkeypatch: pytest.MonkeyPatch) -> None:
-        """Test GROQ_API_KEY loading from environment."""
-        monkeypatch.setenv("GROQ_API_KEY", "test-api-key-123")
+    def test_llm_api_key_from_env(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        """Test LLM_API_KEY loading from environment."""
+        monkeypatch.setenv("LLM_API_KEY", "test-api-key-123")
         settings = Settings()
-        assert settings.groq_api_key == "test-api-key-123"
+        assert settings.llm_api_key == "test-api-key-123"
 
     def test_qdrant_host_from_env(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """Test QDRANT_HOST loading from environment."""
@@ -110,16 +110,16 @@ class TestSettingsEnvironmentVariables:
 
     def test_multiple_env_vars(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """Test loading multiple environment variables."""
-        monkeypatch.setenv("GROQ_API_KEY", "sk-test-key")
-        monkeypatch.setenv("GROQ_MODEL_PRIMARY", "llama-3.3-70b-versatile")
+        monkeypatch.setenv("LLM_API_KEY", "sk-test-key")
+        monkeypatch.setenv("LLM_MODEL", "custom-model")
         monkeypatch.setenv("QDRANT_HOST", "remote-qdrant")
         monkeypatch.setenv("QDRANT_PORT", "7777")
         monkeypatch.setenv("APP_ENV", "production")
         monkeypatch.setenv("LOG_LEVEL", "debug")
 
         settings = Settings()
-        assert settings.groq_api_key == "sk-test-key"
-        assert settings.groq_model_primary == "llama-3.3-70b-versatile"
+        assert settings.llm_api_key == "sk-test-key"
+        assert settings.llm_model == "custom-model"
         assert settings.qdrant_host == "remote-qdrant"
         assert settings.qdrant_port == 7777
         assert settings.app_env == "production"
@@ -190,9 +190,9 @@ class TestSettingsEnvironmentVariables:
     def test_case_insensitive_env_vars(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """Test case-insensitive environment variable loading."""
         # Settings has case_sensitive=False in model_config
-        monkeypatch.setenv("groq_api_key", "lowercase-key")
+        monkeypatch.setenv("llm_api_key", "lowercase-key")
         settings = Settings()
-        assert settings.groq_api_key == "lowercase-key"
+        assert settings.llm_api_key == "lowercase-key"
 
 
 class TestGetSettings:
@@ -209,7 +209,7 @@ class TestGetSettings:
         settings2 = get_settings()
         # They should be equal in values but different objects
         assert settings1 is not settings2
-        assert settings1.groq_model_primary == settings2.groq_model_primary
+        assert settings1.llm_model == settings2.llm_model
 
 
 class TestSettingsValidation:
@@ -236,11 +236,11 @@ class TestSettingsValidation:
 class TestSettingsWithPatchDict:
     """Tests using unittest.mock.patch.dict for environment variable testing."""
 
-    @patch.dict(os.environ, {"GROQ_API_KEY": "patched-key", "APP_ENV": "testing"}, clear=False)
+    @patch.dict(os.environ, {"LLM_API_KEY": "patched-key", "APP_ENV": "testing"}, clear=False)
     def test_settings_with_patch_dict(self) -> None:
         """Test Settings with patch.dict context manager."""
         settings = Settings()
-        assert settings.groq_api_key == "patched-key"
+        assert settings.llm_api_key == "patched-key"
         assert settings.app_env == "testing"
 
     @patch.dict(

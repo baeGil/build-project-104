@@ -18,9 +18,9 @@ class TestLegalVerifierInit:
     def settings(self) -> Settings:
         """Create test settings."""
         return Settings(
-            groq_api_key="test-api-key",
-            groq_model_primary="llama-3.1-8b-instant",
-            groq_model_fallback="llama-3.3-70b-versatile",
+            llm_base_url="http://localhost:11434/v1",
+            llm_api_key="test-key",
+            llm_model="test-model",
         )
 
     def test_init(self, settings: Settings) -> None:
@@ -28,21 +28,24 @@ class TestLegalVerifierInit:
         verifier = LegalVerifier(settings)
 
         assert verifier.settings == settings
-        assert verifier._groq_client is None
+        assert verifier._llm_client is None
         assert verifier._cache == {}
 
-    def test_groq_client_lazy_init(self, settings: Settings) -> None:
-        """Test that Groq client is lazily initialized."""
+    def test_ollama_client_lazy_init(self, settings: Settings) -> None:
+        """Test that LLM client is lazily initialized."""
         verifier = LegalVerifier(settings)
-        assert verifier._groq_client is None
+        assert verifier._llm_client is None
 
         # Access the property
-        with patch("groq.AsyncGroq") as mock_groq:
+        with patch("openai.AsyncOpenAI") as mock_openai:
             mock_client = MagicMock()
-            mock_groq.return_value = mock_client
-            client = verifier.groq_client
+            mock_openai.return_value = mock_client
+            client = verifier.llm_client
             assert client is not None
-            mock_groq.assert_called_once_with(api_key="test-api-key")
+            mock_openai.assert_called_once_with(
+                base_url="http://localhost:11434/v1",
+                api_key="test-key",
+            )
 
 
 class TestLegalVerifierVerify:
@@ -51,9 +54,9 @@ class TestLegalVerifierVerify:
     @pytest.fixture
     def settings(self) -> Settings:
         return Settings(
-            groq_api_key="test-api-key",
-            groq_model_primary="llama-3.1-8b-instant",
-            groq_model_fallback="llama-3.3-70b-versatile",
+            llm_base_url="https://openrouter.ai/api/v1",
+            llm_api_key="test-key",
+            llm_model="test-model",
         )
 
     @pytest.fixture
@@ -122,18 +125,6 @@ class TestLegalVerifierVerify:
         assert result["level"] == VerificationLevel.PARTIALLY_SUPPORTED
         assert result["method"] == "llm"
 
-
-class TestLegalVerifierRuleBasedScore:
-    """Test LegalVerifier._rule_based_score() method."""
-
-    @pytest.fixture
-    def settings(self) -> Settings:
-        return Settings(groq_api_key="test")
-
-    @pytest.fixture
-    def verifier(self, settings: Settings) -> LegalVerifier:
-        return LegalVerifier(settings)
-
     def test_rule_based_empty_inputs(self, verifier: LegalVerifier) -> None:
         """Test rule-based with empty inputs returns None."""
         assert verifier._rule_based_score("", "regulation") is None
@@ -183,14 +174,14 @@ class TestLegalVerifierRuleBasedScore:
 
 
 class TestLegalVerifierLLMVerify:
-    """Test LegalVerifier._llm_score() method with mocked Groq client."""
+    """Test LegalVerifier._llm_score() method with mocked Ollama client."""
 
     @pytest.fixture
     def settings(self) -> Settings:
         return Settings(
-            groq_api_key="test-api-key",
-            groq_model_primary="llama-3.1-8b-instant",
-            groq_model_fallback="llama-3.3-70b-versatile",
+            llm_base_url="https://openrouter.ai/api/v1",
+            llm_api_key="test-key",
+            llm_model="test-model",
         )
 
     @pytest.fixture
@@ -207,7 +198,7 @@ class TestLegalVerifierLLMVerify:
 CONFIDENCE: 0.95
 REASONING: The clause fully complies with the regulation."""
 
-        with patch.object(verifier, "_call_groq_with_fallback", new_callable=AsyncMock) as mock_call:
+        with patch.object(verifier, "_call_llm", new_callable=AsyncMock) as mock_call:
             mock_call.return_value = mock_response
             result = await verifier._llm_score(clause, regulation, context)
 
@@ -221,7 +212,7 @@ REASONING: The clause fully complies with the regulation."""
 CONFIDENCE: 0.85
 REASONING: The clause violates the regulation."""
 
-        with patch.object(verifier, "_call_groq_with_fallback", new_callable=AsyncMock) as mock_call:
+        with patch.object(verifier, "_call_llm", new_callable=AsyncMock) as mock_call:
             mock_call.return_value = mock_response
             result = await verifier._llm_score("clause", "regulation", "")
 
@@ -234,7 +225,7 @@ REASONING: The clause violates the regulation."""
 CONFIDENCE: 0.6
 REASONING: The clause partially complies."""
 
-        with patch.object(verifier, "_call_groq_with_fallback", new_callable=AsyncMock) as mock_call:
+        with patch.object(verifier, "_call_llm", new_callable=AsyncMock) as mock_call:
             mock_call.return_value = mock_response
             result = await verifier._llm_score("clause", "regulation", "")
 
@@ -246,7 +237,7 @@ REASONING: The clause partially complies."""
 CONFIDENCE: 0.5
 REASONING: The regulation does not address this topic."""
 
-        with patch.object(verifier, "_call_groq_with_fallback", new_callable=AsyncMock) as mock_call:
+        with patch.object(verifier, "_call_llm", new_callable=AsyncMock) as mock_call:
             mock_call.return_value = mock_response
             result = await verifier._llm_score("clause", "regulation", "")
 
@@ -254,7 +245,7 @@ REASONING: The regulation does not address this topic."""
 
     async def test_llm_verify_error_fallback(self, verifier: LegalVerifier) -> None:
         """Test fallback when LLM call fails."""
-        with patch.object(verifier, "_call_groq_with_fallback", new_callable=AsyncMock) as mock_call:
+        with patch.object(verifier, "_call_llm", new_callable=AsyncMock) as mock_call:
             mock_call.side_effect = Exception("API Error")
             result = await verifier._llm_score("clause", "regulation", "")
 
@@ -268,7 +259,7 @@ class TestLegalVerifierParseLLMResponse:
 
     @pytest.fixture
     def settings(self) -> Settings:
-        return Settings(groq_api_key="test")
+        return Settings(llm_model="test-model")
 
     @pytest.fixture
     def verifier(self, settings: Settings) -> LegalVerifier:
@@ -331,74 +322,44 @@ class TestLegalVerifierParseLLMResponse:
         assert result["confidence"] == 0.0
 
 
-class TestLegalVerifierCallGroqWithFallback:
-    """Test LegalVerifier._call_groq_with_fallback() method."""
+class TestLegalVerifierCallLLM:
+    """Test LegalVerifier._call_llm() method."""
 
     @pytest.fixture
     def settings(self) -> Settings:
         return Settings(
-            groq_api_key="test-api-key",
-            groq_model_primary="primary-model",
-            groq_model_fallback="fallback-model",
+            llm_base_url="https://openrouter.ai/api/v1",
+            llm_api_key="test-key",
+            llm_model="test-model",
         )
 
     @pytest.fixture
     def verifier(self, settings: Settings) -> LegalVerifier:
         verifier = LegalVerifier(settings)
-        verifier._groq_client = MagicMock()
+        verifier._llm_client = MagicMock()
         return verifier
 
-    async def test_call_primary_success(self, verifier: LegalVerifier) -> None:
-        """Test successful call to primary model."""
+    async def test_call_success(self, verifier: LegalVerifier) -> None:
+        """Test successful call to Ollama model."""
         mock_response = MagicMock()
         mock_response.choices[0].message.content = "Test response"
-        verifier.groq_client.chat.completions.create = AsyncMock(return_value=mock_response)
+        verifier.llm_client.chat.completions.create = AsyncMock(return_value=mock_response)
 
-        result = await verifier._call_groq_with_fallback("prompt", 0.0, 100)
+        result = await verifier._call_llm("prompt", 0.0, 100)
 
         assert result == "Test response"
-        verifier.groq_client.chat.completions.create.assert_called_once()
-        call_args = verifier.groq_client.chat.completions.create.call_args
-        assert call_args.kwargs["model"] == "primary-model"
+        verifier.llm_client.chat.completions.create.assert_called_once()
+        call_args = verifier.llm_client.chat.completions.create.call_args
+        assert call_args.kwargs["model"] == "test-model"
 
-    async def test_fallback_on_rate_limit(self, verifier: LegalVerifier) -> None:
-        """Test fallback to secondary model on rate limit."""
-        # First call raises rate limit, second succeeds
-        verifier.groq_client.chat.completions.create = AsyncMock(
-            side_effect=[
-                Exception("rate limit exceeded"),
-                MagicMock(choices=[MagicMock(message=MagicMock(content="Fallback response"))]),
-            ]
+    async def test_error_propagates(self, verifier: LegalVerifier) -> None:
+        """Test that errors propagate from _call_llm."""
+        verifier.llm_client.chat.completions.create = AsyncMock(
+            side_effect=Exception("connection refused")
         )
 
-        result = await verifier._call_groq_with_fallback("prompt", 0.0, 100)
-
-        assert result == "Fallback response"
-        assert verifier.groq_client.chat.completions.create.call_count == 2
-
-    async def test_both_models_fail(self, verifier: LegalVerifier) -> None:
-        """Test exception when both models fail."""
-        verifier.groq_client.chat.completions.create = AsyncMock(
-            side_effect=[
-                Exception("rate limit exceeded"),
-                Exception("service unavailable"),
-            ]
-        )
-
-        with pytest.raises(Exception, match="service unavailable"):
-            await verifier._call_groq_with_fallback("prompt", 0.0, 100)
-
-    async def test_non_rate_limit_error_propagates(self, verifier: LegalVerifier) -> None:
-        """Test that non-rate-limit errors propagate immediately."""
-        verifier.groq_client.chat.completions.create = AsyncMock(
-            side_effect=Exception("invalid api key")
-        )
-
-        with pytest.raises(Exception, match="invalid api key"):
-            await verifier._call_groq_with_fallback("prompt", 0.0, 100)
-
-        # Should only be called once (no retry for non-rate-limit errors)
-        assert verifier.groq_client.chat.completions.create.call_count == 1
+        with pytest.raises(Exception, match="connection refused"):
+            await verifier._call_llm("prompt", 0.0, 100)
 
 
 class TestLegalVerifierHelperMethods:
@@ -406,7 +367,7 @@ class TestLegalVerifierHelperMethods:
 
     @pytest.fixture
     def verifier(self) -> LegalVerifier:
-        return LegalVerifier(Settings(groq_api_key="test"))
+        return LegalVerifier(Settings(llm_model="test-model"))
 
     def test_extract_key_phrases(self, verifier: LegalVerifier) -> None:
         """Test extracting key phrases from text."""

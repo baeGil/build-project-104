@@ -21,9 +21,9 @@ from packages.reasoning.generator import LegalGenerator
 def mock_settings() -> Settings:
     """Create mock settings for testing."""
     settings = MagicMock(spec=Settings)
-    settings.groq_api_key = "test-api-key"
-    settings.groq_model_primary = "llama-3.1-8b-instant"
-    settings.groq_model_fallback = "llama-3.3-70b-versatile"
+    settings.llm_base_url = "https://openrouter.ai/api/v1"
+    settings.llm_api_key = "test-key"
+    settings.llm_model = "test-model"
     return settings
 
 
@@ -34,8 +34,8 @@ def generator(mock_settings: Settings) -> LegalGenerator:
 
 
 @pytest.fixture
-def mock_groq_response() -> MagicMock:
-    """Create a mock Groq API response."""
+def mock_llm_response() -> MagicMock:
+    """Create a mock LLM API response."""
     response = MagicMock()
     response.choices = [MagicMock()]
     response.choices[0].message.content = """RATIONALE: This clause complies with Article 46 of the Enterprise Law 2020.
@@ -51,11 +51,11 @@ class TestGenerateFinding:
         self,
         generator: LegalGenerator,
         sample_evidence_pack: EvidencePack,
-        mock_groq_response: MagicMock,
+        mock_llm_response: MagicMock,
     ) -> None:
-        """Test successful finding generation with primary model."""
-        with patch.object(generator, "_groq_client") as mock_client:
-            mock_client.chat.completions.create = AsyncMock(return_value=mock_groq_response)
+        """Test successful finding generation."""
+        with patch.object(generator, "_llm_client") as mock_client:
+            mock_client.chat.completions.create = AsyncMock(return_value=mock_llm_response)
 
             result = await generator.generate_finding(sample_evidence_pack)
 
@@ -69,11 +69,11 @@ class TestGenerateFinding:
         self,
         generator: LegalGenerator,
         sample_evidence_pack: EvidencePack,
-        mock_groq_response: MagicMock,
+        mock_llm_response: MagicMock,
     ) -> None:
         """Test that caching works for repeated findings."""
-        with patch.object(generator, "_groq_client") as mock_client:
-            mock_client.chat.completions.create = AsyncMock(return_value=mock_groq_response)
+        with patch.object(generator, "_llm_client") as mock_client:
+            mock_client.chat.completions.create = AsyncMock(return_value=mock_llm_response)
 
             # First call
             result1 = await generator.generate_finding(sample_evidence_pack)
@@ -84,36 +84,30 @@ class TestGenerateFinding:
             assert mock_client.chat.completions.create.call_count == 1
             assert result1.clause_text == result2.clause_text
 
-    async def test_generate_finding_fallback_model(
+    async def test_generate_finding_error_returns_fallback(
         self,
         generator: LegalGenerator,
         sample_evidence_pack: EvidencePack,
-        mock_groq_response: MagicMock,
     ) -> None:
-        """Test fallback to secondary model on rate limit error."""
-        rate_limit_error = Exception("Rate limit exceeded: 429")
-
-        with patch.object(generator, "_groq_client") as mock_client:
+        """Test that on LLM error, generate_finding returns a fallback finding."""
+        with patch.object(generator, "_llm_client") as mock_client:
             mock_client.chat.completions.create = AsyncMock(
-                side_effect=[rate_limit_error, mock_groq_response]
+                side_effect=Exception("Service unavailable")
             )
 
             result = await generator.generate_finding(sample_evidence_pack)
 
             assert isinstance(result, ReviewFinding)
-            assert mock_client.chat.completions.create.call_count == 2
-            # Verify both models were tried
-            calls = mock_client.chat.completions.create.call_args_list
-            assert calls[0][1]["model"] == generator.settings.groq_model_primary
-            assert calls[1][1]["model"] == generator.settings.groq_model_fallback
+            # Model is called exactly once (no fallback loop)
+            assert mock_client.chat.completions.create.call_count == 1
 
     async def test_generate_finding_error_handling(
         self,
         generator: LegalGenerator,
         sample_evidence_pack: EvidencePack,
     ) -> None:
-        """Test error handling when both models fail."""
-        with patch.object(generator, "_groq_client") as mock_client:
+        """Test error handling when model fails."""
+        with patch.object(generator, "_llm_client") as mock_client:
             mock_client.chat.completions.create = AsyncMock(
                 side_effect=Exception("Service unavailable")
             )
@@ -139,7 +133,7 @@ class TestGenerateReviewSummary:
         mock_response.choices = [MagicMock()]
         mock_response.choices[0].message.content = "Executive summary of contract review."
 
-        with patch.object(generator, "_groq_client") as mock_client:
+        with patch.object(generator, "_llm_client") as mock_client:
             mock_client.chat.completions.create = AsyncMock(return_value=mock_response)
 
             findings = [sample_review_finding]
@@ -163,7 +157,7 @@ class TestGenerateReviewSummary:
         sample_review_finding: ReviewFinding,
     ) -> None:
         """Test error handling in summary generation."""
-        with patch.object(generator, "_groq_client") as mock_client:
+        with patch.object(generator, "_llm_client") as mock_client:
             mock_client.chat.completions.create = AsyncMock(
                 side_effect=Exception("API error")
             )
@@ -188,7 +182,7 @@ class TestGenerateChatAnswer:
         mock_response.choices = [MagicMock()]
         mock_response.choices[0].message.content = "According to Article 46..."
 
-        with patch.object(generator, "_groq_client") as mock_client:
+        with patch.object(generator, "_llm_client") as mock_client:
             mock_client.chat.completions.create = AsyncMock(return_value=mock_response)
 
             result = await generator.generate_chat_answer(
@@ -206,7 +200,7 @@ class TestGenerateChatAnswer:
         sample_evidence_pack: EvidencePack,
     ) -> None:
         """Test chat answer error handling."""
-        with patch.object(generator, "_groq_client") as mock_client:
+        with patch.object(generator, "_llm_client") as mock_client:
             mock_client.chat.completions.create = AsyncMock(
                 side_effect=Exception("API error")
             )
@@ -240,7 +234,7 @@ class TestStreamChatAnswer:
             for chunk in chunks:
                 yield chunk
 
-        with patch.object(generator, "_groq_client") as mock_client:
+        with patch.object(generator, "_llm_client") as mock_client:
             mock_client.chat.completions.create = AsyncMock(return_value=mock_stream())
 
             tokens = []
@@ -252,47 +246,15 @@ class TestStreamChatAnswer:
 
             assert "".join(tokens) == "Hello world!"
 
-    async def test_stream_chat_answer_fallback(
+    async def test_stream_chat_answer_error(
         self,
         generator: LegalGenerator,
         sample_evidence_pack: EvidencePack,
     ) -> None:
-        """Test streaming with fallback on rate limit."""
-        rate_limit_error = Exception("429 rate limit")
-
-        chunks = [MagicMock(choices=[MagicMock(delta=MagicMock(content="Fallback"))])]
-
-        async def mock_stream():
-            for chunk in chunks:
-                yield chunk
-
-        with patch.object(generator, "_groq_client") as mock_client:
+        """Test streaming error handling."""
+        with patch.object(generator, "_llm_client") as mock_client:
             mock_client.chat.completions.create = AsyncMock(
-                side_effect=[rate_limit_error, mock_stream()]
-            )
-
-            tokens = []
-            async for token in generator.stream_chat_answer(
-                query="Test?",
-                evidence_pack=sample_evidence_pack,
-            ):
-                tokens.append(token)
-
-            assert tokens == ["Fallback"]
-            assert mock_client.chat.completions.create.call_count == 2
-
-    async def test_stream_chat_answer_both_models_fail(
-        self,
-        generator: LegalGenerator,
-        sample_evidence_pack: EvidencePack,
-    ) -> None:
-        """Test streaming when both models fail."""
-        with patch.object(generator, "_groq_client") as mock_client:
-            mock_client.chat.completions.create = AsyncMock(
-                side_effect=[
-                    Exception("429 rate limit"),
-                    Exception("429 rate limit"),
-                ]
+                side_effect=Exception("connection error")
             )
 
             tokens = []
@@ -306,68 +268,44 @@ class TestStreamChatAnswer:
             assert "Service temporarily unavailable" in tokens[0]
 
 
-class TestCallGroqWithFallback:
-    """Tests for LegalGenerator._call_groq_with_fallback method."""
+class TestCallLLM:
+    """Tests for LegalGenerator._call_llm method."""
 
     async def test_primary_model_success(
         self,
         generator: LegalGenerator,
     ) -> None:
-        """Test successful call with primary model."""
+        """Test successful call with Ollama model."""
         mock_response = MagicMock()
         mock_response.choices = [MagicMock()]
-        mock_response.choices[0].message.content = "Response from primary model"
+        mock_response.choices[0].message.content = "Response from Ollama model"
 
-        with patch.object(generator, "_groq_client") as mock_client:
+        with patch.object(generator, "_llm_client") as mock_client:
             mock_client.chat.completions.create = AsyncMock(return_value=mock_response)
 
-            result = await generator._call_groq_with_fallback(
+            result = await generator._call_llm(
                 prompt="Test prompt",
                 temperature=0.1,
                 max_tokens=100,
             )
 
-            assert result == "Response from primary model"
+            assert result == "Response from Ollama model"
             mock_client.chat.completions.create.assert_called_once()
+            call_args = mock_client.chat.completions.create.call_args
+            assert call_args[1]["model"] == generator.settings.llm_model
 
-    async def test_fallback_on_rate_limit(
+    async def test_error_propagates(
         self,
         generator: LegalGenerator,
     ) -> None:
-        """Test fallback to secondary model on rate limit."""
-        mock_response = MagicMock()
-        mock_response.choices = [MagicMock()]
-        mock_response.choices[0].message.content = "Response from fallback model"
-
-        with patch.object(generator, "_groq_client") as mock_client:
+        """Test that errors propagate from _call_llm."""
+        with patch.object(generator, "_llm_client") as mock_client:
             mock_client.chat.completions.create = AsyncMock(
-                side_effect=[
-                    Exception("Rate limit: 429"),
-                    mock_response,
-                ]
+                side_effect=Exception("Connection refused")
             )
 
-            result = await generator._call_groq_with_fallback(
-                prompt="Test prompt",
-                temperature=0.1,
-                max_tokens=100,
-            )
-
-            assert result == "Response from fallback model"
-            assert mock_client.chat.completions.create.call_count == 2
-
-    async def test_non_rate_limit_error_propagates(
-        self,
-        generator: LegalGenerator,
-    ) -> None:
-        """Test that non-rate-limit errors propagate immediately."""
-        with patch.object(generator, "_groq_client") as mock_client:
-            mock_client.chat.completions.create = AsyncMock(
-                side_effect=Exception("Authentication failed")
-            )
-
-            with pytest.raises(Exception, match="Authentication failed"):
-                await generator._call_groq_with_fallback(
+            with pytest.raises(Exception, match="Connection refused"):
+                await generator._call_llm(
                     prompt="Test prompt",
                     temperature=0.1,
                     max_tokens=100,
