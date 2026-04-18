@@ -1,0 +1,387 @@
+{
+  "test_metadata": {
+    "test_name": "Ground Truth Contract Review Test",
+    "contract_file": "test contracts/test_contract_groundtruth.txt",
+    "timestamp": "2026-04-17T10:18:49.418931",
+    "pipeline_version": "1.0"
+  },
+  "contract_analysis": {
+    "total_clauses": 4,
+    "parsing_time": 0.00025333400117233396,
+    "clauses": [
+      {
+        "number": 1,
+        "title": "ĐIỀU 1: DỊCH VỤ GIỮ XE VÀ PHÍ DỊCH VỤ",
+        "text_preview": "ĐIỀU 1: DỊCH VỤ GIỮ XE VÀ PHÍ DỊCH VỤ\n\n1.1 Bên B cung cấp dịch vụ giữ xe trên địa bàn huyện với giá:\n- Xe máy: 2.000 VNĐ/lượt (8 giờ đầu), 3.000 VNĐ/lượt (trên 8 giờ)\n- Ô tô dưới 7 chỗ: 5.000 VNĐ/lượt"
+      },
+      {
+        "number": 2,
+        "title": "ĐIỀU 2: NIÊM YẾT GIÁ VÀ CÔNG KHAI",
+        "text_preview": "ĐIỀU 2: NIÊM YẾT GIÁ VÀ CÔNG KHAI\n\n2.1 Bên B phải niêm yết giá công khai tại nơi cung cấp dịch vụ\n\n2.2 Bảng giá phải ghi rõ:\n- Tên dịch vụ\n- Đơn giá\n- Đơn vị tính\n- Thời gian áp dụng\n\n2.3 Niêm yết giá"
+      },
+      {
+        "number": 3,
+        "title": "ĐIỀU 3: QUẢN LÝ THU NGÂN VÀ BÁO CÁO",
+        "text_preview": "ĐIỀU 3: QUẢN LÝ THU NGÂN VÀ BÁO CÁO\n\n3.1 Bên B phải lập sổ sách kế toán theo quy định\n\n3.2 Báo cáo doanh thu hàng tháng cho UBND huyện trước ngày 10 hàng tháng\n\n3.3 Nội dung báo cáo:\n- Tổng doanh thu "
+      },
+      {
+        "number": 4,
+        "title": "ĐIỀU 4: CHẤT LƯỢNG DỊCH VỤ VÀ AN NINH",
+        "text_preview": "ĐIỀU 4: CHẤT LƯỢNG DỊCH VỤ VÀ AN NINH\n\n4.1 Bên B phải đảm bảo an toàn cho tài sản của khách hàng\n\n4.2 Bố trí bảo vệ 24/7 tại các điểm giữ xe\n\n4.3 Lắp đặt camera giám sát tại khu vực chợ\n\n4.4 Phối hợp "
+      }
+    ]
+  },
+  "findings": [
+    {
+      "clause_number": 1,
+      "clause_title": "ĐIỀU 1: DỊCH VỤ GIỮ XE VÀ PHÍ DỊCH VỤ",
+      "clause_text": "ĐIỀU 1: DỊCH VỤ GIỮ XE VÀ PHÍ DỊCH VỤ\n\n1.1 Bên B cung cấp dịch vụ giữ xe trên địa bàn huyện với giá:\n- Xe máy: 2.000 VNĐ/lượt (8 giờ đầu), 3.000 VNĐ/lượt (trên 8 giờ)\n- Ô tô dưới 7 chỗ: 5.000 VNĐ/lượt\n- Ô tô trên 7 chỗ: 10.000 VNĐ/lượt\n\n1.2 Phí chợ trên địa bàn huyện:\n- Sạp nhỏ (dưới 2m²): 30.000 VNĐ/ngày\n- Sạp vừa (2-4m²): 60.000 VNĐ/ngày\n- Sạp lớn (trên 4m²): 100.000 VNĐ/ngày\n\n1.3 Tất cả giao dịch phải thanh toán bằng đồng Việt Nam\n\n1.4 Bên B có trách nhiệm nộp phí quản lý cho UBND huyện: 10% doanh thu",
+      "retrieved_docs": [
+        {
+          "doc_id": "4258",
+          "law_id": "166/1999/QĐ-UB",
+          "title": "Về việc quy định giá dịch vụ giữ xe và phí bến bãi đậu xe trên địa bàn tỉnh Lâm Đồng",
+          "score": 94.59397405945381,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂMĐỒNG\nVề việc quy định giá dịch vụ giữxe và phí bến bãi đậu xe\ntrên địa bàn tỉnh Lâm Đồng\nUỶ BAN NHÂN DÂN TỈNH LÂMĐỒNG\nCăn cứ Luật Tổ chức HĐND và Ủy ban nhân dân"
+        },
+        {
+          "doc_id": "4257",
+          "law_id": "28/1999/CT-UB",
+          "title": "Về việc niêm yết giá, nhận thanh toán hàng hóa và dịch vụ bằng đồng Việt Nam",
+          "score": 57.23138378313482,
+          "content_preview": "CHỈ THỊ CỦA Ủy ban nhân dân TỈNH LÂM ĐỒNG\nVề việc niêm yết giá, nhận thanh toán hàng hóa và dịch vụ bằng đồng Việt Nam\nCăn cứ Nghị định số 63/1998/Nghị định Chính phủ của Chính phủ ban hành ngày 17/08"
+        },
+        {
+          "doc_id": "4295",
+          "law_id": "146/1999/QĐ-UB",
+          "title": "Về việc quy định tạm thời mức bồi dưỡng tập luyện cho vận động viên, giáo viên, huấn luyện viên năng khiếu thể thao",
+          "score": 34.97543987232217,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂM ĐỒNG\nVề việc quy định tạm thời mức bồi dưỡng tập luyện cho\nvận động viên, giáo viên, huấn luyện viên năng khiếuthể thao\nỦY BAN NHÂN DÂN TỈNH LÂM ĐỒNG\nCăn cứ Luậ"
+        },
+        {
+          "doc_id": "4242",
+          "law_id": "181/1999/QĐ-UB",
+          "title": "V/v Ban hành qui định về ký quĩ phục hồi môi trườngtrong khai thác tận thu khoáng sản trên địa bàn tỉnh Lâm Đồng",
+          "score": 27.693247878007956,
+          "content_preview": "QUYẾT ĐỊNH\nVề việc ban hành qui định vềký quĩ phục hồi môi trường\ntrong khai thác tận thu khoáng sản trên địa bàn tỉnhLâm Đồng\nỦY BAN NHÂN DÂN TỈNH LÂM ĐỒNG\nCăn cứ Luật Tổ chức HĐND và Ủy ban nhân dân"
+        },
+        {
+          "doc_id": "4204",
+          "law_id": "99/QĐ-UB",
+          "title": "Ban hành quy định phân cấp quản lý công tác Tổ chức và Cán bộ",
+          "score": 22.25517875606191,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH BẮC NINH\nBan hành quy định\nphân cấp quản lý công tác Tổ chức và Cán bộ\nỦy ban nhân dân TỈNH BẮC NINH\nCăn cứ Luật Tổ chức HĐND và Ủy ban nhân dân được Quốc hội nước "
+        },
+        {
+          "doc_id": "4203",
+          "law_id": "40/1999/QĐ-UB",
+          "title": "Uỷ quyền cho Sở Thương mại và Du lịch xét duyệt kế hoạch và quản lý hoạt động xuất khẩu, nhập khẩu cho các Doanh nghiệpcó vốn đầu tư nước ngoài, các bên hợp doanh trên cơ sở hợp đồng hợp tác kinh doanh trên địa bàn tỉnh",
+          "score": 19.44579991023236,
+          "content_preview": "QUYẾT ĐỊNH CỦ UỶ BAN NHÂN DÂN TỈNH BẮC NINH\nUỷ quyền cho Sở Thương mại và Du lịch xét duyệt kế hoạch và quản lý hoạt động xuất khẩu, nhập khẩu cho các Doanh nghiệpcó vốn đầu tư nước ngoài, các bên hợp"
+        },
+        {
+          "doc_id": "4274",
+          "law_id": "105/2000/QĐ-UB",
+          "title": "Về việc giao chỉ tiêu kế hoạch động viên và huy động lực lượng ngành Y tế bảo đảm nhu cầu khi có chiến tranh và các tình huống cần thiết khác đối với ngành Y tế tỉnh Lâm Đồng",
+          "score": 25.489033636657958,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂM ĐỒNG\nVề việc giao chỉ tiêu kế hoạch động viên và huy động lực lượng ngành Y tế\nbảo đảm nhu cầu khi có chiến tranh và các tình huống cần thiết khác đối với ngành"
+        },
+        {
+          "doc_id": "4265",
+          "law_id": "24/1999/CT-UB",
+          "title": "Về việc thực hiện Quyết định số 53/1999/QĐ-TTg ngày 26 tháng 3 năm 1999 của Thủ tướng Chính phủ",
+          "score": 34.204588391027414,
+          "content_preview": "CHỈ THỊ CỦA Ủy ban nhân dân TỈNH LÂM ĐỒNG\nVề việc thực hiện Quyết định số 53/1999/Quyết định Thủ tướng Chính phủ\nngày 26 tháng 3 năm 1999 của Thủ tướng Chính phủ\nNgày 26/3/1999 Thủ tướng Chính phủ đã "
+        },
+        {
+          "doc_id": "77",
+          "law_id": "83/SL",
+          "title": "Sắc lệnh bãi bỏ Sắc lệnh 106 ngày 09-09-1949 về phí cấp hàng tháng của các các vị trong Ban thường trực Quốc hội",
+          "score": 48.440058597310966,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 83/SL NGÀY 22 THÁNG 5 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh số 106-SL ngày 9 tháng 9 năm 1949 ấn định phí cấp của các "
+        },
+        {
+          "doc_id": "4280",
+          "law_id": "157/1999/QĐ-UB",
+          "title": "Về viẹc quản lý và quy định thống nhất phí chợ trên địa bàn tỉnh Lâm Đồng",
+          "score": 86.67579386080581,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂMĐỒNG\nVề việc Quản lý và quy địnhthống nhất phí chợ\ntrên địa bàn tỉnh Lâm Đồng\nỦY BAN NHÂN DÂN TỈNH LÂM ĐỒNG\nCăn cứ Luật Tổ chứcHĐND và Ủy ban nhân dân (sửa đổi) "
+        }
+      ],
+      "status": "retrieved",
+      "retrieval_time": 0.17283799999859184
+    },
+    {
+      "clause_number": 2,
+      "clause_title": "ĐIỀU 2: NIÊM YẾT GIÁ VÀ CÔNG KHAI",
+      "clause_text": "ĐIỀU 2: NIÊM YẾT GIÁ VÀ CÔNG KHAI\n\n2.1 Bên B phải niêm yết giá công khai tại nơi cung cấp dịch vụ\n\n2.2 Bảng giá phải ghi rõ:\n- Tên dịch vụ\n- Đơn giá\n- Đơn vị tính\n- Thời gian áp dụng\n\n2.3 Niêm yết giá tại trụ sở và nơi công cộng dễ nhìn thấy\n\n2.4 Cập nhật bảng giá khi có điều chỉnh từ cơ quan nhà nước\n\n2.5 Xử lý vi phạm: Phạt tiền từ 5.000.000 đến 15.000.000 VNĐ nếu không niêm yết giá",
+      "retrieved_docs": [
+        {
+          "doc_id": "4257",
+          "law_id": "28/1999/CT-UB",
+          "title": "Về việc niêm yết giá, nhận thanh toán hàng hóa và dịch vụ bằng đồng Việt Nam",
+          "score": 92.97955384595419,
+          "content_preview": "CHỈ THỊ CỦA Ủy ban nhân dân TỈNH LÂM ĐỒNG\nVề việc niêm yết giá, nhận thanh toán hàng hóa và dịch vụ bằng đồng Việt Nam\nCăn cứ Nghị định số 63/1998/Nghị định Chính phủ của Chính phủ ban hành ngày 17/08"
+        },
+        {
+          "doc_id": "4280",
+          "law_id": "157/1999/QĐ-UB",
+          "title": "Về viẹc quản lý và quy định thống nhất phí chợ trên địa bàn tỉnh Lâm Đồng",
+          "score": 47.436422502569684,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂMĐỒNG\nVề việc Quản lý và quy địnhthống nhất phí chợ\ntrên địa bàn tỉnh Lâm Đồng\nỦY BAN NHÂN DÂN TỈNH LÂM ĐỒNG\nCăn cứ Luật Tổ chứcHĐND và Ủy ban nhân dân (sửa đổi) "
+        },
+        {
+          "doc_id": "77",
+          "law_id": "83/SL",
+          "title": "Sắc lệnh bãi bỏ Sắc lệnh 106 ngày 09-09-1949 về phí cấp hàng tháng của các các vị trong Ban thường trực Quốc hội",
+          "score": 30.94651073287065,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 83/SL NGÀY 22 THÁNG 5 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh số 106-SL ngày 9 tháng 9 năm 1949 ấn định phí cấp của các "
+        },
+        {
+          "doc_id": "91",
+          "law_id": "77/SL",
+          "title": "Sắc lệnh quy định chế độ công nhân giúp việc Chính phủ trong thời kỳ kháng chiến (thiếu trang 2)",
+          "score": 28.61991606841987,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH NƯỚC\nSỐ 77/SL NGÀY 22 THÁNG 5 NĂM 1950\nCHỦ TỊCH NƯỚC\nVIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh số 29-SL ngày 12 tháng 3 năm 1947 quy định chế độ lao động trong toàn cõi Việt Nam;\n"
+        },
+        {
+          "doc_id": "65",
+          "law_id": "127",
+          "title": "Sắc lệnh sửa đổi điều 3 của Sắc lệnh số 3 ngày 22-05-1950 về phụ cấp cho gia đình các vị trong ban thường trực Quốc hội",
+          "score": 27.79871374565239,
+          "content_preview": "SẮC LỆNH\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 127/SL NGÀY 11 THÁNG 7 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh số 83-SL ngày 22 tháng 5 năm 1950 ấn định phí cấp hàng tháng "
+        },
+        {
+          "doc_id": "4263",
+          "law_id": "163/1999/QĐ-UB",
+          "title": "Về việc xử lý đối với quỹ nhà thuộc quyền sở hữu Nhà nước do các cơ quan, đơn vị đã tự bố trí cho cán bộ, công nhân viên ở tập thể trên địa bàn thành phố Đà Lạt.",
+          "score": 27.584247791437367,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂMĐỒNG\nVề việc xử lý đối với quỹ nhàthuộc quyền sở hữu Nhà nước\ndo các cơ quan, đơn vị đã tựbố trí cho cán bộ, công nhân viên\nở tập thể trên địa bàn thànhphố Đà Lạ"
+        },
+        {
+          "doc_id": "73",
+          "law_id": "100/SL",
+          "title": "Sắc lệnh đổi các Điều 3, 8 và 12 Sắc lệnh số 68-SL ngày 30-11-1945 quy định việc trưng thu, trưng dụng và trưng tập trong thời kỳ kháng chiến",
+          "score": 28.54988923930199,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 100/SL NGÀY 30 THÁNG 5 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh số 68 ngày 30-11-1945 quy định việc trưng thu, trưng dụng"
+        },
+        {
+          "doc_id": "96",
+          "law_id": "76/SL",
+          "title": "Sắc lệnh ban hành Quy chế Công chức",
+          "score": 29.462446207262406,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH NƯỚC\nNƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 76/SL NGÀY 20 THÁNG 5 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu tình thế hiện thời;\nTheo đề nghị của Bộ trưởng Bộ Nội vụ;\nTheo"
+        },
+        {
+          "doc_id": "4265",
+          "law_id": "24/1999/CT-UB",
+          "title": "Về việc thực hiện Quyết định số 53/1999/QĐ-TTg ngày 26 tháng 3 năm 1999 của Thủ tướng Chính phủ",
+          "score": 43.945069238308896,
+          "content_preview": "CHỈ THỊ CỦA Ủy ban nhân dân TỈNH LÂM ĐỒNG\nVề việc thực hiện Quyết định số 53/1999/Quyết định Thủ tướng Chính phủ\nngày 26 tháng 3 năm 1999 của Thủ tướng Chính phủ\nNgày 26/3/1999 Thủ tướng Chính phủ đã "
+        },
+        {
+          "doc_id": "4258",
+          "law_id": "166/1999/QĐ-UB",
+          "title": "Về việc quy định giá dịch vụ giữ xe và phí bến bãi đậu xe trên địa bàn tỉnh Lâm Đồng",
+          "score": 83.18928796293523,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂMĐỒNG\nVề việc quy định giá dịch vụ giữxe và phí bến bãi đậu xe\ntrên địa bàn tỉnh Lâm Đồng\nUỶ BAN NHÂN DÂN TỈNH LÂMĐỒNG\nCăn cứ Luật Tổ chức HĐND và Ủy ban nhân dân"
+        }
+      ],
+      "status": "retrieved",
+      "retrieval_time": 0.07178287499118596
+    },
+    {
+      "clause_number": 3,
+      "clause_title": "ĐIỀU 3: QUẢN LÝ THU NGÂN VÀ BÁO CÁO",
+      "clause_text": "ĐIỀU 3: QUẢN LÝ THU NGÂN VÀ BÁO CÁO\n\n3.1 Bên B phải lập sổ sách kế toán theo quy định\n\n3.2 Báo cáo doanh thu hàng tháng cho UBND huyện trước ngày 10 hàng tháng\n\n3.3 Nội dung báo cáo:\n- Tổng doanh thu từ dịch vụ giữ xe\n- Tổng doanh thu từ phí chợ\n- Số lượng khách hàng trung bình/ngày\n- Tình hình an ninh trật tự\n\n3.4 Lưu trữ chứng từ, hóa đơn tối thiểu 05 năm\n\n3.5 Chịu sự thanh tra, kiểm tra của cơ quan tài chính",
+      "retrieved_docs": [
+        {
+          "doc_id": "4257",
+          "law_id": "28/1999/CT-UB",
+          "title": "Về việc niêm yết giá, nhận thanh toán hàng hóa và dịch vụ bằng đồng Việt Nam",
+          "score": 88.91507460605216,
+          "content_preview": "CHỈ THỊ CỦA Ủy ban nhân dân TỈNH LÂM ĐỒNG\nVề việc niêm yết giá, nhận thanh toán hàng hóa và dịch vụ bằng đồng Việt Nam\nCăn cứ Nghị định số 63/1998/Nghị định Chính phủ của Chính phủ ban hành ngày 17/08"
+        },
+        {
+          "doc_id": "4242",
+          "law_id": "181/1999/QĐ-UB",
+          "title": "V/v Ban hành qui định về ký quĩ phục hồi môi trườngtrong khai thác tận thu khoáng sản trên địa bàn tỉnh Lâm Đồng",
+          "score": 61.89687429058679,
+          "content_preview": "QUYẾT ĐỊNH\nVề việc ban hành qui định vềký quĩ phục hồi môi trường\ntrong khai thác tận thu khoáng sản trên địa bàn tỉnhLâm Đồng\nỦY BAN NHÂN DÂN TỈNH LÂM ĐỒNG\nCăn cứ Luật Tổ chức HĐND và Ủy ban nhân dân"
+        },
+        {
+          "doc_id": "4203",
+          "law_id": "40/1999/QĐ-UB",
+          "title": "Uỷ quyền cho Sở Thương mại và Du lịch xét duyệt kế hoạch và quản lý hoạt động xuất khẩu, nhập khẩu cho các Doanh nghiệpcó vốn đầu tư nước ngoài, các bên hợp doanh trên cơ sở hợp đồng hợp tác kinh doanh trên địa bàn tỉnh",
+          "score": 54.35606065044899,
+          "content_preview": "QUYẾT ĐỊNH CỦ UỶ BAN NHÂN DÂN TỈNH BẮC NINH\nUỷ quyền cho Sở Thương mại và Du lịch xét duyệt kế hoạch và quản lý hoạt động xuất khẩu, nhập khẩu cho các Doanh nghiệpcó vốn đầu tư nước ngoài, các bên hợp"
+        },
+        {
+          "doc_id": "96",
+          "law_id": "76/SL",
+          "title": "Sắc lệnh ban hành Quy chế Công chức",
+          "score": 35.2306557325428,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH NƯỚC\nNƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 76/SL NGÀY 20 THÁNG 5 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu tình thế hiện thời;\nTheo đề nghị của Bộ trưởng Bộ Nội vụ;\nTheo"
+        },
+        {
+          "doc_id": "4260",
+          "law_id": "87/1999/QĐ-UB",
+          "title": "Về việc chuyển giao nhiệm vụ quản lý Nhà nước về đất lâm nghiệp từ Sở Nông nghiệp và Phát triển Nông thôn và Chi cục kiểm lâm tỉnh sang Sở Địa chính để quản lý",
+          "score": 30.701076058203014,
+          "content_preview": "QUYẾT ĐỊNH\nVề việc chuyển giao nhiệm vụ quản lý Nhà nước về đất lâm nghiệp\ntừ Sở Nông nghiệp và Phát triển Nông thôn và Chi cục kiểm lâm tỉnh sang Sở Địa chính để quản lý\nỦY BAN NHÂN DÂN TỈNH LÂM ĐỒNG"
+        },
+        {
+          "doc_id": "73",
+          "law_id": "100/SL",
+          "title": "Sắc lệnh đổi các Điều 3, 8 và 12 Sắc lệnh số 68-SL ngày 30-11-1945 quy định việc trưng thu, trưng dụng và trưng tập trong thời kỳ kháng chiến",
+          "score": 30.036374656204774,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 100/SL NGÀY 30 THÁNG 5 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh số 68 ngày 30-11-1945 quy định việc trưng thu, trưng dụng"
+        },
+        {
+          "doc_id": "92",
+          "law_id": "85/SL",
+          "title": "Sắc lệnh cải cách bộ máy Tư pháp và Luật Tố tụng",
+          "score": 31.565089971843232,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 85/SL NGÀY 22 THÁNG 5 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh số 13-SL ngày 24 tháng 1 năm 1946 và các sắc lệnh tiếp sau"
+        },
+        {
+          "doc_id": "4265",
+          "law_id": "24/1999/CT-UB",
+          "title": "Về việc thực hiện Quyết định số 53/1999/QĐ-TTg ngày 26 tháng 3 năm 1999 của Thủ tướng Chính phủ",
+          "score": 39.06604035900706,
+          "content_preview": "CHỈ THỊ CỦA Ủy ban nhân dân TỈNH LÂM ĐỒNG\nVề việc thực hiện Quyết định số 53/1999/Quyết định Thủ tướng Chính phủ\nngày 26 tháng 3 năm 1999 của Thủ tướng Chính phủ\nNgày 26/3/1999 Thủ tướng Chính phủ đã "
+        },
+        {
+          "doc_id": "4280",
+          "law_id": "157/1999/QĐ-UB",
+          "title": "Về viẹc quản lý và quy định thống nhất phí chợ trên địa bàn tỉnh Lâm Đồng",
+          "score": 59.78410645797621,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂMĐỒNG\nVề việc Quản lý và quy địnhthống nhất phí chợ\ntrên địa bàn tỉnh Lâm Đồng\nỦY BAN NHÂN DÂN TỈNH LÂM ĐỒNG\nCăn cứ Luật Tổ chứcHĐND và Ủy ban nhân dân (sửa đổi) "
+        },
+        {
+          "doc_id": "4258",
+          "law_id": "166/1999/QĐ-UB",
+          "title": "Về việc quy định giá dịch vụ giữ xe và phí bến bãi đậu xe trên địa bàn tỉnh Lâm Đồng",
+          "score": 77.5603221347108,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂMĐỒNG\nVề việc quy định giá dịch vụ giữxe và phí bến bãi đậu xe\ntrên địa bàn tỉnh Lâm Đồng\nUỶ BAN NHÂN DÂN TỈNH LÂMĐỒNG\nCăn cứ Luật Tổ chức HĐND và Ủy ban nhân dân"
+        }
+      ],
+      "status": "retrieved",
+      "retrieval_time": 0.06643174996133894
+    },
+    {
+      "clause_number": 4,
+      "clause_title": "ĐIỀU 4: CHẤT LƯỢNG DỊCH VỤ VÀ AN NINH",
+      "clause_text": "ĐIỀU 4: CHẤT LƯỢNG DỊCH VỤ VÀ AN NINH\n\n4.1 Bên B phải đảm bảo an toàn cho tài sản của khách hàng\n\n4.2 Bố trí bảo vệ 24/7 tại các điểm giữ xe\n\n4.3 Lắp đặt camera giám sát tại khu vực chợ\n\n4.4 Phối hợp với công an địa phương đảm bảo an ninh trật tự\n\n4.5 Bồi thường thiệt hại nếu để mất tài sản của khách hàng\n\n4.6 Phạt tiền từ 10.000.000 đến 30.000.000 VNĐ nếu để xảy ra mất an ninh\n\nĐIỀU KHOẢN CHUNG\n\n5.1 Hợp đồng có hiệu lực từ ngày 01/01/2025 đến ngày 31/12/2025\n\n5.2 Giá dịch vụ có thể điều chỉnh theo Quyết định của UBND tỉnh\n\n5.3 Hợp đồng được lập thành 04 bản, mỗi bên giữ 02 bản\n\n5.4 Tranh chấp được giải quyết qua thương lượng, nếu không sẽ kiện ra Tòa án nhân dân huyện\n\nĐẠI DIỆN BÊN A                          ĐẠI DIỆN BÊN B\n(Ký tên, đóng dấu)                      (Ký tên, đóng dấu)\n\n\nLê Văn Thắng                             Nguyễn Thị Mai\nChủ tịch UBND                            Chủ nhiệm",
+      "retrieved_docs": [
+        {
+          "doc_id": "4258",
+          "law_id": "166/1999/QĐ-UB",
+          "title": "Về việc quy định giá dịch vụ giữ xe và phí bến bãi đậu xe trên địa bàn tỉnh Lâm Đồng",
+          "score": 93.07654198662372,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂMĐỒNG\nVề việc quy định giá dịch vụ giữxe và phí bến bãi đậu xe\ntrên địa bàn tỉnh Lâm Đồng\nUỶ BAN NHÂN DÂN TỈNH LÂMĐỒNG\nCăn cứ Luật Tổ chức HĐND và Ủy ban nhân dân"
+        },
+        {
+          "doc_id": "92",
+          "law_id": "85/SL",
+          "title": "Sắc lệnh cải cách bộ máy Tư pháp và Luật Tố tụng",
+          "score": 52.66683852586271,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 85/SL NGÀY 22 THÁNG 5 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh số 13-SL ngày 24 tháng 1 năm 1946 và các sắc lệnh tiếp sau"
+        },
+        {
+          "doc_id": "73",
+          "law_id": "100/SL",
+          "title": "Sắc lệnh đổi các Điều 3, 8 và 12 Sắc lệnh số 68-SL ngày 30-11-1945 quy định việc trưng thu, trưng dụng và trưng tập trong thời kỳ kháng chiến",
+          "score": 50.166209834928424,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 100/SL NGÀY 30 THÁNG 5 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh số 68 ngày 30-11-1945 quy định việc trưng thu, trưng dụng"
+        },
+        {
+          "doc_id": "31",
+          "law_id": "157/SL",
+          "title": "Sắc lệnh tổ chức toà án nhân dân vùng tạm bị chiếm đóng",
+          "score": 39.02017012825368,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 157/SL NGÀY 17 THÁNG 11 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh số 13 ngày 21 tháng 1 năm 1946 và các sắc lệnh tiếp theo"
+        },
+        {
+          "doc_id": "71",
+          "law_id": "106/SL",
+          "title": "Sắc lệnh định việc trừng trị những tội làm chậm trễ hay ngăn trở việc thi hành nghĩa vụ quân sự và lệnh tòng quân",
+          "score": 33.042364394751715,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH PHỦ NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 106/SL NGÀY 15 THÁNG 6 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nCHIỂU SẮC LỆNH SỐ 71-SL NGÀY 22 THÁNG 5 NĂM 1946 ẤN ĐỊNH QUY TẮC QUÂ"
+        },
+        {
+          "doc_id": "67",
+          "law_id": "111",
+          "title": "Sắc lệnh chỉ định ông Nguyễn Duy Trinh làm Chủ tịch, ông Trần Đình Tri làm phó Chủ tịch UBKCHC miền Nam trung bộ",
+          "score": 27.838563358406837,
+          "content_preview": "SẮC LỆNH\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 111/SL NGÀY 20 THÁNG 6 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh số 254-SL ngày 19 tháng 11 năm 1948 tổ chức chính quyền nhân "
+        },
+        {
+          "doc_id": "91",
+          "law_id": "77/SL",
+          "title": "Sắc lệnh quy định chế độ công nhân giúp việc Chính phủ trong thời kỳ kháng chiến (thiếu trang 2)",
+          "score": 35.03185473384866,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH NƯỚC\nSỐ 77/SL NGÀY 22 THÁNG 5 NĂM 1950\nCHỦ TỊCH NƯỚC\nVIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh số 29-SL ngày 12 tháng 3 năm 1947 quy định chế độ lao động trong toàn cõi Việt Nam;\n"
+        },
+        {
+          "doc_id": "4274",
+          "law_id": "105/2000/QĐ-UB",
+          "title": "Về việc giao chỉ tiêu kế hoạch động viên và huy động lực lượng ngành Y tế bảo đảm nhu cầu khi có chiến tranh và các tình huống cần thiết khác đối với ngành Y tế tỉnh Lâm Đồng",
+          "score": 39.32288731234611,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂM ĐỒNG\nVề việc giao chỉ tiêu kế hoạch động viên và huy động lực lượng ngành Y tế\nbảo đảm nhu cầu khi có chiến tranh và các tình huống cần thiết khác đối với ngành"
+        },
+        {
+          "doc_id": "4257",
+          "law_id": "28/1999/CT-UB",
+          "title": "Về việc niêm yết giá, nhận thanh toán hàng hóa và dịch vụ bằng đồng Việt Nam",
+          "score": 50.81657017940322,
+          "content_preview": "CHỈ THỊ CỦA Ủy ban nhân dân TỈNH LÂM ĐỒNG\nVề việc niêm yết giá, nhận thanh toán hàng hóa và dịch vụ bằng đồng Việt Nam\nCăn cứ Nghị định số 63/1998/Nghị định Chính phủ của Chính phủ ban hành ngày 17/08"
+        },
+        {
+          "doc_id": "90",
+          "law_id": "97/SL",
+          "title": "Sắc lệnh sửa đổi một số quy lệ và chế định trong dân luật",
+          "score": 55.557755126444405,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH CHÍNH PHỦ\nNƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 97/SL NGÀY 22 THÁNG 5 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh ngày 10 tháng 10 năm 1945 tạm giữ các luật lệ hi"
+        }
+      ],
+      "status": "retrieved",
+      "retrieval_time": 0.07103541702963412
+    }
+  ],
+  "performance_metrics": {
+    "warmup_time": "0.09s",
+    "total_pipeline_time": "0.39s",
+    "clause_parsing_time": "0.00s",
+    "average_retrieval_time": "0.10s",
+    "retrieval_times": [
+      "0.17s",
+      "0.07s",
+      "0.07s",
+      "0.07s"
+    ],
+    "total_retrieval_time": "0.38s"
+  },
+  "raw_clauses": [
+    {
+      "index": 0,
+      "text": "ĐIỀU 1: DỊCH VỤ GIỮ XE VÀ PHÍ DỊCH VỤ\n\n1.1 Bên B cung cấp dịch vụ giữ xe trên địa bàn huyện với giá:\n- Xe máy: 2.000 VNĐ/lượt (8 giờ đầu), 3.000 VNĐ/lượt (trên 8 giờ)\n- Ô tô dưới 7 chỗ: 5.000 VNĐ/lượt\n- Ô tô trên 7 chỗ: 10.000 VNĐ/lượt\n\n1.2 Phí chợ trên địa bàn huyện:\n- Sạp nhỏ (dưới 2m²): 30.000 VNĐ/ngày\n- Sạp vừa (2-4m²): 60.000 VNĐ/ngày\n- Sạp lớn (trên 4m²): 100.000 VNĐ/ngày\n\n1.3 Tất cả giao dịch phải thanh toán bằng đồng Việt Nam\n\n1.4 Bên B có trách nhiệm nộp phí quản lý cho UBND huyện: 10% doanh thu",
+      "title": "ĐIỀU 1: DỊCH VỤ GIỮ XE VÀ PHÍ DỊCH VỤ"
+    },
+    {
+      "index": 1,
+      "text": "ĐIỀU 2: NIÊM YẾT GIÁ VÀ CÔNG KHAI\n\n2.1 Bên B phải niêm yết giá công khai tại nơi cung cấp dịch vụ\n\n2.2 Bảng giá phải ghi rõ:\n- Tên dịch vụ\n- Đơn giá\n- Đơn vị tính\n- Thời gian áp dụng\n\n2.3 Niêm yết giá tại trụ sở và nơi công cộng dễ nhìn thấy\n\n2.4 Cập nhật bảng giá khi có điều chỉnh từ cơ quan nhà nước\n\n2.5 Xử lý vi phạm: Phạt tiền từ 5.000.000 đến 15.000.000 VNĐ nếu không niêm yết giá",
+      "title": "ĐIỀU 2: NIÊM YẾT GIÁ VÀ CÔNG KHAI"
+    },
+    {
+      "index": 2,
+      "text": "ĐIỀU 3: QUẢN LÝ THU NGÂN VÀ BÁO CÁO\n\n3.1 Bên B phải lập sổ sách kế toán theo quy định\n\n3.2 Báo cáo doanh thu hàng tháng cho UBND huyện trước ngày 10 hàng tháng\n\n3.3 Nội dung báo cáo:\n- Tổng doanh thu từ dịch vụ giữ xe\n- Tổng doanh thu từ phí chợ\n- Số lượng khách hàng trung bình/ngày\n- Tình hình an ninh trật tự\n\n3.4 Lưu trữ chứng từ, hóa đơn tối thiểu 05 năm\n\n3.5 Chịu sự thanh tra, kiểm tra của cơ quan tài chính",
+      "title": "ĐIỀU 3: QUẢN LÝ THU NGÂN VÀ BÁO CÁO"
+    },
+    {
+      "index": 3,
+      "text": "ĐIỀU 4: CHẤT LƯỢNG DỊCH VỤ VÀ AN NINH\n\n4.1 Bên B phải đảm bảo an toàn cho tài sản của khách hàng\n\n4.2 Bố trí bảo vệ 24/7 tại các điểm giữ xe\n\n4.3 Lắp đặt camera giám sát tại khu vực chợ\n\n4.4 Phối hợp với công an địa phương đảm bảo an ninh trật tự\n\n4.5 Bồi thường thiệt hại nếu để mất tài sản của khách hàng\n\n4.6 Phạt tiền từ 10.000.000 đến 30.000.000 VNĐ nếu để xảy ra mất an ninh\n\nĐIỀU KHOẢN CHUNG\n\n5.1 Hợp đồng có hiệu lực từ ngày 01/01/2025 đến ngày 31/12/2025\n\n5.2 Giá dịch vụ có thể điều chỉnh theo Quyết định của UBND tỉnh\n\n5.3 Hợp đồng được lập thành 04 bản, mỗi bên giữ 02 bản\n\n5.4 Tranh chấp được giải quyết qua thương lượng, nếu không sẽ kiện ra Tòa án nhân dân huyện\n\nĐẠI DIỆN BÊN A                          ĐẠI DIỆN BÊN B\n(Ký tên, đóng dấu)                      (Ký tên, đóng dấu)\n\n\nLê Văn Thắng                             Nguyễn Thị Mai\nChủ tịch UBND                            Chủ nhiệm",
+      "title": "ĐIỀU 4: CHẤT LƯỢNG DỊCH VỤ VÀ AN NINH"
+    }
+  ]
+}

@@ -1,0 +1,382 @@
+{
+  "test_metadata": {
+    "test_name": "Comprehensive Multi-Domain Contract Review Test",
+    "contract_file": "test contracts/test_contract_comprehensive.txt",
+    "expected_output_file": "EXPECTED_COMPREHENSIVE_OUTPUT.json",
+    "description": "Comprehensive test contract covering healthcare, pricing, water resources, environment, organization, and reporting - designed to match diverse ingested documents",
+    "created_at": "2026-04-17",
+    "test_type": "multi_domain_coverage",
+    "total_clauses": 7,
+    "domains_covered": [
+      "healthcare",
+      "pricing_services",
+      "water_irrigation",
+      "environment_mining",
+      "organization_management",
+      "reporting_inspection",
+      "penalties_incentives"
+    ]
+  },
+  "expected_findings": [
+    {
+      "clause_number": 1,
+      "clause_title": "DỊCH VỤ Y TẾ VÀ CHĂM SÓC SỨC KHỎE",
+      "expected_risk_level": "medium",
+      "expected_verification": "partial_match",
+      "expected_confidence_range": {
+        "min": 65.0,
+        "max": 80.0
+      },
+      "expected_citations": {
+        "must_include_law_ids": [
+          "105/2000/QĐ-UB",
+          "115/SL",
+          "69/SL"
+        ],
+        "minimum_count": 2,
+        "relevance_notes": {
+          "105/2000/QĐ-UB": "Huy động lực lượng ngành Y tế - matches clause 1.2 about emergency mobilization",
+          "115/SL": "Viện Thú y (veterinary/health related) - related to health services",
+          "69/SL": "Nha lâm chính và Nha thú y - historical health administration"
+        }
+      },
+      "expected_issues": [
+        "Healthcare service mobilization should reference Decision 105/2000/QĐ-UB",
+        "Missing specification of emergency response procedures",
+        "Budget allocation mechanism unclear"
+      ],
+      "rationale_keywords": [
+        "y tế",
+        "khám chữa bệnh",
+        "phòng chống dịch",
+        "huy động lực lượng",
+        "tình huống khẩn cấp"
+      ]
+    },
+    {
+      "clause_number": 2,
+      "clause_title": "QUẢN LÝ GIÁ CẢ VÀ DỊCH VỤ CÔNG CỘNG",
+      "expected_risk_level": "high",
+      "expected_verification": "violation_found",
+      "expected_confidence_range": {
+        "min": 75.0,
+        "max": 90.0
+      },
+      "expected_citations": {
+        "must_include_law_ids": [
+          "166/1999/QĐ-UB",
+          "157/1999/QĐ-UB",
+          "28/1999/CT-UB"
+        ],
+        "minimum_count": 3,
+        "relevance_notes": {
+          "166/1999/QĐ-UB": "Quy định giá dịch vụ giữ xe - clause 2.2 specifies 2.000 VNĐ but Decision may have different rates",
+          "157/1999/QĐ-UB": "Quy định phí chợ - clause 2.2 market fees (40.000-120.000 VNĐ) must comply",
+          "28/1999/CT-UB": "Niêm yết giá và thanh toán bằng đồng Việt Nam - matches clause 2.3"
+        }
+      },
+      "expected_issues": [
+        "CRITICAL: Parking fee (2.000 VNĐ for motorbike) may not match Decision 166/1999/QĐ-UB official rate",
+        "CRITICAL: Market stall fees must follow Decision 157/1999/QĐ-UB price framework",
+        "Price display requirement matches Directive 28/1999/CT-UB but should be explicitly cited",
+        "Contract specifies fixed prices instead of referencing official price lists"
+      ],
+      "rationale_keywords": [
+        "giá dịch vụ giữ xe",
+        "phí chợ",
+        "niêm yết giá",
+        "đồng Việt Nam",
+        "bãi đỗ xe",
+        "sạp chợ"
+      ]
+    },
+    {
+      "clause_number": 3,
+      "clause_title": "QUẢN LÝ TÀI NGUYÊN NƯỚC VÀ THỦY LỢI",
+      "expected_risk_level": "medium",
+      "expected_verification": "partial_match",
+      "expected_confidence_range": {
+        "min": 60.0,
+        "max": 75.0
+      },
+      "expected_citations": {
+        "must_include_law_ids": [
+          "114/1999/QĐ-UB",
+          "118"
+        ],
+        "minimum_count": 1,
+        "relevance_notes": {
+          "114/1999/QĐ-UB": "Quy hoạch thủy lợi và nước sinh hoạt nông thôn - directly matches clause 3.1 and 3.2",
+          "118": "Sắc lệnh về Nha thuỷ lâm - historical water resource management"
+        }
+      },
+      "expected_issues": [
+        "Water resource management should cite Decision 114/1999/QĐ-UB",
+        "Irrigation planning requires provincial approval",
+        "Budget amount (800M VNĐ) needs legal basis",
+        "Prohibited activities list is good but should reference specific regulations"
+      ],
+      "rationale_keywords": [
+        "thủy lợi",
+        "nước sinh hoạt",
+        "tưới tiêu",
+        "quy hoạch thủy lợi",
+        "công trình thủy lợi"
+      ]
+    },
+    {
+      "clause_number": 4,
+      "clause_title": "BẢO VỆ MÔI TRƯỜNG VÀ KHAI THÁC KHOÁNG SẢN",
+      "expected_risk_level": "high",
+      "expected_verification": "violation_found",
+      "expected_confidence_range": {
+        "min": 80.0,
+        "max": 95.0
+      },
+      "expected_citations": {
+        "must_include_law_ids": [
+          "181/1999/QĐ-UB"
+        ],
+        "minimum_count": 1,
+        "relevance_notes": {
+          "181/1999/QĐ-UB": "Ký quỹ phục hồi môi trường trong khai thác khoáng sản - clause 4.2 specifies 1 billion VNĐ but Decision may require different amount"
+        }
+      },
+      "expected_issues": [
+        "CRITICAL: Environmental deposit (1.000.000.000 VNĐ) must match Decision 181/1999/QĐ-UB requirements exactly",
+        "CRITICAL: Mining without proper environmental deposit is explicitly prohibited",
+        "Environmental restoration plan requires provincial approval per regulations",
+        "Penalty amounts (20-100M VNĐ) should reference legal basis",
+        "Missing specification of mining license requirements"
+      ],
+      "rationale_keywords": [
+        "ký quỹ phục hồi môi trường",
+        "khoáng sản tận thu",
+        "khai thác",
+        "phục hồi môi trường",
+        "ô nhiễm",
+        "phạt tiền"
+      ]
+    },
+    {
+      "clause_number": 5,
+      "clause_title": "TỔ CHỨC BỘ MÁY VÀ QUẢN LÝ NHÂN SỰ",
+      "expected_risk_level": "medium",
+      "expected_verification": "partial_match",
+      "expected_confidence_range": {
+        "min": 65.0,
+        "max": 80.0
+      },
+      "expected_citations": {
+        "must_include_law_ids": [
+          "75/1999/QĐ-UB",
+          "99/QĐ-UB",
+          "171/1999/QĐ-UB"
+        ],
+        "minimum_count": 2,
+        "relevance_notes": {
+          "75/1999/QĐ-UB": "Chức năng, nhiệm vụ, quyền hạn tổ chức bộ máy - matches clause 5.2",
+          "99/QĐ-UB": "Phân cấp quản lý công tác Tổ chức và Cán bộ - matches clause 5.3",
+          "171/1999/QĐ-UB": "Thành lập Ban quản lý dự án - matches clause 5.1"
+        }
+      },
+      "expected_issues": [
+        "Project management board establishment should cite Decision 171/1999/QĐ-UB",
+        "Organization structure must reference Decision 75/1999/QĐ-UB",
+        "Cadre management should cite Decision 99/QĐ-UB",
+        "Provincial approval required before implementation"
+      ],
+      "rationale_keywords": [
+        "tổ chức bộ máy",
+        "Ban quản lý dự án",
+        "chức năng nhiệm vụ",
+        "phân cấp quản lý",
+        "cán bộ",
+        "biên chế"
+      ]
+    },
+    {
+      "clause_number": 6,
+      "clause_title": "BÁO CÁO VÀ THANH TRA KIỂM TRA",
+      "expected_risk_level": "low",
+      "expected_verification": "partial_match",
+      "expected_confidence_range": {
+        "min": 60.0,
+        "max": 75.0
+      },
+      "expected_citations": {
+        "must_include_law_ids": [
+          "85/SL",
+          "76/SL"
+        ],
+        "minimum_count": 1,
+        "relevance_notes": {
+          "85/SL": "Cải cách bộ máy Tư pháp và Luật Tố tụng - related to inspection procedures",
+          "76/SL": "Quy chế Công chức - relevant to reporting obligations"
+        }
+      },
+      "expected_issues": [
+        "Reporting deadlines are well-defined but should cite specific regulation",
+        "Inspection authority should reference legal basis",
+        "Good specification of report content and frequency"
+      ],
+      "rationale_keywords": [
+        "báo cáo",
+        "thanh tra kiểm tra",
+        "định kỳ",
+        "cơ quan chức năng",
+        "kiến nghị"
+      ]
+    },
+    {
+      "clause_number": 7,
+      "clause_title": "XỬ LÝ VI PHẠM VÀ KHUYẾN KHÍCH",
+      "expected_risk_level": "medium",
+      "expected_verification": "partial_match",
+      "expected_confidence_range": {
+        "min": 65.0,
+        "max": 80.0
+      },
+      "expected_citations": {
+        "must_include_law_ids": [
+          "28/1999/CT-UB",
+          "181/1999/QĐ-UB"
+        ],
+        "minimum_count": 1,
+        "relevance_notes": {
+          "28/1999/CT-UB": "Vi phạm niêm yết giá - matches clause 7.1 price violation penalty",
+          "181/1999/QĐ-UB": "Vi phạm môi trường - matches clause 7.1 environmental penalty"
+        }
+      },
+      "expected_issues": [
+        "Penalty amounts should reference specific legal basis",
+        "Price violation penalty (10-30M VNĐ) should cite Directive 28/1999/CT-UB",
+        "Environmental penalty (20-100M VNĐ) should cite Decision 181/1999/QĐ-UB",
+        "Incentive mechanism (10% reward) needs legal framework",
+        "Good inclusion of both penalties and incentives"
+      ],
+      "rationale_keywords": [
+        "xử phạt",
+        "vi phạm",
+        "phạt tiền",
+        "khuyến khích",
+        "thưởng",
+        "niêm yết giá"
+      ]
+    }
+  ],
+  "expected_summary": {
+    "total_findings": 7,
+    "risk_distribution": {
+      "high": 2,
+      "medium": 4,
+      "low": 1,
+      "none": 0
+    },
+    "average_confidence_range": {
+      "min": 67.1,
+      "max": 79.3
+    },
+    "total_citations_range": {
+      "min": 10,
+      "max": 16
+    },
+    "unique_law_ids_expected": [
+      "105/2000/QĐ-UB",
+      "115/SL",
+      "69/SL",
+      "166/1999/QĐ-UB",
+      "157/1999/QĐ-UB",
+      "28/1999/CT-UB",
+      "114/1999/QĐ-UB",
+      "118",
+      "181/1999/QĐ-UB",
+      "75/1999/QĐ-UB",
+      "99/QĐ-UB",
+      "171/1999/QĐ-UB",
+      "85/SL",
+      "76/SL"
+    ],
+    "domains_analysis": {
+      "healthcare": {
+        "clause": 1,
+        "expected_laws": 3,
+        "risk_level": "medium"
+      },
+      "pricing_services": {
+        "clause": 2,
+        "expected_laws": 3,
+        "risk_level": "high"
+      },
+      "water_irrigation": {
+        "clause": 3,
+        "expected_laws": 2,
+        "risk_level": "medium"
+      },
+      "environment_mining": {
+        "clause": 4,
+        "expected_laws": 1,
+        "risk_level": "high"
+      },
+      "organization_management": {
+        "clause": 5,
+        "expected_laws": 3,
+        "risk_level": "medium"
+      },
+      "reporting_inspection": {
+        "clause": 6,
+        "expected_laws": 2,
+        "risk_level": "low"
+      },
+      "penalties_incentives": {
+        "clause": 7,
+        "expected_laws": 2,
+        "risk_level": "medium"
+      }
+    }
+  },
+  "performance_targets": {
+    "total_pipeline_time_seconds": {
+      "target": "< 20",
+      "acceptable": "< 25",
+      "notes": "7 clauses with multiple domains should take longer than simple contract"
+    },
+    "clause_parsing_time_seconds": {
+      "target": "< 1",
+      "notes": "Regex-based parsing should be fast regardless of contract length"
+    },
+    "retrieval_time_per_clause_seconds": {
+      "target": "< 2",
+      "notes": "Hybrid search with 200 candidates"
+    },
+    "average_retrieval_time_seconds": {
+      "target": "< 15",
+      "notes": "Average across all 7 clauses"
+    }
+  },
+  "quality_criteria": {
+    "citation_relevance_threshold": 0.7,
+    "minimum_high_risk_findings": 2,
+    "must_detect_pricing_violation": true,
+    "must_detect_environmental_violation": true,
+    "must_cite_correct_law_ids": true,
+    "rationale_must_reference_law_content": true,
+    "multi_domain_coverage": 0.85
+  },
+  "test_diversity_metrics": {
+    "total_clauses": 7,
+    "total_expected_citations": 16,
+    "unique_legal_domains": 7,
+    "historical_documents_sac_lenh": 5,
+    "modern_documents_quyet_dinh": 9,
+    "contract_complexity": "high",
+    "realistic_scenario": true
+  },
+  "known_challenges": [
+    "Healthcare clause may be difficult to match with limited ingested health documents",
+    "Water/irrigation documents are sparse in the dataset",
+    "Historical Sắc lệnh from 1950s have different legal context",
+    "Penalty amounts in contract may differ from legal requirements",
+    "Multi-domain contract tests system versatility"
+  ]
+}

@@ -1,0 +1,1197 @@
+{
+  "test_metadata": {
+    "test_name": "Ground Truth Contract Review Test",
+    "contract_file": "test contracts/test_contract_groundtruth.txt",
+    "timestamp": "2026-04-17T10:05:38.534943",
+    "pipeline_version": "1.0"
+  },
+  "contract_analysis": {
+    "total_clauses": 13,
+    "parsing_time": 0.001010666019283235,
+    "clauses": [
+      {
+        "number": 1,
+        "title": "ĐIỀU 1. PHẠM VI DỊCH VỤ TƯ VẤN",
+        "text_preview": "ĐIỀU 1. PHẠM VI DỊCH VỤ TƯ VẤN\n\nBên B đồng ý cung cấp cho Bên A các dịch vụ tư vấn pháp lý sau:\n\n1.1. Tư vấn pháp luật doanh nghiệp:\n- Rà soát và tư vấn về hồ sơ đăng ký doanh nghiệp, thay đổi đăng ký"
+      },
+      {
+        "number": 2,
+        "title": "ĐIỀU 2. PHƯƠNG THỨC THỰC HIỆN",
+        "text_preview": "ĐIỀU 2. PHƯƠNG THỨC THỰC HIỆN\n\n2.1. Bên B sẽ thực hiện dịch vụ tư vấn bằng các hình thức sau:\n- Tư vấn trực tiếp tại văn phòng của Bên B hoặc địa điểm do Bên A yêu cầu;\n- Tư vấn qua điện thoại, email,"
+      },
+      {
+        "number": 3,
+        "title": "ĐIỀU 3. PHÍ DỊCH VỤ VÀ PHƯƠNG THỨC THANH TOÁN",
+        "text_preview": "ĐIỀU 3. PHÍ DỊCH VỤ VÀ PHƯƠNG THỨC THANH TOÁN\n\n3.1. Phí dịch vụ tư vấn:\n- Phí tư vấn thường xuyên: 25.000.000 VNĐ/tháng (Bằng chữ: Hai mươi lăm triệu đồng chẵn);\n- Phí tư vấn theo vụ việc: Theo báo gi"
+      },
+      {
+        "number": 4,
+        "title": "ĐIỀU 4. QUYỀN VÀ NGHĨA VỤ CỦA CÁC BÊN",
+        "text_preview": "ĐIỀU 4. QUYỀN VÀ NGHĨA VỤ CỦA CÁC BÊN\n\n4.1. Quyền và nghĩa vụ của Bên A:\n- Cung cấp đầy đủ, chính xác hồ sơ, tài liệu phục vụ cho việc tư vấn;\n- Thanh toán phí dịch vụ đúng hạn theo quy định tại Điều "
+      },
+      {
+        "number": 5,
+        "title": "ĐIỀU 5. BẢO MẬT THÔNG TIN",
+        "text_preview": "ĐIỀU 5. BẢO MẬT THÔNG TIN\n\n5.1. Bên B cam kết giữ bí mật mọi thông tin, tài liệu, hồ sơ của Bên A được cung cấp trong quá trình thực hiện hợp đồng.\n\n5.2. Thông tin bảo mật bao gồm:\n- Thông tin tài chí"
+      },
+      {
+        "number": 6,
+        "title": "ĐIỀU 6. TRÁCH NHIỆM BỒI THƯỜNG THIỆT HẠI",
+        "text_preview": "ĐIỀU 6. TRÁCH NHIỆM BỒI THƯỜNG THIỆT HẠI\n\n6.1. Bên B chịu trách nhiệm bồi thường cho Bên A các thiệt hại trực tiếp phát sinh do:\n- Tư vấn sai, tư vấn thiếu chính xác dẫn đến tổn thất;\n- Vi phạm nghĩa "
+      },
+      {
+        "number": 7,
+        "title": "ĐIỀU 7. BẤT KHẢ KHÁNG",
+        "text_preview": "ĐIỀU 7. BẤT KHẢ KHÁNG\n\n7.1. Sự kiện bất khả kháng là những sự kiện xảy ra một cách khách quan, không thể lường trước được và không thể khắc phục được mặc dù đã áp dụng mọi biện pháp cần thiết và khả n"
+      },
+      {
+        "number": 8,
+        "title": "ĐIỀU 8. THỜI HẠN HỢP ĐỒNG",
+        "text_preview": "ĐIỀU 8. THỜI HẠN HỢP ĐỒNG\n\n8.1. Hợp đồng có hiệu lực từ ngày 01/02/2024 đến ngày 31/01/2025.\n\n8.2. Hết thời hạn hợp đồng, nếu hai bên không có thỏa thuận khác, hợp đồng sẽ tự động gia hạn thêm 01 năm "
+      },
+      {
+        "number": 9,
+        "title": "ĐIỀU 9. CHẤM DỨT HỢP ĐỒNG",
+        "text_preview": "ĐIỀU 9. CHẤM DỨT HỢP ĐỒNG\n\n9.1. Hợp đồng chấm dứt trong các trường hợp sau:\n- Hết thời hạn hợp đồng và không gia hạn;\n- Hai bên thỏa thuận chấm dứt bằng văn bản;\n- Một bên đơn phương chấm dứt hợp đồng"
+      },
+      {
+        "number": 10,
+        "title": "ĐIỀU 10. ĐƠN PHƯƠNG CHẤM DỨT HỢP ĐỒNG",
+        "text_preview": "ĐIỀU 10. ĐƠN PHƯƠNG CHẤM DỨT HỢP ĐỒNG\n\n10.1. Bên A có quyền đơn phương chấm dứt hợp đồng nếu:\n- Bên B vi phạm nghiêm trọng nghĩa vụ theo hợp đồng;\n- Bên B cung cấp thông tin tư vấn sai nghiêm trọng gâ"
+      },
+      {
+        "number": 11,
+        "title": "ĐIỀU 11. GIẢI QUYẾT TRANH CHẤP",
+        "text_preview": "ĐIỀU 11. GIẢI QUYẾT TRANH CHẤP\n\n11.1. Mọi tranh chấp phát sinh từ hoặc liên quan đến hợp đồng này sẽ được giải quyết trước tiên thông qua thương lượng giữa hai bên.\n\n11.2. Nếu thương lượng không thành"
+      },
+      {
+        "number": 12,
+        "title": "ĐIỀU 12. SỬA ĐỔI, BỔ SUNG HỢP ĐỒNG",
+        "text_preview": "ĐIỀU 12. SỬA ĐỔI, BỔ SUNG HỢP ĐỒNG\n\n12.1. Hợp đồng này chỉ được sửa đổi, bổ sung khi có văn bản thỏa thuận của cả hai bên.\n\n12.2. Các văn bản sửa đổi, bổ sung hợp đồng phải được lập thành văn bản, có "
+      },
+      {
+        "number": 13,
+        "title": "ĐIỀU 13. ĐIỀU KHOẢN CHUNG",
+        "text_preview": "ĐIỀU 13. ĐIỀU KHOẢN CHUNG\n\n13.1. Hợp đồng này được lập thành 04 (bốn) bản có giá trị pháp lý như nhau, mỗi bên giữ 02 (hai) bản.\n\n13.2. Hợp đồng có hiệu lực kể từ ngày hai bên ký kết.\n\n13.3. Các phụ l"
+      }
+    ]
+  },
+  "findings": [
+    {
+      "clause_number": 1,
+      "clause_title": "ĐIỀU 1. PHẠM VI DỊCH VỤ TƯ VẤN",
+      "clause_text": "ĐIỀU 1. PHẠM VI DỊCH VỤ TƯ VẤN\n\nBên B đồng ý cung cấp cho Bên A các dịch vụ tư vấn pháp lý sau:\n\n1.1. Tư vấn pháp luật doanh nghiệp:\n- Rà soát và tư vấn về hồ sơ đăng ký doanh nghiệp, thay đổi đăng ký kinh doanh;\n- Tư vấn về cơ cấu tổ chức, điều lệ công ty, quy chế nội bộ;\n- Tư vấn về hợp đồng thương mại, hợp đồng lao động, hợp đồng kinh tế;\n- Tư vấn về đầu tư, mua bán, sáp nhập doanh nghiệp (M&A).\n\n1.2. Tư vấn pháp luật lao động:\n- Soạn thảo, rà soát hợp đồng lao động, nội quy lao động, thang bảng lương;\n- Tư vấn về chính sách bảo hiểm xã hội, bảo hiểm thất nghiệp;\n- Tư vấn giải quyết tranh chấp lao động, sa thải, cho nghỉ việc;\n- Tư vấn về an toàn lao động và bảo vệ sức khỏe người lao động.\n\n1.3. Tư vấn pháp luật về thuế và kế toán:\n- Tư vấn về nghĩa vụ thuế, chế độ kế toán theo quy định hiện hành;\n- Tư vấn về quyết toán thuế, kiểm toán;\n- Hỗ trợ giải quyết các vấn đề với cơ quan thuế.\n\n1.4. Tư vấn pháp luật về sở hữu trí tuệ:\n- Tư vấn đăng ký bảo hộ nhãn hiệu, bản quyền tác giả, sáng chế;\n- Tư vấn bảo vệ quyền sở hữu trí tuệ khi có tranh chấp;\n- Hỗ trợ thủ tục gia hạn, chuyển nhượng quyền sở hữu trí tuệ.",
+      "retrieved_docs": [
+        {
+          "doc_id": "55",
+          "law_id": "119",
+          "title": "Sắc lệnh bổ nhiệm ông Lê Văn Nguôn, giữ chức Phó Đổng lý Văn phòng Bộ lao động",
+          "score": 63.831300996425405,
+          "content_preview": "SẮC LỆNH\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 119/SL NGÀY 11 THÁNG 7 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh số 226-SL ngày 28 tháng 11 năm 1946 tổ chức Bộ Lao động;\nChiể"
+        },
+        {
+          "doc_id": "4203",
+          "law_id": "40/1999/QĐ-UB",
+          "title": "Uỷ quyền cho Sở Thương mại và Du lịch xét duyệt kế hoạch và quản lý hoạt động xuất khẩu, nhập khẩu cho các Doanh nghiệpcó vốn đầu tư nước ngoài, các bên hợp doanh trên cơ sở hợp đồng hợp tác kinh doanh trên địa bàn tỉnh",
+          "score": 54.19670506627029,
+          "content_preview": "QUYẾT ĐỊNH CỦ UỶ BAN NHÂN DÂN TỈNH BẮC NINH\nUỷ quyền cho Sở Thương mại và Du lịch xét duyệt kế hoạch và quản lý hoạt động xuất khẩu, nhập khẩu cho các Doanh nghiệpcó vốn đầu tư nước ngoài, các bên hợp"
+        },
+        {
+          "doc_id": "4282",
+          "law_id": "111/1999/QĐ-UB",
+          "title": "Về việc ban hành quy định về chức năng, nhiệm vụ, quyền hạn và tổ chức bộ máy của Ban Dân tộc và Miền núi tỉnh Lâm Đồng",
+          "score": 43.35709194583036,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂM ĐỒNG\nV/v Ban hành quy định về chức năng, nhiệm vụ, quyền hạn và\ntổ chức bộ máy của Ban Dân tộc và Miền núi tỉnh Lâm Đồng\nỦY BAN NHÂN DÂN TỈNH LÂM ĐỒNG\nCăn cứ Lu"
+        },
+        {
+          "doc_id": "4295",
+          "law_id": "146/1999/QĐ-UB",
+          "title": "Về việc quy định tạm thời mức bồi dưỡng tập luyện cho vận động viên, giáo viên, huấn luyện viên năng khiếu thể thao",
+          "score": 29.17690428928182,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂM ĐỒNG\nVề việc quy định tạm thời mức bồi dưỡng tập luyện cho\nvận động viên, giáo viên, huấn luyện viên năng khiếuthể thao\nỦY BAN NHÂN DÂN TỈNH LÂM ĐỒNG\nCăn cứ Luậ"
+        },
+        {
+          "doc_id": "96",
+          "law_id": "76/SL",
+          "title": "Sắc lệnh ban hành Quy chế Công chức",
+          "score": 24.715719063545144,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH NƯỚC\nNƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 76/SL NGÀY 20 THÁNG 5 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu tình thế hiện thời;\nTheo đề nghị của Bộ trưởng Bộ Nội vụ;\nTheo"
+        },
+        {
+          "doc_id": "4263",
+          "law_id": "163/1999/QĐ-UB",
+          "title": "Về việc xử lý đối với quỹ nhà thuộc quyền sở hữu Nhà nước do các cơ quan, đơn vị đã tự bố trí cho cán bộ, công nhân viên ở tập thể trên địa bàn thành phố Đà Lạt.",
+          "score": 23.869014859658773,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂMĐỒNG\nVề việc xử lý đối với quỹ nhàthuộc quyền sở hữu Nhà nước\ndo các cơ quan, đơn vị đã tựbố trí cho cán bộ, công nhân viên\nở tập thể trên địa bàn thànhphố Đà Lạ"
+        },
+        {
+          "doc_id": "4278",
+          "law_id": "114/1999/QĐ-UB",
+          "title": "Về việc phê duyệt dự án quy hoạch thủy lợi và nước sinh hoạt nông thôn các Huyện Di Linh, Bảo Lâm và Thị xã Bảo Lộc, tỉnh Lâm Đồng",
+          "score": 25.58441558441558,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂM ĐỒNG\nV/v Phê duyệt dự án quy hoạch thủy lợi và nước sinh hoạt nông thôn\ncác Huyện Di Linh, Bảo Lâm và Thị xã Bảo Lộc, tỉnh Lâm Đồng\nỦY BAN NHÂN DÂN TỈNH LÂM ĐỒN"
+        },
+        {
+          "doc_id": "4273",
+          "law_id": "74/1999/QĐ-UB",
+          "title": "Về việc chuyển chức năng QLNN về Thể dục thể thao và 02 đơn vị từ Sở Văn hóa Thông tin và Thể thao Lâm Đồng sang Sở Thể dục Thể thao Lâm Đồng",
+          "score": 34.55242966751918,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂM ĐỒNG\nVề việc chuyển chức năng QLNN về Thể dục thể thao và 02 đơn\nvị từ Sở Văn hóa Thông tin và Thể thao Lâm Đồng sang Sở Thể dục Thể thao Lâm Đồng\nỦY BAN NHÂN D"
+        },
+        {
+          "doc_id": "4274",
+          "law_id": "105/2000/QĐ-UB",
+          "title": "Về việc giao chỉ tiêu kế hoạch động viên và huy động lực lượng ngành Y tế bảo đảm nhu cầu khi có chiến tranh và các tình huống cần thiết khác đối với ngành Y tế tỉnh Lâm Đồng",
+          "score": 48.76489643080032,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂM ĐỒNG\nVề việc giao chỉ tiêu kế hoạch động viên và huy động lực lượng ngành Y tế\nbảo đảm nhu cầu khi có chiến tranh và các tình huống cần thiết khác đối với ngành"
+        },
+        {
+          "doc_id": "4257",
+          "law_id": "28/1999/CT-UB",
+          "title": "Về việc niêm yết giá, nhận thanh toán hàng hóa và dịch vụ bằng đồng Việt Nam",
+          "score": 57.821556684005245,
+          "content_preview": "CHỈ THỊ CỦA Ủy ban nhân dân TỈNH LÂM ĐỒNG\nVề việc niêm yết giá, nhận thanh toán hàng hóa và dịch vụ bằng đồng Việt Nam\nCăn cứ Nghị định số 63/1998/Nghị định Chính phủ của Chính phủ ban hành ngày 17/08"
+        }
+      ],
+      "status": "retrieved",
+      "retrieval_time": 0.17568770796060562
+    },
+    {
+      "clause_number": 2,
+      "clause_title": "ĐIỀU 2. PHƯƠNG THỨC THỰC HIỆN",
+      "clause_text": "ĐIỀU 2. PHƯƠNG THỨC THỰC HIỆN\n\n2.1. Bên B sẽ thực hiện dịch vụ tư vấn bằng các hình thức sau:\n- Tư vấn trực tiếp tại văn phòng của Bên B hoặc địa điểm do Bên A yêu cầu;\n- Tư vấn qua điện thoại, email, video call;\n- Gửi văn bản tư vấn bằng email hoặc bản cứng;\n- Tham gia họp, đàm phán thay mặt Bên A khi có ủy quyền.\n\n2.2. Thời gian làm việc:\n- Từ thứ Hai đến thứ Sáu: 8h30 - 17h30;\n- Thứ Bảy: 8h30 - 12h00 (nếu có yêu cầu);\n- Các ngày lễ, Tết: Theo thỏa thuận cụ thể.\n\n2.3. Bên B cam kết:\n- Tư vấn dựa trên quy định pháp luật hiện hành tại thời điểm tư vấn;\n- Cập nhật các thay đổi pháp luật có ảnh hưởng đến nội dung tư vấn;\n- Giữ bí mật thông tin của Bên A theo quy định tại Điều 7.",
+      "retrieved_docs": [
+        {
+          "doc_id": "4280",
+          "law_id": "157/1999/QĐ-UB",
+          "title": "Về viẹc quản lý và quy định thống nhất phí chợ trên địa bàn tỉnh Lâm Đồng",
+          "score": 60.89132343398097,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂMĐỒNG\nVề việc Quản lý và quy địnhthống nhất phí chợ\ntrên địa bàn tỉnh Lâm Đồng\nỦY BAN NHÂN DÂN TỈNH LÂM ĐỒNG\nCăn cứ Luật Tổ chứcHĐND và Ủy ban nhân dân (sửa đổi) "
+        },
+        {
+          "doc_id": "4204",
+          "law_id": "99/QĐ-UB",
+          "title": "Ban hành quy định phân cấp quản lý công tác Tổ chức và Cán bộ",
+          "score": 43.35709194583036,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH BẮC NINH\nBan hành quy định\nphân cấp quản lý công tác Tổ chức và Cán bộ\nỦy ban nhân dân TỈNH BẮC NINH\nCăn cứ Luật Tổ chức HĐND và Ủy ban nhân dân được Quốc hội nước "
+        },
+        {
+          "doc_id": "4203",
+          "law_id": "40/1999/QĐ-UB",
+          "title": "Uỷ quyền cho Sở Thương mại và Du lịch xét duyệt kế hoạch và quản lý hoạt động xuất khẩu, nhập khẩu cho các Doanh nghiệpcó vốn đầu tư nước ngoài, các bên hợp doanh trên cơ sở hợp đồng hợp tác kinh doanh trên địa bàn tỉnh",
+          "score": 38.09364548494983,
+          "content_preview": "QUYẾT ĐỊNH CỦ UỶ BAN NHÂN DÂN TỈNH BẮC NINH\nUỷ quyền cho Sở Thương mại và Du lịch xét duyệt kế hoạch và quản lý hoạt động xuất khẩu, nhập khẩu cho các Doanh nghiệpcó vốn đầu tư nước ngoài, các bên hợp"
+        },
+        {
+          "doc_id": "4271",
+          "law_id": "75/1999/QĐ-UB",
+          "title": "Về việc cho phép thành lập Quỹ bảo trợ nạn nhân chất độc da cam tỉnh Lâm Đồng và ban hành Quy chế tổ chức hoạt động của quỹ",
+          "score": 34.55242966751918,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂM ĐỒNG\nVề việc cho phép thành lập Quỹ bảo trợ nạn nhân chất độc da cam tỉnh Lâm Đồng\nvà ban hành Quy chế tổ chức hoạt động của quỹ\nỦY BAN NHÂN DÂN TỈNH LÂM ĐỒNG\nC"
+        },
+        {
+          "doc_id": "4273",
+          "law_id": "74/1999/QĐ-UB",
+          "title": "Về việc chuyển chức năng QLNN về Thể dục thể thao và 02 đơn vị từ Sở Văn hóa Thông tin và Thể thao Lâm Đồng sang Sở Thể dục Thể thao Lâm Đồng",
+          "score": 32.36024844720495,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂM ĐỒNG\nVề việc chuyển chức năng QLNN về Thể dục thể thao và 02 đơn\nvị từ Sở Văn hóa Thông tin và Thể thao Lâm Đồng sang Sở Thể dục Thể thao Lâm Đồng\nỦY BAN NHÂN D"
+        },
+        {
+          "doc_id": "4265",
+          "law_id": "24/1999/CT-UB",
+          "title": "Về việc thực hiện Quyết định số 53/1999/QĐ-TTg ngày 26 tháng 3 năm 1999 của Thủ tướng Chính phủ",
+          "score": 29.019386410690743,
+          "content_preview": "CHỈ THỊ CỦA Ủy ban nhân dân TỈNH LÂM ĐỒNG\nVề việc thực hiện Quyết định số 53/1999/Quyết định Thủ tướng Chính phủ\nngày 26 tháng 3 năm 1999 của Thủ tướng Chính phủ\nNgày 26/3/1999 Thủ tướng Chính phủ đã "
+        },
+        {
+          "doc_id": "4258",
+          "law_id": "166/1999/QĐ-UB",
+          "title": "Về việc quy định giá dịch vụ giữ xe và phí bến bãi đậu xe trên địa bàn tỉnh Lâm Đồng",
+          "score": 33.44045368620037,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂMĐỒNG\nVề việc quy định giá dịch vụ giữxe và phí bến bãi đậu xe\ntrên địa bàn tỉnh Lâm Đồng\nUỶ BAN NHÂN DÂN TỈNH LÂMĐỒNG\nCăn cứ Luật Tổ chức HĐND và Ủy ban nhân dân"
+        },
+        {
+          "doc_id": "4282",
+          "law_id": "111/1999/QĐ-UB",
+          "title": "Về việc ban hành quy định về chức năng, nhiệm vụ, quyền hạn và tổ chức bộ máy của Ban Dân tộc và Miền núi tỉnh Lâm Đồng",
+          "score": 36.87747035573122,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂM ĐỒNG\nV/v Ban hành quy định về chức năng, nhiệm vụ, quyền hạn và\ntổ chức bộ máy của Ban Dân tộc và Miền núi tỉnh Lâm Đồng\nỦY BAN NHÂN DÂN TỈNH LÂM ĐỒNG\nCăn cứ Lu"
+        },
+        {
+          "doc_id": "92",
+          "law_id": "85/SL",
+          "title": "Sắc lệnh cải cách bộ máy Tư pháp và Luật Tố tụng",
+          "score": 40.641821946169756,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 85/SL NGÀY 22 THÁNG 5 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh số 13-SL ngày 24 tháng 1 năm 1946 và các sắc lệnh tiếp sau"
+        },
+        {
+          "doc_id": "4278",
+          "law_id": "114/1999/QĐ-UB",
+          "title": "Về việc phê duyệt dự án quy hoạch thủy lợi và nước sinh hoạt nông thôn các Huyện Di Linh, Bảo Lâm và Thị xã Bảo Lộc, tỉnh Lâm Đồng",
+          "score": 45.93979825863884,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂM ĐỒNG\nV/v Phê duyệt dự án quy hoạch thủy lợi và nước sinh hoạt nông thôn\ncác Huyện Di Linh, Bảo Lâm và Thị xã Bảo Lộc, tỉnh Lâm Đồng\nỦY BAN NHÂN DÂN TỈNH LÂM ĐỒN"
+        }
+      ],
+      "status": "retrieved",
+      "retrieval_time": 0.09581291704671457
+    },
+    {
+      "clause_number": 3,
+      "clause_title": "ĐIỀU 3. PHÍ DỊCH VỤ VÀ PHƯƠNG THỨC THANH TOÁN",
+      "clause_text": "ĐIỀU 3. PHÍ DỊCH VỤ VÀ PHƯƠNG THỨC THANH TOÁN\n\n3.1. Phí dịch vụ tư vấn:\n- Phí tư vấn thường xuyên: 25.000.000 VNĐ/tháng (Bằng chữ: Hai mươi lăm triệu đồng chẵn);\n- Phí tư vấn theo vụ việc: Theo báo giá cụ thể cho từng vụ việc, tối thiểu 5.000.000 VNĐ/vụ việc;\n- Phí soạn thảo, rà soát hợp đồng: Từ 2.000.000 VNĐ đến 10.000.000 VNĐ/hợp đồng tùy độ phức tạp;\n- Phí đại diện pháp lý tại cơ quan nhà nước: Thỏa thuận riêng.\n\n3.2. Phương thức thanh toán:\n- Bên A thanh toán phí tư vấn thường xuyên vào ngày 05 hàng tháng;\n- Thanh toán bằng chuyển khoản vào tài khoản của Bên B:\n  + Tên tài khoản: Công ty Luật TNHH XYZ\n  + Số tài khoản: 1234567890\n  + Ngân hàng: TMCP Ngoại Thương Việt Nam (Vietcombank) - Chi nhánh Hà Nội\n- Hóa đơn VAT sẽ được Bên B xuất hóa đơn cho Bên A theo quy định pháp luật.\n\n3.3. Chi phí phát sinh:\n- Các chi phí đi lại, ăn ở, công tác phí khi thực hiện dịch vụ ngoài địa bàn Hà Nội sẽ do Bên A thanh toán thực tế;\n- Lệ phí nhà nước, phí công chứng, phí dịch thuật do Bên A chịu.",
+      "retrieved_docs": [
+        {
+          "doc_id": "4258",
+          "law_id": "166/1999/QĐ-UB",
+          "title": "Về việc quy định giá dịch vụ giữ xe và phí bến bãi đậu xe trên địa bàn tỉnh Lâm Đồng",
+          "score": 93.73103508981437,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂMĐỒNG\nVề việc quy định giá dịch vụ giữxe và phí bến bãi đậu xe\ntrên địa bàn tỉnh Lâm Đồng\nUỶ BAN NHÂN DÂN TỈNH LÂMĐỒNG\nCăn cứ Luật Tổ chức HĐND và Ủy ban nhân dân"
+        },
+        {
+          "doc_id": "4280",
+          "law_id": "157/1999/QĐ-UB",
+          "title": "Về viẹc quản lý và quy định thống nhất phí chợ trên địa bàn tỉnh Lâm Đồng",
+          "score": 77.78126738581447,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂMĐỒNG\nVề việc Quản lý và quy địnhthống nhất phí chợ\ntrên địa bàn tỉnh Lâm Đồng\nỦY BAN NHÂN DÂN TỈNH LÂM ĐỒNG\nCăn cứ Luật Tổ chứcHĐND và Ủy ban nhân dân (sửa đổi) "
+        },
+        {
+          "doc_id": "4265",
+          "law_id": "24/1999/CT-UB",
+          "title": "Về việc thực hiện Quyết định số 53/1999/QĐ-TTg ngày 26 tháng 3 năm 1999 của Thủ tướng Chính phủ",
+          "score": 72.02412838629502,
+          "content_preview": "CHỈ THỊ CỦA Ủy ban nhân dân TỈNH LÂM ĐỒNG\nVề việc thực hiện Quyết định số 53/1999/Quyết định Thủ tướng Chính phủ\nngày 26 tháng 3 năm 1999 của Thủ tướng Chính phủ\nNgày 26/3/1999 Thủ tướng Chính phủ đã "
+        },
+        {
+          "doc_id": "4242",
+          "law_id": "181/1999/QĐ-UB",
+          "title": "V/v Ban hành qui định về ký quĩ phục hồi môi trườngtrong khai thác tận thu khoáng sản trên địa bàn tỉnh Lâm Đồng",
+          "score": 43.547403833557354,
+          "content_preview": "QUYẾT ĐỊNH\nVề việc ban hành qui định vềký quĩ phục hồi môi trường\ntrong khai thác tận thu khoáng sản trên địa bàn tỉnhLâm Đồng\nỦY BAN NHÂN DÂN TỈNH LÂM ĐỒNG\nCăn cứ Luật Tổ chức HĐND và Ủy ban nhân dân"
+        },
+        {
+          "doc_id": "37",
+          "law_id": "159/SL",
+          "title": "Sắc lệnh quy định vấn đề ly hôn",
+          "score": 28.450065469023706,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 159/SL NGÀY 17 THÁNG 11 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh ngày 10 tháng 10 năm 1945 tạm giữ các luật lệ hiện hành "
+        },
+        {
+          "doc_id": "92",
+          "law_id": "85/SL",
+          "title": "Sắc lệnh cải cách bộ máy Tư pháp và Luật Tố tụng",
+          "score": 26.140509696666708,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 85/SL NGÀY 22 THÁNG 5 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh số 13-SL ngày 24 tháng 1 năm 1946 và các sắc lệnh tiếp sau"
+        },
+        {
+          "doc_id": "91",
+          "law_id": "77/SL",
+          "title": "Sắc lệnh quy định chế độ công nhân giúp việc Chính phủ trong thời kỳ kháng chiến (thiếu trang 2)",
+          "score": 33.27396601214666,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH NƯỚC\nSỐ 77/SL NGÀY 22 THÁNG 5 NĂM 1950\nCHỦ TỊCH NƯỚC\nVIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh số 29-SL ngày 12 tháng 3 năm 1947 quy định chế độ lao động trong toàn cõi Việt Nam;\n"
+        },
+        {
+          "doc_id": "4203",
+          "law_id": "40/1999/QĐ-UB",
+          "title": "Uỷ quyền cho Sở Thương mại và Du lịch xét duyệt kế hoạch và quản lý hoạt động xuất khẩu, nhập khẩu cho các Doanh nghiệpcó vốn đầu tư nước ngoài, các bên hợp doanh trên cơ sở hợp đồng hợp tác kinh doanh trên địa bàn tỉnh",
+          "score": 49.153002870964805,
+          "content_preview": "QUYẾT ĐỊNH CỦ UỶ BAN NHÂN DÂN TỈNH BẮC NINH\nUỷ quyền cho Sở Thương mại và Du lịch xét duyệt kế hoạch và quản lý hoạt động xuất khẩu, nhập khẩu cho các Doanh nghiệpcó vốn đầu tư nước ngoài, các bên hợp"
+        },
+        {
+          "doc_id": "77",
+          "law_id": "83/SL",
+          "title": "Sắc lệnh bãi bỏ Sắc lệnh 106 ngày 09-09-1949 về phí cấp hàng tháng của các các vị trong Ban thường trực Quốc hội",
+          "score": 76.0753709984539,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 83/SL NGÀY 22 THÁNG 5 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh số 106-SL ngày 9 tháng 9 năm 1949 ấn định phí cấp của các "
+        },
+        {
+          "doc_id": "4257",
+          "law_id": "28/1999/CT-UB",
+          "title": "Về việc niêm yết giá, nhận thanh toán hàng hóa và dịch vụ bằng đồng Việt Nam",
+          "score": 91.12910504781621,
+          "content_preview": "CHỈ THỊ CỦA Ủy ban nhân dân TỈNH LÂM ĐỒNG\nVề việc niêm yết giá, nhận thanh toán hàng hóa và dịch vụ bằng đồng Việt Nam\nCăn cứ Nghị định số 63/1998/Nghị định Chính phủ của Chính phủ ban hành ngày 17/08"
+        }
+      ],
+      "status": "retrieved",
+      "retrieval_time": 0.04174079198855907
+    },
+    {
+      "clause_number": 4,
+      "clause_title": "ĐIỀU 4. QUYỀN VÀ NGHĨA VỤ CỦA CÁC BÊN",
+      "clause_text": "ĐIỀU 4. QUYỀN VÀ NGHĨA VỤ CỦA CÁC BÊN\n\n4.1. Quyền và nghĩa vụ của Bên A:\n- Cung cấp đầy đủ, chính xác hồ sơ, tài liệu phục vụ cho việc tư vấn;\n- Thanh toán phí dịch vụ đúng hạn theo quy định tại Điều 3;\n- Phối hợp với Bên B trong quá trình thực hiện dịch vụ;\n- Có quyền yêu cầu Bên B thay đổi luật sư tư vấn nếu không phù hợp;\n- Có quyền đơn phương chấm dứt hợp đồng nếu Bên B vi phạm nghiêm trọng.\n\n4.2. Quyền và nghĩa vụ của Bên B:\n- Thực hiện dịch vụ tư vấn với tinh thần trách nhiệm cao nhất;\n- Cử luật sư có chuyên môn phù hợp để tư vấn cho Bên A;\n- Bảo mật thông tin của Bên A theo quy định pháp luật và Điều 7;\n- Thông báo kịp thời cho Bên A về các rủi ro pháp lý phát sinh;\n- Có quyền yêu cầu Bên A cung cấp thông tin, tài liệu cần thiết;\n- Có quyền tạm ngừng dịch vụ nếu Bên A chậm thanh toán quá 30 ngày.",
+      "retrieved_docs": [
+        {
+          "doc_id": "4257",
+          "law_id": "28/1999/CT-UB",
+          "title": "Về việc niêm yết giá, nhận thanh toán hàng hóa và dịch vụ bằng đồng Việt Nam",
+          "score": 81.30176844475504,
+          "content_preview": "CHỈ THỊ CỦA Ủy ban nhân dân TỈNH LÂM ĐỒNG\nVề việc niêm yết giá, nhận thanh toán hàng hóa và dịch vụ bằng đồng Việt Nam\nCăn cứ Nghị định số 63/1998/Nghị định Chính phủ của Chính phủ ban hành ngày 17/08"
+        },
+        {
+          "doc_id": "31",
+          "law_id": "157/SL",
+          "title": "Sắc lệnh tổ chức toà án nhân dân vùng tạm bị chiếm đóng",
+          "score": 70.94773871657509,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 157/SL NGÀY 17 THÁNG 11 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh số 13 ngày 21 tháng 1 năm 1946 và các sắc lệnh tiếp theo"
+        },
+        {
+          "doc_id": "91",
+          "law_id": "77/SL",
+          "title": "Sắc lệnh quy định chế độ công nhân giúp việc Chính phủ trong thời kỳ kháng chiến (thiếu trang 2)",
+          "score": 52.10861602165949,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH NƯỚC\nSỐ 77/SL NGÀY 22 THÁNG 5 NĂM 1950\nCHỦ TỊCH NƯỚC\nVIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh số 29-SL ngày 12 tháng 3 năm 1947 quy định chế độ lao động trong toàn cõi Việt Nam;\n"
+        },
+        {
+          "doc_id": "96",
+          "law_id": "76/SL",
+          "title": "Sắc lệnh ban hành Quy chế Công chức",
+          "score": 44.08456322297567,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH NƯỚC\nNƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 76/SL NGÀY 20 THÁNG 5 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu tình thế hiện thời;\nTheo đề nghị của Bộ trưởng Bộ Nội vụ;\nTheo"
+        },
+        {
+          "doc_id": "4258",
+          "law_id": "166/1999/QĐ-UB",
+          "title": "Về việc quy định giá dịch vụ giữ xe và phí bến bãi đậu xe trên địa bàn tỉnh Lâm Đồng",
+          "score": 40.641821946169756,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂMĐỒNG\nVề việc quy định giá dịch vụ giữxe và phí bến bãi đậu xe\ntrên địa bàn tỉnh Lâm Đồng\nUỶ BAN NHÂN DÂN TỈNH LÂMĐỒNG\nCăn cứ Luật Tổ chức HĐND và Ủy ban nhân dân"
+        },
+        {
+          "doc_id": "37",
+          "law_id": "159/SL",
+          "title": "Sắc lệnh quy định vấn đề ly hôn",
+          "score": 38.09364548494983,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 159/SL NGÀY 17 THÁNG 11 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh ngày 10 tháng 10 năm 1945 tạm giữ các luật lệ hiện hành "
+        },
+        {
+          "doc_id": "4282",
+          "law_id": "111/1999/QĐ-UB",
+          "title": "Về việc ban hành quy định về chức năng, nhiệm vụ, quyền hạn và tổ chức bộ máy của Ban Dân tộc và Miền núi tỉnh Lâm Đồng",
+          "score": 43.35709194583036,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂM ĐỒNG\nV/v Ban hành quy định về chức năng, nhiệm vụ, quyền hạn và\ntổ chức bộ máy của Ban Dân tộc và Miền núi tỉnh Lâm Đồng\nỦY BAN NHÂN DÂN TỈNH LÂM ĐỒNG\nCăn cứ Lu"
+        },
+        {
+          "doc_id": "4242",
+          "law_id": "181/1999/QĐ-UB",
+          "title": "V/v Ban hành qui định về ký quĩ phục hồi môi trườngtrong khai thác tận thu khoáng sản trên địa bàn tỉnh Lâm Đồng",
+          "score": 49.969488939740664,
+          "content_preview": "QUYẾT ĐỊNH\nVề việc ban hành qui định vềký quĩ phục hồi môi trường\ntrong khai thác tận thu khoáng sản trên địa bàn tỉnhLâm Đồng\nỦY BAN NHÂN DÂN TỈNH LÂM ĐỒNG\nCăn cứ Luật Tổ chức HĐND và Ủy ban nhân dân"
+        },
+        {
+          "doc_id": "92",
+          "law_id": "85/SL",
+          "title": "Sắc lệnh cải cách bộ máy Tư pháp và Luật Tố tụng",
+          "score": 60.69904809569655,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 85/SL NGÀY 22 THÁNG 5 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh số 13-SL ngày 24 tháng 1 năm 1946 và các sắc lệnh tiếp sau"
+        },
+        {
+          "doc_id": "90",
+          "law_id": "97/SL",
+          "title": "Sắc lệnh sửa đổi một số quy lệ và chế định trong dân luật",
+          "score": 78.25443826943076,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH CHÍNH PHỦ\nNƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 97/SL NGÀY 22 THÁNG 5 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh ngày 10 tháng 10 năm 1945 tạm giữ các luật lệ hi"
+        }
+      ],
+      "status": "retrieved",
+      "retrieval_time": 0.07610808301251382
+    },
+    {
+      "clause_number": 5,
+      "clause_title": "ĐIỀU 5. BẢO MẬT THÔNG TIN",
+      "clause_text": "ĐIỀU 5. BẢO MẬT THÔNG TIN\n\n5.1. Bên B cam kết giữ bí mật mọi thông tin, tài liệu, hồ sơ của Bên A được cung cấp trong quá trình thực hiện hợp đồng.\n\n5.2. Thông tin bảo mật bao gồm:\n- Thông tin tài chính, kế toán, kinh doanh của Bên A;\n- Chiến lược kinh doanh, kế hoạch đầu tư;\n- Thông tin về khách hàng, đối tác của Bên A;\n- Các thông tin khác được Bên A yêu cầu bảo mật.\n\n5.3. Thời hạn bảo mật: 05 (năm) năm kể từ ngày chấm dứt hợp đồng.\n\n5.4. Bên B chỉ được tiết lộ thông tin của Bên A khi:\n- Có văn bản yêu cầu bằng văn bản của Bên A;\n- Theo yêu cầu của cơ quan nhà nước có thẩm quyền;\n- Theo quy định của pháp luật.\n\n5.5. Vi phạm nghĩa vụ bảo mật: Bên vi phạm phải bồi thường thiệt hại thực tế phát sinh và chịu trách nhiệm theo quy định pháp luật.",
+      "retrieved_docs": [
+        {
+          "doc_id": "91",
+          "law_id": "77/SL",
+          "title": "Sắc lệnh quy định chế độ công nhân giúp việc Chính phủ trong thời kỳ kháng chiến (thiếu trang 2)",
+          "score": 64.87483530961792,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH NƯỚC\nSỐ 77/SL NGÀY 22 THÁNG 5 NĂM 1950\nCHỦ TỊCH NƯỚC\nVIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh số 29-SL ngày 12 tháng 3 năm 1947 quy định chế độ lao động trong toàn cõi Việt Nam;\n"
+        },
+        {
+          "doc_id": "4242",
+          "law_id": "181/1999/QĐ-UB",
+          "title": "V/v Ban hành qui định về ký quĩ phục hồi môi trườngtrong khai thác tận thu khoáng sản trên địa bàn tỉnh Lâm Đồng",
+          "score": 53.78267487260934,
+          "content_preview": "QUYẾT ĐỊNH\nVề việc ban hành qui định vềký quĩ phục hồi môi trường\ntrong khai thác tận thu khoáng sản trên địa bàn tỉnhLâm Đồng\nỦY BAN NHÂN DÂN TỈNH LÂM ĐỒNG\nCăn cứ Luật Tổ chức HĐND và Ủy ban nhân dân"
+        },
+        {
+          "doc_id": "4274",
+          "law_id": "105/2000/QĐ-UB",
+          "title": "Về việc giao chỉ tiêu kế hoạch động viên và huy động lực lượng ngành Y tế bảo đảm nhu cầu khi có chiến tranh và các tình huống cần thiết khác đối với ngành Y tế tỉnh Lâm Đồng",
+          "score": 39.347826086956516,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂM ĐỒNG\nVề việc giao chỉ tiêu kế hoạch động viên và huy động lực lượng ngành Y tế\nbảo đảm nhu cầu khi có chiến tranh và các tình huống cần thiết khác đối với ngành"
+        },
+        {
+          "doc_id": "4282",
+          "law_id": "111/1999/QĐ-UB",
+          "title": "Về việc ban hành quy định về chức năng, nhiệm vụ, quyền hạn và tổ chức bộ máy của Ban Dân tộc và Miền núi tỉnh Lâm Đồng",
+          "score": 33.44045368620037,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂM ĐỒNG\nV/v Ban hành quy định về chức năng, nhiệm vụ, quyền hạn và\ntổ chức bộ máy của Ban Dân tộc và Miền núi tỉnh Lâm Đồng\nỦY BAN NHÂN DÂN TỈNH LÂM ĐỒNG\nCăn cứ Lu"
+        },
+        {
+          "doc_id": "4273",
+          "law_id": "74/1999/QĐ-UB",
+          "title": "Về việc chuyển chức năng QLNN về Thể dục thể thao và 02 đơn vị từ Sở Văn hóa Thông tin và Thể thao Lâm Đồng sang Sở Thể dục Thể thao Lâm Đồng",
+          "score": 26.47597254004575,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂM ĐỒNG\nVề việc chuyển chức năng QLNN về Thể dục thể thao và 02 đơn\nvị từ Sở Văn hóa Thông tin và Thể thao Lâm Đồng sang Sở Thể dục Thể thao Lâm Đồng\nỦY BAN NHÂN D"
+        },
+        {
+          "doc_id": "4255",
+          "law_id": "171/1999/QĐ-UB",
+          "title": "Về việc thành lập Ban quản lý dự án Mở rộng hệ thống cấp nước Thị xã Bảo lộc",
+          "score": 26.364910148303828,
+          "content_preview": "QUYẾT ĐỊNH\nVề việc thành lập Ban quản lýdự án Mở rộng hệ thống\ncấp nước Thị xã Bảo lộc\nỦY BAN NHÂN DÂN TỈNH LÂM ĐỒNG\nCăn cứ Luật Tổ chứcHĐND và Ủy ban nhân dân (sửa đổi) ngày 21/6/1994;\nCăn cứ Nghị đị"
+        },
+        {
+          "doc_id": "37",
+          "law_id": "159/SL",
+          "title": "Sắc lệnh quy định vấn đề ly hôn",
+          "score": 27.391304347826086,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 159/SL NGÀY 17 THÁNG 11 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh ngày 10 tháng 10 năm 1945 tạm giữ các luật lệ hiện hành "
+        },
+        {
+          "doc_id": "90",
+          "law_id": "97/SL",
+          "title": "Sắc lệnh sửa đổi một số quy lệ và chế định trong dân luật",
+          "score": 38.09364548494983,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH CHÍNH PHỦ\nNƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 97/SL NGÀY 22 THÁNG 5 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh ngày 10 tháng 10 năm 1945 tạm giữ các luật lệ hi"
+        },
+        {
+          "doc_id": "4203",
+          "law_id": "40/1999/QĐ-UB",
+          "title": "Uỷ quyền cho Sở Thương mại và Du lịch xét duyệt kế hoạch và quản lý hoạt động xuất khẩu, nhập khẩu cho các Doanh nghiệpcó vốn đầu tư nước ngoài, các bên hợp doanh trên cơ sở hợp đồng hợp tác kinh doanh trên địa bàn tỉnh",
+          "score": 41.97755960729311,
+          "content_preview": "QUYẾT ĐỊNH CỦ UỶ BAN NHÂN DÂN TỈNH BẮC NINH\nUỷ quyền cho Sở Thương mại và Du lịch xét duyệt kế hoạch và quản lý hoạt động xuất khẩu, nhập khẩu cho các Doanh nghiệpcó vốn đầu tư nước ngoài, các bên hợp"
+        },
+        {
+          "doc_id": "4257",
+          "law_id": "28/1999/CT-UB",
+          "title": "Về việc niêm yết giá, nhận thanh toán hàng hóa và dịch vụ bằng đồng Việt Nam",
+          "score": 58.56839872746553,
+          "content_preview": "CHỈ THỊ CỦA Ủy ban nhân dân TỈNH LÂM ĐỒNG\nVề việc niêm yết giá, nhận thanh toán hàng hóa và dịch vụ bằng đồng Việt Nam\nCăn cứ Nghị định số 63/1998/Nghị định Chính phủ của Chính phủ ban hành ngày 17/08"
+        }
+      ],
+      "status": "retrieved",
+      "retrieval_time": 0.07121504202950746
+    },
+    {
+      "clause_number": 6,
+      "clause_title": "ĐIỀU 6. TRÁCH NHIỆM BỒI THƯỜNG THIỆT HẠI",
+      "clause_text": "ĐIỀU 6. TRÁCH NHIỆM BỒI THƯỜNG THIỆT HẠI\n\n6.1. Bên B chịu trách nhiệm bồi thường cho Bên A các thiệt hại trực tiếp phát sinh do:\n- Tư vấn sai, tư vấn thiếu chính xác dẫn đến tổn thất;\n- Vi phạm nghĩa vụ bảo mật thông tin;\n- Chậm trễ, không thực hiện đúng cam kết trong hợp đồng.\n\n6.2. Mức bồi thường tối đa: Không quá 03 (ba) tháng phí dịch vụ của hợp đồng này.\n\n6.3. Bên B không chịu trách nhiệm về:\n- Các thiệt hại gián tiếp, thiệt hại về lợi nhuận;\n- Các quyết định kinh doanh của Bên A dựa trên tư vấn;\n- Các sự kiện bất khả kháng theo quy định tại Điều 8.\n\n6.4. Yêu cầu bồi thường phải được gửi bằng văn bản trong thời hạn 30 ngày kể từ khi phát sinh thiệt hại.",
+      "retrieved_docs": [
+        {
+          "doc_id": "4295",
+          "law_id": "146/1999/QĐ-UB",
+          "title": "Về việc quy định tạm thời mức bồi dưỡng tập luyện cho vận động viên, giáo viên, huấn luyện viên năng khiếu thể thao",
+          "score": 75.40851630989486,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂM ĐỒNG\nVề việc quy định tạm thời mức bồi dưỡng tập luyện cho\nvận động viên, giáo viên, huấn luyện viên năng khiếuthể thao\nỦY BAN NHÂN DÂN TỈNH LÂM ĐỒNG\nCăn cứ Luậ"
+        },
+        {
+          "doc_id": "92",
+          "law_id": "85/SL",
+          "title": "Sắc lệnh cải cách bộ máy Tư pháp và Luật Tố tụng",
+          "score": 45.253106353857,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 85/SL NGÀY 22 THÁNG 5 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh số 13-SL ngày 24 tháng 1 năm 1946 và các sắc lệnh tiếp sau"
+        },
+        {
+          "doc_id": "4274",
+          "law_id": "105/2000/QĐ-UB",
+          "title": "Về việc giao chỉ tiêu kế hoạch động viên và huy động lực lượng ngành Y tế bảo đảm nhu cầu khi có chiến tranh và các tình huống cần thiết khác đối với ngành Y tế tỉnh Lâm Đồng",
+          "score": 38.4931965026055,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂM ĐỒNG\nVề việc giao chỉ tiêu kế hoạch động viên và huy động lực lượng ngành Y tế\nbảo đảm nhu cầu khi có chiến tranh và các tình huống cần thiết khác đối với ngành"
+        },
+        {
+          "doc_id": "4203",
+          "law_id": "40/1999/QĐ-UB",
+          "title": "Uỷ quyền cho Sở Thương mại và Du lịch xét duyệt kế hoạch và quản lý hoạt động xuất khẩu, nhập khẩu cho các Doanh nghiệpcó vốn đầu tư nước ngoài, các bên hợp doanh trên cơ sở hợp đồng hợp tác kinh doanh trên địa bàn tỉnh",
+          "score": 35.697598961713155,
+          "content_preview": "QUYẾT ĐỊNH CỦ UỶ BAN NHÂN DÂN TỈNH BẮC NINH\nUỷ quyền cho Sở Thương mại và Du lịch xét duyệt kế hoạch và quản lý hoạt động xuất khẩu, nhập khẩu cho các Doanh nghiệpcó vốn đầu tư nước ngoài, các bên hợp"
+        },
+        {
+          "doc_id": "4263",
+          "law_id": "163/1999/QĐ-UB",
+          "title": "Về việc xử lý đối với quỹ nhà thuộc quyền sở hữu Nhà nước do các cơ quan, đơn vị đã tự bố trí cho cán bộ, công nhân viên ở tập thể trên địa bàn thành phố Đà Lạt.",
+          "score": 29.297200714711128,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂMĐỒNG\nVề việc xử lý đối với quỹ nhàthuộc quyền sở hữu Nhà nước\ndo các cơ quan, đơn vị đã tựbố trí cho cán bộ, công nhân viên\nở tập thể trên địa bàn thànhphố Đà Lạ"
+        },
+        {
+          "doc_id": "4282",
+          "law_id": "111/1999/QĐ-UB",
+          "title": "Về việc ban hành quy định về chức năng, nhiệm vụ, quyền hạn và tổ chức bộ máy của Ban Dân tộc và Miền núi tỉnh Lâm Đồng",
+          "score": 27.391304347826086,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂM ĐỒNG\nV/v Ban hành quy định về chức năng, nhiệm vụ, quyền hạn và\ntổ chức bộ máy của Ban Dân tộc và Miền núi tỉnh Lâm Đồng\nỦY BAN NHÂN DÂN TỈNH LÂM ĐỒNG\nCăn cứ Lu"
+        },
+        {
+          "doc_id": "91",
+          "law_id": "77/SL",
+          "title": "Sắc lệnh quy định chế độ công nhân giúp việc Chính phủ trong thời kỳ kháng chiến (thiếu trang 2)",
+          "score": 34.23926092176001,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH NƯỚC\nSỐ 77/SL NGÀY 22 THÁNG 5 NĂM 1950\nCHỦ TỊCH NƯỚC\nVIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh số 29-SL ngày 12 tháng 3 năm 1947 quy định chế độ lao động trong toàn cõi Việt Nam;\n"
+        },
+        {
+          "doc_id": "90",
+          "law_id": "97/SL",
+          "title": "Sắc lệnh sửa đổi một số quy lệ và chế định trong dân luật",
+          "score": 38.09364548494983,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH CHÍNH PHỦ\nNƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 97/SL NGÀY 22 THÁNG 5 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh ngày 10 tháng 10 năm 1945 tạm giữ các luật lệ hi"
+        },
+        {
+          "doc_id": "37",
+          "law_id": "159/SL",
+          "title": "Sắc lệnh quy định vấn đề ly hôn",
+          "score": 40.641821946169756,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 159/SL NGÀY 17 THÁNG 11 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh ngày 10 tháng 10 năm 1945 tạm giữ các luật lệ hiện hành "
+        },
+        {
+          "doc_id": "4242",
+          "law_id": "181/1999/QĐ-UB",
+          "title": "V/v Ban hành qui định về ký quĩ phục hồi môi trườngtrong khai thác tận thu khoáng sản trên địa bàn tỉnh Lâm Đồng",
+          "score": 65.84141006049694,
+          "content_preview": "QUYẾT ĐỊNH\nVề việc ban hành qui định vềký quĩ phục hồi môi trường\ntrong khai thác tận thu khoáng sản trên địa bàn tỉnhLâm Đồng\nỦY BAN NHÂN DÂN TỈNH LÂM ĐỒNG\nCăn cứ Luật Tổ chức HĐND và Ủy ban nhân dân"
+        }
+      ],
+      "status": "retrieved",
+      "retrieval_time": 0.07545154204126447
+    },
+    {
+      "clause_number": 7,
+      "clause_title": "ĐIỀU 7. BẤT KHẢ KHÁNG",
+      "clause_text": "ĐIỀU 7. BẤT KHẢ KHÁNG\n\n7.1. Sự kiện bất khả kháng là những sự kiện xảy ra một cách khách quan, không thể lường trước được và không thể khắc phục được mặc dù đã áp dụng mọi biện pháp cần thiết và khả năng cho phép, bao gồm:\n- Thiên tai: động đất, bão, lũ lụt, hạn hán;\n- Hỏa hoạn;\n- Chiến tranh, bạo động, cấm vận;\n- Dịch bệnh được cơ quan nhà nước công bố;\n- Các quyết định của cơ quan nhà nước có thẩm quyền làm cho hợp đồng không thể thực hiện được.\n\n7.2. Bên gặp sự kiện bất khả kháng phải thông báo bằng văn bản cho bên kia trong thời hạn 05 ngày làm việc kể từ khi xảy ra sự kiện.\n\n7.3. Trong trường hợp bất khả kháng kéo dài quá 30 ngày, mỗi bên đều có quyền đơn phương chấm dứt hợp đồng mà không phải bồi thường.\n\n7.4. Bên gặp sự kiện bất khả kháng được miễn trách nhiệm vi phạm hợp đồng trong thời gian xảy ra sự kiện.",
+      "retrieved_docs": [
+        {
+          "doc_id": "37",
+          "law_id": "159/SL",
+          "title": "Sắc lệnh quy định vấn đề ly hôn",
+          "score": 81.78127480584948,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 159/SL NGÀY 17 THÁNG 11 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh ngày 10 tháng 10 năm 1945 tạm giữ các luật lệ hiện hành "
+        },
+        {
+          "doc_id": "4242",
+          "law_id": "181/1999/QĐ-UB",
+          "title": "V/v Ban hành qui định về ký quĩ phục hồi môi trườngtrong khai thác tận thu khoáng sản trên địa bàn tỉnh Lâm Đồng",
+          "score": 65.68561872909697,
+          "content_preview": "QUYẾT ĐỊNH\nVề việc ban hành qui định vềký quĩ phục hồi môi trường\ntrong khai thác tận thu khoáng sản trên địa bàn tỉnhLâm Đồng\nỦY BAN NHÂN DÂN TỈNH LÂM ĐỒNG\nCăn cứ Luật Tổ chức HĐND và Ủy ban nhân dân"
+        },
+        {
+          "doc_id": "4282",
+          "law_id": "111/1999/QĐ-UB",
+          "title": "Về việc ban hành quy định về chức năng, nhiệm vụ, quyền hạn và tổ chức bộ máy của Ban Dân tộc và Miền núi tỉnh Lâm Đồng",
+          "score": 60.89132343398097,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂM ĐỒNG\nV/v Ban hành quy định về chức năng, nhiệm vụ, quyền hạn và\ntổ chức bộ máy của Ban Dân tộc và Miền núi tỉnh Lâm Đồng\nỦY BAN NHÂN DÂN TỈNH LÂM ĐỒNG\nCăn cứ Lu"
+        },
+        {
+          "doc_id": "84",
+          "law_id": "90/SL",
+          "title": "Sắc lệnh định việc sử dụng các ruộng đất bỏ hoang",
+          "score": 42.495747487610934,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH PHỦ NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 90/SL NGÀY 22 THÁNG 5 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh số 20-SL ngày 12 tháng 2 năm 1950 tổng động viên nhân "
+        },
+        {
+          "doc_id": "90",
+          "law_id": "97/SL",
+          "title": "Sắc lệnh sửa đổi một số quy lệ và chế định trong dân luật",
+          "score": 40.20647932242716,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH CHÍNH PHỦ\nNƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 97/SL NGÀY 22 THÁNG 5 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh ngày 10 tháng 10 năm 1945 tạm giữ các luật lệ hi"
+        },
+        {
+          "doc_id": "96",
+          "law_id": "76/SL",
+          "title": "Sắc lệnh ban hành Quy chế Công chức",
+          "score": 38.09364548494983,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH NƯỚC\nNƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 76/SL NGÀY 20 THÁNG 5 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu tình thế hiện thời;\nTheo đề nghị của Bộ trưởng Bộ Nội vụ;\nTheo"
+        },
+        {
+          "doc_id": "85",
+          "law_id": "88/SL",
+          "title": "Sắc lệnh định thể lệ lĩnh canh ruộng đất",
+          "score": 40.615049618048104,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH PHỦ NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 88/SL NGÀY 22 THÁNG 5 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh số 78-SL ngày 14 tháng 7 năm 1949 về việc giảm tô;\nChi"
+        },
+        {
+          "doc_id": "73",
+          "law_id": "100/SL",
+          "title": "Sắc lệnh đổi các Điều 3, 8 và 12 Sắc lệnh số 68-SL ngày 30-11-1945 quy định việc trưng thu, trưng dụng và trưng tập trong thời kỳ kháng chiến",
+          "score": 55.53669965763204,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 100/SL NGÀY 30 THÁNG 5 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh số 68 ngày 30-11-1945 quy định việc trưng thu, trưng dụng"
+        },
+        {
+          "doc_id": "4263",
+          "law_id": "163/1999/QĐ-UB",
+          "title": "Về việc xử lý đối với quỹ nhà thuộc quyền sở hữu Nhà nước do các cơ quan, đơn vị đã tự bố trí cho cán bộ, công nhân viên ở tập thể trên địa bàn thành phố Đà Lạt.",
+          "score": 61.59439105504046,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂMĐỒNG\nVề việc xử lý đối với quỹ nhàthuộc quyền sở hữu Nhà nước\ndo các cơ quan, đơn vị đã tựbố trí cho cán bộ, công nhân viên\nở tập thể trên địa bàn thànhphố Đà Lạ"
+        },
+        {
+          "doc_id": "92",
+          "law_id": "85/SL",
+          "title": "Sắc lệnh cải cách bộ máy Tư pháp và Luật Tố tụng",
+          "score": 73.22083052157474,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 85/SL NGÀY 22 THÁNG 5 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh số 13-SL ngày 24 tháng 1 năm 1946 và các sắc lệnh tiếp sau"
+        }
+      ],
+      "status": "retrieved",
+      "retrieval_time": 0.037738958024419844
+    },
+    {
+      "clause_number": 8,
+      "clause_title": "ĐIỀU 8. THỜI HẠN HỢP ĐỒNG",
+      "clause_text": "ĐIỀU 8. THỜI HẠN HỢP ĐỒNG\n\n8.1. Hợp đồng có hiệu lực từ ngày 01/02/2024 đến ngày 31/01/2025.\n\n8.2. Hết thời hạn hợp đồng, nếu hai bên không có thỏa thuận khác, hợp đồng sẽ tự động gia hạn thêm 01 năm với các điều khoản không thay đổi, trừ khi một trong hai bên thông báo chấm dứt bằng văn bản trước 30 ngày.\n\n8.3. Hợp đồng có thể được gia hạn bằng văn bản thỏa thuận của hai bên.",
+      "retrieved_docs": [
+        {
+          "doc_id": "85",
+          "law_id": "88/SL",
+          "title": "Sắc lệnh định thể lệ lĩnh canh ruộng đất",
+          "score": 72.70793713248956,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH PHỦ NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 88/SL NGÀY 22 THÁNG 5 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh số 78-SL ngày 14 tháng 7 năm 1949 về việc giảm tô;\nChi"
+        },
+        {
+          "doc_id": "4242",
+          "law_id": "181/1999/QĐ-UB",
+          "title": "V/v Ban hành qui định về ký quĩ phục hồi môi trườngtrong khai thác tận thu khoáng sản trên địa bàn tỉnh Lâm Đồng",
+          "score": 53.81920193310272,
+          "content_preview": "QUYẾT ĐỊNH\nVề việc ban hành qui định vềký quĩ phục hồi môi trường\ntrong khai thác tận thu khoáng sản trên địa bàn tỉnhLâm Đồng\nỦY BAN NHÂN DÂN TỈNH LÂM ĐỒNG\nCăn cứ Luật Tổ chức HĐND và Ủy ban nhân dân"
+        },
+        {
+          "doc_id": "96",
+          "law_id": "76/SL",
+          "title": "Sắc lệnh ban hành Quy chế Công chức",
+          "score": 41.14071191598693,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH NƯỚC\nNƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 76/SL NGÀY 20 THÁNG 5 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu tình thế hiện thời;\nTheo đề nghị của Bộ trưởng Bộ Nội vụ;\nTheo"
+        },
+        {
+          "doc_id": "4203",
+          "law_id": "40/1999/QĐ-UB",
+          "title": "Uỷ quyền cho Sở Thương mại và Du lịch xét duyệt kế hoạch và quản lý hoạt động xuất khẩu, nhập khẩu cho các Doanh nghiệpcó vốn đầu tư nước ngoài, các bên hợp doanh trên cơ sở hợp đồng hợp tác kinh doanh trên địa bàn tỉnh",
+          "score": 38.09364548494983,
+          "content_preview": "QUYẾT ĐỊNH CỦ UỶ BAN NHÂN DÂN TỈNH BẮC NINH\nUỷ quyền cho Sở Thương mại và Du lịch xét duyệt kế hoạch và quản lý hoạt động xuất khẩu, nhập khẩu cho các Doanh nghiệpcó vốn đầu tư nước ngoài, các bên hợp"
+        },
+        {
+          "doc_id": "4282",
+          "law_id": "111/1999/QĐ-UB",
+          "title": "Về việc ban hành quy định về chức năng, nhiệm vụ, quyền hạn và tổ chức bộ máy của Ban Dân tộc và Miền núi tỉnh Lâm Đồng",
+          "score": 34.83903845675789,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂM ĐỒNG\nV/v Ban hành quy định về chức năng, nhiệm vụ, quyền hạn và\ntổ chức bộ máy của Ban Dân tộc và Miền núi tỉnh Lâm Đồng\nỦY BAN NHÂN DÂN TỈNH LÂM ĐỒNG\nCăn cứ Lu"
+        },
+        {
+          "doc_id": "37",
+          "law_id": "159/SL",
+          "title": "Sắc lệnh quy định vấn đề ly hôn",
+          "score": 31.310471524800967,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 159/SL NGÀY 17 THÁNG 11 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh ngày 10 tháng 10 năm 1945 tạm giữ các luật lệ hiện hành "
+        },
+        {
+          "doc_id": "4263",
+          "law_id": "163/1999/QĐ-UB",
+          "title": "Về việc xử lý đối với quỹ nhà thuộc quyền sở hữu Nhà nước do các cơ quan, đơn vị đã tự bố trí cho cán bộ, công nhân viên ở tập thể trên địa bàn thành phố Đà Lạt.",
+          "score": 35.57442557442558,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂMĐỒNG\nVề việc xử lý đối với quỹ nhàthuộc quyền sở hữu Nhà nước\ndo các cơ quan, đơn vị đã tựbố trí cho cán bộ, công nhân viên\nở tập thể trên địa bàn thànhphố Đà Lạ"
+        },
+        {
+          "doc_id": "4204",
+          "law_id": "99/QĐ-UB",
+          "title": "Ban hành quy định phân cấp quản lý công tác Tổ chức và Cán bộ",
+          "score": 40.641821946169756,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH BẮC NINH\nBan hành quy định\nphân cấp quản lý công tác Tổ chức và Cán bộ\nỦy ban nhân dân TỈNH BẮC NINH\nCăn cứ Luật Tổ chức HĐND và Ủy ban nhân dân được Quốc hội nước "
+        },
+        {
+          "doc_id": "92",
+          "law_id": "85/SL",
+          "title": "Sắc lệnh cải cách bộ máy Tư pháp và Luật Tố tụng",
+          "score": 43.35709194583036,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 85/SL NGÀY 22 THÁNG 5 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh số 13-SL ngày 24 tháng 1 năm 1946 và các sắc lệnh tiếp sau"
+        },
+        {
+          "doc_id": "84",
+          "law_id": "90/SL",
+          "title": "Sắc lệnh định việc sử dụng các ruộng đất bỏ hoang",
+          "score": 59.06765295114809,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH PHỦ NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 90/SL NGÀY 22 THÁNG 5 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh số 20-SL ngày 12 tháng 2 năm 1950 tổng động viên nhân "
+        }
+      ],
+      "status": "retrieved",
+      "retrieval_time": 0.04028495796956122
+    },
+    {
+      "clause_number": 9,
+      "clause_title": "ĐIỀU 9. CHẤM DỨT HỢP ĐỒNG",
+      "clause_text": "ĐIỀU 9. CHẤM DỨT HỢP ĐỒNG\n\n9.1. Hợp đồng chấm dứt trong các trường hợp sau:\n- Hết thời hạn hợp đồng và không gia hạn;\n- Hai bên thỏa thuận chấm dứt bằng văn bản;\n- Một bên đơn phương chấm dứt hợp đồng theo quy định tại Điều 10;\n- Bị tòa án tuyên bố vô hiệu;\n- Các trường hợp khác theo quy định pháp luật.\n\n9.2. Khi chấm dứt hợp đồng:\n- Bên A thanh toán toàn bộ phí dịch vụ đã phát sinh đến thời điểm chấm dứt;\n- Bên B bàn giao lại toàn bộ hồ sơ, tài liệu của Bên A;\n- Các điều khoản về bảo mật, bồi thường thiệt hại vẫn tiếp tục có hiệu lực.",
+      "retrieved_docs": [
+        {
+          "doc_id": "37",
+          "law_id": "159/SL",
+          "title": "Sắc lệnh quy định vấn đề ly hôn",
+          "score": 86.64810650419938,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 159/SL NGÀY 17 THÁNG 11 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh ngày 10 tháng 10 năm 1945 tạm giữ các luật lệ hiện hành "
+        },
+        {
+          "doc_id": "92",
+          "law_id": "85/SL",
+          "title": "Sắc lệnh cải cách bộ máy Tư pháp và Luật Tố tụng",
+          "score": 61.3624227726838,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 85/SL NGÀY 22 THÁNG 5 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh số 13-SL ngày 24 tháng 1 năm 1946 và các sắc lệnh tiếp sau"
+        },
+        {
+          "doc_id": "4263",
+          "law_id": "163/1999/QĐ-UB",
+          "title": "Về việc xử lý đối với quỹ nhà thuộc quyền sở hữu Nhà nước do các cơ quan, đơn vị đã tự bố trí cho cán bộ, công nhân viên ở tập thể trên địa bàn thành phố Đà Lạt.",
+          "score": 46.93375912283304,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂMĐỒNG\nVề việc xử lý đối với quỹ nhàthuộc quyền sở hữu Nhà nước\ndo các cơ quan, đơn vị đã tựbố trí cho cán bộ, công nhân viên\nở tập thể trên địa bàn thànhphố Đà Lạ"
+        },
+        {
+          "doc_id": "4203",
+          "law_id": "40/1999/QĐ-UB",
+          "title": "Uỷ quyền cho Sở Thương mại và Du lịch xét duyệt kế hoạch và quản lý hoạt động xuất khẩu, nhập khẩu cho các Doanh nghiệpcó vốn đầu tư nước ngoài, các bên hợp doanh trên cơ sở hợp đồng hợp tác kinh doanh trên địa bàn tỉnh",
+          "score": 40.3938563042479,
+          "content_preview": "QUYẾT ĐỊNH CỦ UỶ BAN NHÂN DÂN TỈNH BẮC NINH\nUỷ quyền cho Sở Thương mại và Du lịch xét duyệt kế hoạch và quản lý hoạt động xuất khẩu, nhập khẩu cho các Doanh nghiệpcó vốn đầu tư nước ngoài, các bên hợp"
+        },
+        {
+          "doc_id": "85",
+          "law_id": "88/SL",
+          "title": "Sắc lệnh định thể lệ lĩnh canh ruộng đất",
+          "score": 36.409523676305724,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH PHỦ NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 88/SL NGÀY 22 THÁNG 5 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh số 78-SL ngày 14 tháng 7 năm 1949 về việc giảm tô;\nChi"
+        },
+        {
+          "doc_id": "84",
+          "law_id": "90/SL",
+          "title": "Sắc lệnh định việc sử dụng các ruộng đất bỏ hoang",
+          "score": 32.87450921703393,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH PHỦ NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 90/SL NGÀY 22 THÁNG 5 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh số 20-SL ngày 12 tháng 2 năm 1950 tổng động viên nhân "
+        },
+        {
+          "doc_id": "4204",
+          "law_id": "99/QĐ-UB",
+          "title": "Ban hành quy định phân cấp quản lý công tác Tổ chức và Cán bộ",
+          "score": 36.702294809804854,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH BẮC NINH\nBan hành quy định\nphân cấp quản lý công tác Tổ chức và Cán bộ\nỦy ban nhân dân TỈNH BẮC NINH\nCăn cứ Luật Tổ chức HĐND và Ủy ban nhân dân được Quốc hội nước "
+        },
+        {
+          "doc_id": "4242",
+          "law_id": "181/1999/QĐ-UB",
+          "title": "V/v Ban hành qui định về ký quĩ phục hồi môi trườngtrong khai thác tận thu khoáng sản trên địa bàn tỉnh Lâm Đồng",
+          "score": 40.89595329697738,
+          "content_preview": "QUYẾT ĐỊNH\nVề việc ban hành qui định vềký quĩ phục hồi môi trường\ntrong khai thác tận thu khoáng sản trên địa bàn tỉnhLâm Đồng\nỦY BAN NHÂN DÂN TỈNH LÂM ĐỒNG\nCăn cứ Luật Tổ chức HĐND và Ủy ban nhân dân"
+        },
+        {
+          "doc_id": "4257",
+          "law_id": "28/1999/CT-UB",
+          "title": "Về việc niêm yết giá, nhận thanh toán hàng hóa và dịch vụ bằng đồng Việt Nam",
+          "score": 51.387494210840835,
+          "content_preview": "CHỈ THỊ CỦA Ủy ban nhân dân TỈNH LÂM ĐỒNG\nVề việc niêm yết giá, nhận thanh toán hàng hóa và dịch vụ bằng đồng Việt Nam\nCăn cứ Nghị định số 63/1998/Nghị định Chính phủ của Chính phủ ban hành ngày 17/08"
+        },
+        {
+          "doc_id": "4258",
+          "law_id": "166/1999/QĐ-UB",
+          "title": "Về việc quy định giá dịch vụ giữ xe và phí bến bãi đậu xe trên địa bàn tỉnh Lâm Đồng",
+          "score": 61.964001090132484,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂMĐỒNG\nVề việc quy định giá dịch vụ giữxe và phí bến bãi đậu xe\ntrên địa bàn tỉnh Lâm Đồng\nUỶ BAN NHÂN DÂN TỈNH LÂMĐỒNG\nCăn cứ Luật Tổ chức HĐND và Ủy ban nhân dân"
+        }
+      ],
+      "status": "retrieved",
+      "retrieval_time": 0.03709975001402199
+    },
+    {
+      "clause_number": 10,
+      "clause_title": "ĐIỀU 10. ĐƠN PHƯƠNG CHẤM DỨT HỢP ĐỒNG",
+      "clause_text": "ĐIỀU 10. ĐƠN PHƯƠNG CHẤM DỨT HỢP ĐỒNG\n\n10.1. Bên A có quyền đơn phương chấm dứt hợp đồng nếu:\n- Bên B vi phạm nghiêm trọng nghĩa vụ theo hợp đồng;\n- Bên B cung cấp thông tin tư vấn sai nghiêm trọng gây thiệt hại cho Bên A;\n- Bên B vi phạm nghĩa vụ bảo mật thông tin.\n\n10.2. Bên B có quyền đơn phương chấm dứt hợp đồng nếu:\n- Bên A chậm thanh toán quá 45 ngày;\n- Bên A cung cấp thông tin sai lệch, giả mạo;\n- Bên A có hành vi vi phạm pháp luật trong quá trình sử dụng dịch vụ.\n\n10.3. Bên đơn phương chấm dứt phải thông báo bằng văn bản cho bên kia trước 15 ngày.\n\n10.4. Bên vi phạm gây ra việc chấm dứt hợp đồng phải bồi thường thiệt hại theo quy định.",
+      "retrieved_docs": [
+        {
+          "doc_id": "37",
+          "law_id": "159/SL",
+          "title": "Sắc lệnh quy định vấn đề ly hôn",
+          "score": 84.42922301897069,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 159/SL NGÀY 17 THÁNG 11 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh ngày 10 tháng 10 năm 1945 tạm giữ các luật lệ hiện hành "
+        },
+        {
+          "doc_id": "4242",
+          "law_id": "181/1999/QĐ-UB",
+          "title": "V/v Ban hành qui định về ký quĩ phục hồi môi trườngtrong khai thác tận thu khoáng sản trên địa bàn tỉnh Lâm Đồng",
+          "score": 65.14075122537896,
+          "content_preview": "QUYẾT ĐỊNH\nVề việc ban hành qui định vềký quĩ phục hồi môi trường\ntrong khai thác tận thu khoáng sản trên địa bàn tỉnhLâm Đồng\nỦY BAN NHÂN DÂN TỈNH LÂM ĐỒNG\nCăn cứ Luật Tổ chức HĐND và Ủy ban nhân dân"
+        },
+        {
+          "doc_id": "4203",
+          "law_id": "40/1999/QĐ-UB",
+          "title": "Uỷ quyền cho Sở Thương mại và Du lịch xét duyệt kế hoạch và quản lý hoạt động xuất khẩu, nhập khẩu cho các Doanh nghiệpcó vốn đầu tư nước ngoài, các bên hợp doanh trên cơ sở hợp đồng hợp tác kinh doanh trên địa bàn tỉnh",
+          "score": 40.342000674282595,
+          "content_preview": "QUYẾT ĐỊNH CỦ UỶ BAN NHÂN DÂN TỈNH BẮC NINH\nUỷ quyền cho Sở Thương mại và Du lịch xét duyệt kế hoạch và quản lý hoạt động xuất khẩu, nhập khẩu cho các Doanh nghiệpcó vốn đầu tư nước ngoài, các bên hợp"
+        },
+        {
+          "doc_id": "4258",
+          "law_id": "166/1999/QĐ-UB",
+          "title": "Về việc quy định giá dịch vụ giữ xe và phí bến bãi đậu xe trên địa bàn tỉnh Lâm Đồng",
+          "score": 37.81875737496597,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂMĐỒNG\nVề việc quy định giá dịch vụ giữxe và phí bến bãi đậu xe\ntrên địa bàn tỉnh Lâm Đồng\nUỶ BAN NHÂN DÂN TỈNH LÂMĐỒNG\nCăn cứ Luật Tổ chức HĐND và Ủy ban nhân dân"
+        },
+        {
+          "doc_id": "71",
+          "law_id": "106/SL",
+          "title": "Sắc lệnh định việc trừng trị những tội làm chậm trễ hay ngăn trở việc thi hành nghĩa vụ quân sự và lệnh tòng quân",
+          "score": 32.917024286722366,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH PHỦ NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 106/SL NGÀY 15 THÁNG 6 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nCHIỂU SẮC LỆNH SỐ 71-SL NGÀY 22 THÁNG 5 NĂM 1946 ẤN ĐỊNH QUY TẮC QUÂ"
+        },
+        {
+          "doc_id": "4204",
+          "law_id": "99/QĐ-UB",
+          "title": "Ban hành quy định phân cấp quản lý công tác Tổ chức và Cán bộ",
+          "score": 32.02886671503515,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH BẮC NINH\nBan hành quy định\nphân cấp quản lý công tác Tổ chức và Cán bộ\nỦy ban nhân dân TỈNH BẮC NINH\nCăn cứ Luật Tổ chức HĐND và Ủy ban nhân dân được Quốc hội nước "
+        },
+        {
+          "doc_id": "4263",
+          "law_id": "163/1999/QĐ-UB",
+          "title": "Về việc xử lý đối với quỹ nhà thuộc quyền sở hữu Nhà nước do các cơ quan, đơn vị đã tự bố trí cho cán bộ, công nhân viên ở tập thể trên địa bàn thành phố Đà Lạt.",
+          "score": 33.96558383915435,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂMĐỒNG\nVề việc xử lý đối với quỹ nhàthuộc quyền sở hữu Nhà nước\ndo các cơ quan, đơn vị đã tựbố trí cho cán bộ, công nhân viên\nở tập thể trên địa bàn thànhphố Đà Lạ"
+        },
+        {
+          "doc_id": "4257",
+          "law_id": "28/1999/CT-UB",
+          "title": "Về việc niêm yết giá, nhận thanh toán hàng hóa và dịch vụ bằng đồng Việt Nam",
+          "score": 38.05146756067369,
+          "content_preview": "CHỈ THỊ CỦA Ủy ban nhân dân TỈNH LÂM ĐỒNG\nVề việc niêm yết giá, nhận thanh toán hàng hóa và dịch vụ bằng đồng Việt Nam\nCăn cứ Nghị định số 63/1998/Nghị định Chính phủ của Chính phủ ban hành ngày 17/08"
+        },
+        {
+          "doc_id": "90",
+          "law_id": "97/SL",
+          "title": "Sắc lệnh sửa đổi một số quy lệ và chế định trong dân luật",
+          "score": 41.664668532795346,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH CHÍNH PHỦ\nNƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 97/SL NGÀY 22 THÁNG 5 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh ngày 10 tháng 10 năm 1945 tạm giữ các luật lệ hi"
+        },
+        {
+          "doc_id": "92",
+          "law_id": "85/SL",
+          "title": "Sắc lệnh cải cách bộ máy Tư pháp và Luật Tố tụng",
+          "score": 70.35138290676872,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 85/SL NGÀY 22 THÁNG 5 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh số 13-SL ngày 24 tháng 1 năm 1946 và các sắc lệnh tiếp sau"
+        }
+      ],
+      "status": "retrieved",
+      "retrieval_time": 0.06831112498184666
+    },
+    {
+      "clause_number": 11,
+      "clause_title": "ĐIỀU 11. GIẢI QUYẾT TRANH CHẤP",
+      "clause_text": "ĐIỀU 11. GIẢI QUYẾT TRANH CHẤP\n\n11.1. Mọi tranh chấp phát sinh từ hoặc liên quan đến hợp đồng này sẽ được giải quyết trước tiên thông qua thương lượng giữa hai bên.\n\n11.2. Nếu thương lượng không thành trong thời hạn 30 ngày, tranh chấp sẽ được giải quyết tại Tòa án nhân dân có thẩm quyền theo quy định của Bộ Luật Tố tụng Dân sự số 92/2015/QH13.\n\n11.3. Trong quá trình giải quyết tranh chấp, hai bên vẫn phải tiếp tục thực hiện các nghĩa vụ khác theo hợp đồng, trừ các nghĩa vụ liên quan đến tranh chấp.\n\n11.4. Phán quyết của Tòa án là chung thẩm và ràng buộc cả hai bên. Chi phí giải quyết tranh chấp do bên thua kiện chịu.",
+      "retrieved_docs": [
+        {
+          "doc_id": "92",
+          "law_id": "85/SL",
+          "title": "Sắc lệnh cải cách bộ máy Tư pháp và Luật Tố tụng",
+          "score": 90.24856318855436,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 85/SL NGÀY 22 THÁNG 5 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh số 13-SL ngày 24 tháng 1 năm 1946 và các sắc lệnh tiếp sau"
+        },
+        {
+          "doc_id": "85",
+          "law_id": "88/SL",
+          "title": "Sắc lệnh định thể lệ lĩnh canh ruộng đất",
+          "score": 36.422028189037576,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH PHỦ NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 88/SL NGÀY 22 THÁNG 5 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh số 78-SL ngày 14 tháng 7 năm 1949 về việc giảm tô;\nChi"
+        },
+        {
+          "doc_id": "90",
+          "law_id": "97/SL",
+          "title": "Sắc lệnh sửa đổi một số quy lệ và chế định trong dân luật",
+          "score": 30.38584184656555,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH CHÍNH PHỦ\nNƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 97/SL NGÀY 22 THÁNG 5 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh ngày 10 tháng 10 năm 1945 tạm giữ các luật lệ hi"
+        },
+        {
+          "doc_id": "73",
+          "law_id": "100/SL",
+          "title": "Sắc lệnh đổi các Điều 3, 8 và 12 Sắc lệnh số 68-SL ngày 30-11-1945 quy định việc trưng thu, trưng dụng và trưng tập trong thời kỳ kháng chiến",
+          "score": 29.904699073000426,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 100/SL NGÀY 30 THÁNG 5 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh số 68 ngày 30-11-1945 quy định việc trưng thu, trưng dụng"
+        },
+        {
+          "doc_id": "96",
+          "law_id": "76/SL",
+          "title": "Sắc lệnh ban hành Quy chế Công chức",
+          "score": 25.940377020467785,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH NƯỚC\nNƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 76/SL NGÀY 20 THÁNG 5 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu tình thế hiện thời;\nTheo đề nghị của Bộ trưởng Bộ Nội vụ;\nTheo"
+        },
+        {
+          "doc_id": "4204",
+          "law_id": "99/QĐ-UB",
+          "title": "Ban hành quy định phân cấp quản lý công tác Tổ chức và Cán bộ",
+          "score": 25.16051513101241,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH BẮC NINH\nBan hành quy định\nphân cấp quản lý công tác Tổ chức và Cán bộ\nỦy ban nhân dân TỈNH BẮC NINH\nCăn cứ Luật Tổ chức HĐND và Ủy ban nhân dân được Quốc hội nước "
+        },
+        {
+          "doc_id": "4242",
+          "law_id": "181/1999/QĐ-UB",
+          "title": "V/v Ban hành qui định về ký quĩ phục hồi môi trườngtrong khai thác tận thu khoáng sản trên địa bàn tỉnh Lâm Đồng",
+          "score": 27.56694610418898,
+          "content_preview": "QUYẾT ĐỊNH\nVề việc ban hành qui định vềký quĩ phục hồi môi trường\ntrong khai thác tận thu khoáng sản trên địa bàn tỉnhLâm Đồng\nỦY BAN NHÂN DÂN TỈNH LÂM ĐỒNG\nCăn cứ Luật Tổ chức HĐND và Ủy ban nhân dân"
+        },
+        {
+          "doc_id": "4282",
+          "law_id": "111/1999/QĐ-UB",
+          "title": "Về việc ban hành quy định về chức năng, nhiệm vụ, quyền hạn và tổ chức bộ máy của Ban Dân tộc và Miền núi tỉnh Lâm Đồng",
+          "score": 30.188878358545544,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂM ĐỒNG\nV/v Ban hành quy định về chức năng, nhiệm vụ, quyền hạn và\ntổ chức bộ máy của Ban Dân tộc và Miền núi tỉnh Lâm Đồng\nỦY BAN NHÂN DÂN TỈNH LÂM ĐỒNG\nCăn cứ Lu"
+        },
+        {
+          "doc_id": "31",
+          "law_id": "157/SL",
+          "title": "Sắc lệnh tổ chức toà án nhân dân vùng tạm bị chiếm đóng",
+          "score": 33.70472863659064,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 157/SL NGÀY 17 THÁNG 11 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh số 13 ngày 21 tháng 1 năm 1946 và các sắc lệnh tiếp theo"
+        },
+        {
+          "doc_id": "37",
+          "law_id": "159/SL",
+          "title": "Sắc lệnh quy định vấn đề ly hôn",
+          "score": 72.2032356788354,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 159/SL NGÀY 17 THÁNG 11 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh ngày 10 tháng 10 năm 1945 tạm giữ các luật lệ hiện hành "
+        }
+      ],
+      "status": "retrieved",
+      "retrieval_time": 0.08149687497643754
+    },
+    {
+      "clause_number": 12,
+      "clause_title": "ĐIỀU 12. SỬA ĐỔI, BỔ SUNG HỢP ĐỒNG",
+      "clause_text": "ĐIỀU 12. SỬA ĐỔI, BỔ SUNG HỢP ĐỒNG\n\n12.1. Hợp đồng này chỉ được sửa đổi, bổ sung khi có văn bản thỏa thuận của cả hai bên.\n\n12.2. Các văn bản sửa đổi, bổ sung hợp đồng phải được lập thành văn bản, có chữ ký và đóng dấu của đại diện có thẩm quyền của hai bên.\n\n12.3. Các văn bản sửa đổi, bổ sung là phần không tách rời của hợp đồng này.\n\n12.4. Trong trường hợp có sửa đổi, bổ sung, các điều khoản không bị sửa đổi vẫn tiếp tục có hiệu lực.",
+      "retrieved_docs": [
+        {
+          "doc_id": "90",
+          "law_id": "97/SL",
+          "title": "Sắc lệnh sửa đổi một số quy lệ và chế định trong dân luật",
+          "score": 87.32828355854276,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH CHÍNH PHỦ\nNƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 97/SL NGÀY 22 THÁNG 5 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh ngày 10 tháng 10 năm 1945 tạm giữ các luật lệ hi"
+        },
+        {
+          "doc_id": "63",
+          "law_id": "120/SL",
+          "title": "Sắc lệnh đổi tên và định thành phần các Hội đồng và ban tạm cấp ruộng đất tỉnh, xã và đồn điền",
+          "score": 43.256146186158865,
+          "content_preview": "SẮC LỆNH\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 120/SL NGÀY 11 THÁNG 7 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh số 75-SL ngày 1 tháng 7 năm 1949 quy định việc sử dụng ruộng "
+        },
+        {
+          "doc_id": "4204",
+          "law_id": "99/QĐ-UB",
+          "title": "Ban hành quy định phân cấp quản lý công tác Tổ chức và Cán bộ",
+          "score": 39.165423242129854,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH BẮC NINH\nBan hành quy định\nphân cấp quản lý công tác Tổ chức và Cán bộ\nỦy ban nhân dân TỈNH BẮC NINH\nCăn cứ Luật Tổ chức HĐND và Ủy ban nhân dân được Quốc hội nước "
+        },
+        {
+          "doc_id": "4282",
+          "law_id": "111/1999/QĐ-UB",
+          "title": "Về việc ban hành quy định về chức năng, nhiệm vụ, quyền hạn và tổ chức bộ máy của Ban Dân tộc và Miền núi tỉnh Lâm Đồng",
+          "score": 34.513840587882676,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂM ĐỒNG\nV/v Ban hành quy định về chức năng, nhiệm vụ, quyền hạn và\ntổ chức bộ máy của Ban Dân tộc và Miền núi tỉnh Lâm Đồng\nỦY BAN NHÂN DÂN TỈNH LÂM ĐỒNG\nCăn cứ Lu"
+        },
+        {
+          "doc_id": "4203",
+          "law_id": "40/1999/QĐ-UB",
+          "title": "Uỷ quyền cho Sở Thương mại và Du lịch xét duyệt kế hoạch và quản lý hoạt động xuất khẩu, nhập khẩu cho các Doanh nghiệpcó vốn đầu tư nước ngoài, các bên hợp doanh trên cơ sở hợp đồng hợp tác kinh doanh trên địa bàn tỉnh",
+          "score": 30.393867379835157,
+          "content_preview": "QUYẾT ĐỊNH CỦ UỶ BAN NHÂN DÂN TỈNH BẮC NINH\nUỷ quyền cho Sở Thương mại và Du lịch xét duyệt kế hoạch và quản lý hoạt động xuất khẩu, nhập khẩu cho các Doanh nghiệpcó vốn đầu tư nước ngoài, các bên hợp"
+        },
+        {
+          "doc_id": "85",
+          "law_id": "88/SL",
+          "title": "Sắc lệnh định thể lệ lĩnh canh ruộng đất",
+          "score": 28.505546326146728,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH PHỦ NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 88/SL NGÀY 22 THÁNG 5 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh số 78-SL ngày 14 tháng 7 năm 1949 về việc giảm tô;\nChi"
+        },
+        {
+          "doc_id": "4278",
+          "law_id": "114/1999/QĐ-UB",
+          "title": "Về việc phê duyệt dự án quy hoạch thủy lợi và nước sinh hoạt nông thôn các Huyện Di Linh, Bảo Lâm và Thị xã Bảo Lộc, tỉnh Lâm Đồng",
+          "score": 34.02921469689167,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂM ĐỒNG\nV/v Phê duyệt dự án quy hoạch thủy lợi và nước sinh hoạt nông thôn\ncác Huyện Di Linh, Bảo Lâm và Thị xã Bảo Lộc, tỉnh Lâm Đồng\nỦY BAN NHÂN DÂN TỈNH LÂM ĐỒN"
+        },
+        {
+          "doc_id": "4242",
+          "law_id": "181/1999/QĐ-UB",
+          "title": "V/v Ban hành qui định về ký quĩ phục hồi môi trườngtrong khai thác tận thu khoáng sản trên địa bàn tỉnh Lâm Đồng",
+          "score": 38.868283815900384,
+          "content_preview": "QUYẾT ĐỊNH\nVề việc ban hành qui định vềký quĩ phục hồi môi trường\ntrong khai thác tận thu khoáng sản trên địa bàn tỉnhLâm Đồng\nỦY BAN NHÂN DÂN TỈNH LÂM ĐỒNG\nCăn cứ Luật Tổ chức HĐND và Ủy ban nhân dân"
+        },
+        {
+          "doc_id": "92",
+          "law_id": "85/SL",
+          "title": "Sắc lệnh cải cách bộ máy Tư pháp và Luật Tố tụng",
+          "score": 42.22575246307287,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 85/SL NGÀY 22 THÁNG 5 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh số 13-SL ngày 24 tháng 1 năm 1946 và các sắc lệnh tiếp sau"
+        },
+        {
+          "doc_id": "65",
+          "law_id": "127",
+          "title": "Sắc lệnh sửa đổi điều 3 của Sắc lệnh số 3 ngày 22-05-1950 về phụ cấp cho gia đình các vị trong ban thường trực Quốc hội",
+          "score": 50.10694426207602,
+          "content_preview": "SẮC LỆNH\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 127/SL NGÀY 11 THÁNG 7 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh số 83-SL ngày 22 tháng 5 năm 1950 ấn định phí cấp hàng tháng "
+        }
+      ],
+      "status": "retrieved",
+      "retrieval_time": 0.06498129200190306
+    },
+    {
+      "clause_number": 13,
+      "clause_title": "ĐIỀU 13. ĐIỀU KHOẢN CHUNG",
+      "clause_text": "ĐIỀU 13. ĐIỀU KHOẢN CHUNG\n\n13.1. Hợp đồng này được lập thành 04 (bốn) bản có giá trị pháp lý như nhau, mỗi bên giữ 02 (hai) bản.\n\n13.2. Hợp đồng có hiệu lực kể từ ngày hai bên ký kết.\n\n13.3. Các phụ lục kèm theo hợp đồng (nếu có) là phần không tách rời của hợp đồng này.\n\n13.4. Trong quá trình thực hiện, nếu có vấn đề phát sinh ngoài phạm vi điều chỉnh của hợp đồng, hai bên sẽ thương lượng để bổ sung vào hợp đồng bằng văn bản.\n\n13.5. Hợp đồng này tuân thủ quy định của Bộ Luật Dân sự 2015 và các văn bản pháp luật có liên quan.\n\nĐẠI DIỆN BÊN A                                    ĐẠI DIỆN BÊN B\n\n( Ký tên, đóng dấu)                             ( Ký tên, đóng dấu)\n\n\nNGUYỄN VĂN MINH                                 TRẦN THỊ HƯƠNG\nGiám đốc                                         Giám đốc/Luật sư",
+      "retrieved_docs": [
+        {
+          "doc_id": "90",
+          "law_id": "97/SL",
+          "title": "Sắc lệnh sửa đổi một số quy lệ và chế định trong dân luật",
+          "score": 86.43187122840828,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH CHÍNH PHỦ\nNƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 97/SL NGÀY 22 THÁNG 5 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh ngày 10 tháng 10 năm 1945 tạm giữ các luật lệ hi"
+        },
+        {
+          "doc_id": "4204",
+          "law_id": "99/QĐ-UB",
+          "title": "Ban hành quy định phân cấp quản lý công tác Tổ chức và Cán bộ",
+          "score": 61.38343169740154,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH BẮC NINH\nBan hành quy định\nphân cấp quản lý công tác Tổ chức và Cán bộ\nỦy ban nhân dân TỈNH BẮC NINH\nCăn cứ Luật Tổ chức HĐND và Ủy ban nhân dân được Quốc hội nước "
+        },
+        {
+          "doc_id": "96",
+          "law_id": "76/SL",
+          "title": "Sắc lệnh ban hành Quy chế Công chức",
+          "score": 45.15437126853219,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH NƯỚC\nNƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 76/SL NGÀY 20 THÁNG 5 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu tình thế hiện thời;\nTheo đề nghị của Bộ trưởng Bộ Nội vụ;\nTheo"
+        },
+        {
+          "doc_id": "72",
+          "law_id": "103/SL",
+          "title": "Sắc lệnh quy định liên hệ giữa UBKCHC và các cơ quan chuyên môn",
+          "score": 41.57922173385843,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH PHỦ NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 103/SL NGÀY 5 THÁNG 6 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh số 63-SL ngày 22 tháng 11 năm 1945 và các sắc lệnh quy"
+        },
+        {
+          "doc_id": "4282",
+          "law_id": "111/1999/QĐ-UB",
+          "title": "Về việc ban hành quy định về chức năng, nhiệm vụ, quyền hạn và tổ chức bộ máy của Ban Dân tộc và Miền núi tỉnh Lâm Đồng",
+          "score": 35.98879521296518,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂM ĐỒNG\nV/v Ban hành quy định về chức năng, nhiệm vụ, quyền hạn và\ntổ chức bộ máy của Ban Dân tộc và Miền núi tỉnh Lâm Đồng\nỦY BAN NHÂN DÂN TỈNH LÂM ĐỒNG\nCăn cứ Lu"
+        },
+        {
+          "doc_id": "92",
+          "law_id": "85/SL",
+          "title": "Sắc lệnh cải cách bộ máy Tư pháp và Luật Tố tụng",
+          "score": 32.28866754113777,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 85/SL NGÀY 22 THÁNG 5 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh số 13-SL ngày 24 tháng 1 năm 1946 và các sắc lệnh tiếp sau"
+        },
+        {
+          "doc_id": "63",
+          "law_id": "120/SL",
+          "title": "Sắc lệnh đổi tên và định thành phần các Hội đồng và ban tạm cấp ruộng đất tỉnh, xã và đồn điền",
+          "score": 41.337976483505884,
+          "content_preview": "SẮC LỆNH\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 120/SL NGÀY 11 THÁNG 7 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh số 75-SL ngày 1 tháng 7 năm 1949 quy định việc sử dụng ruộng "
+        },
+        {
+          "doc_id": "4203",
+          "law_id": "40/1999/QĐ-UB",
+          "title": "Uỷ quyền cho Sở Thương mại và Du lịch xét duyệt kế hoạch và quản lý hoạt động xuất khẩu, nhập khẩu cho các Doanh nghiệpcó vốn đầu tư nước ngoài, các bên hợp doanh trên cơ sở hợp đồng hợp tác kinh doanh trên địa bàn tỉnh",
+          "score": 41.71803508894857,
+          "content_preview": "QUYẾT ĐỊNH CỦ UỶ BAN NHÂN DÂN TỈNH BẮC NINH\nUỷ quyền cho Sở Thương mại và Du lịch xét duyệt kế hoạch và quản lý hoạt động xuất khẩu, nhập khẩu cho các Doanh nghiệpcó vốn đầu tư nước ngoài, các bên hợp"
+        },
+        {
+          "doc_id": "4242",
+          "law_id": "181/1999/QĐ-UB",
+          "title": "V/v Ban hành qui định về ký quĩ phục hồi môi trườngtrong khai thác tận thu khoáng sản trên địa bàn tỉnh Lâm Đồng",
+          "score": 55.570225034184894,
+          "content_preview": "QUYẾT ĐỊNH\nVề việc ban hành qui định vềký quĩ phục hồi môi trường\ntrong khai thác tận thu khoáng sản trên địa bàn tỉnhLâm Đồng\nỦY BAN NHÂN DÂN TỈNH LÂM ĐỒNG\nCăn cứ Luật Tổ chức HĐND và Ủy ban nhân dân"
+        },
+        {
+          "doc_id": "37",
+          "law_id": "159/SL",
+          "title": "Sắc lệnh quy định vấn đề ly hôn",
+          "score": 61.72133490500123,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 159/SL NGÀY 17 THÁNG 11 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh ngày 10 tháng 10 năm 1945 tạm giữ các luật lệ hiện hành "
+        }
+      ],
+      "status": "retrieved",
+      "retrieval_time": 0.07512566703371704
+    }
+  ],
+  "performance_metrics": {
+    "warmup_time": "0.09s",
+    "total_pipeline_time": "0.98s",
+    "clause_parsing_time": "0.00s",
+    "average_retrieval_time": "0.07s",
+    "retrieval_times": [
+      "0.18s",
+      "0.10s",
+      "0.04s",
+      "0.08s",
+      "0.07s",
+      "0.08s",
+      "0.04s",
+      "0.04s",
+      "0.04s",
+      "0.07s",
+      "0.08s",
+      "0.06s",
+      "0.08s"
+    ],
+    "total_retrieval_time": "0.94s"
+  },
+  "raw_clauses": [
+    {
+      "index": 0,
+      "text": "ĐIỀU 1. PHẠM VI DỊCH VỤ TƯ VẤN\n\nBên B đồng ý cung cấp cho Bên A các dịch vụ tư vấn pháp lý sau:\n\n1.1. Tư vấn pháp luật doanh nghiệp:\n- Rà soát và tư vấn về hồ sơ đăng ký doanh nghiệp, thay đổi đăng ký kinh doanh;\n- Tư vấn về cơ cấu tổ chức, điều lệ công ty, quy chế nội bộ;\n- Tư vấn về hợp đồng thương mại, hợp đồng lao động, hợp đồng kinh tế;\n- Tư vấn về đầu tư, mua bán, sáp nhập doanh nghiệp (M&A).\n\n1.2. Tư vấn pháp luật lao động:\n- Soạn thảo, rà soát hợp đồng lao động, nội quy lao động, thang bảng lương;\n- Tư vấn về chính sách bảo hiểm xã hội, bảo hiểm thất nghiệp;\n- Tư vấn giải quyết tranh chấp lao động, sa thải, cho nghỉ việc;\n- Tư vấn về an toàn lao động và bảo vệ sức khỏe người lao động.\n\n1.3. Tư vấn pháp luật về thuế và kế toán:\n- Tư vấn về nghĩa vụ thuế, chế độ kế toán theo quy định hiện hành;\n- Tư vấn về quyết toán thuế, kiểm toán;\n- Hỗ trợ giải quyết các vấn đề với cơ quan thuế.\n\n1.4. Tư vấn pháp luật về sở hữu trí tuệ:\n- Tư vấn đăng ký bảo hộ nhãn hiệu, bản quyền tác giả, sáng chế;\n- Tư vấn bảo vệ quyền sở hữu trí tuệ khi có tranh chấp;\n- Hỗ trợ thủ tục gia hạn, chuyển nhượng quyền sở hữu trí tuệ.",
+      "title": "ĐIỀU 1. PHẠM VI DỊCH VỤ TƯ VẤN"
+    },
+    {
+      "index": 1,
+      "text": "ĐIỀU 2. PHƯƠNG THỨC THỰC HIỆN\n\n2.1. Bên B sẽ thực hiện dịch vụ tư vấn bằng các hình thức sau:\n- Tư vấn trực tiếp tại văn phòng của Bên B hoặc địa điểm do Bên A yêu cầu;\n- Tư vấn qua điện thoại, email, video call;\n- Gửi văn bản tư vấn bằng email hoặc bản cứng;\n- Tham gia họp, đàm phán thay mặt Bên A khi có ủy quyền.\n\n2.2. Thời gian làm việc:\n- Từ thứ Hai đến thứ Sáu: 8h30 - 17h30;\n- Thứ Bảy: 8h30 - 12h00 (nếu có yêu cầu);\n- Các ngày lễ, Tết: Theo thỏa thuận cụ thể.\n\n2.3. Bên B cam kết:\n- Tư vấn dựa trên quy định pháp luật hiện hành tại thời điểm tư vấn;\n- Cập nhật các thay đổi pháp luật có ảnh hưởng đến nội dung tư vấn;\n- Giữ bí mật thông tin của Bên A theo quy định tại Điều 7.",
+      "title": "ĐIỀU 2. PHƯƠNG THỨC THỰC HIỆN"
+    },
+    {
+      "index": 2,
+      "text": "ĐIỀU 3. PHÍ DỊCH VỤ VÀ PHƯƠNG THỨC THANH TOÁN\n\n3.1. Phí dịch vụ tư vấn:\n- Phí tư vấn thường xuyên: 25.000.000 VNĐ/tháng (Bằng chữ: Hai mươi lăm triệu đồng chẵn);\n- Phí tư vấn theo vụ việc: Theo báo giá cụ thể cho từng vụ việc, tối thiểu 5.000.000 VNĐ/vụ việc;\n- Phí soạn thảo, rà soát hợp đồng: Từ 2.000.000 VNĐ đến 10.000.000 VNĐ/hợp đồng tùy độ phức tạp;\n- Phí đại diện pháp lý tại cơ quan nhà nước: Thỏa thuận riêng.\n\n3.2. Phương thức thanh toán:\n- Bên A thanh toán phí tư vấn thường xuyên vào ngày 05 hàng tháng;\n- Thanh toán bằng chuyển khoản vào tài khoản của Bên B:\n  + Tên tài khoản: Công ty Luật TNHH XYZ\n  + Số tài khoản: 1234567890\n  + Ngân hàng: TMCP Ngoại Thương Việt Nam (Vietcombank) - Chi nhánh Hà Nội\n- Hóa đơn VAT sẽ được Bên B xuất hóa đơn cho Bên A theo quy định pháp luật.\n\n3.3. Chi phí phát sinh:\n- Các chi phí đi lại, ăn ở, công tác phí khi thực hiện dịch vụ ngoài địa bàn Hà Nội sẽ do Bên A thanh toán thực tế;\n- Lệ phí nhà nước, phí công chứng, phí dịch thuật do Bên A chịu.",
+      "title": "ĐIỀU 3. PHÍ DỊCH VỤ VÀ PHƯƠNG THỨC THANH TOÁN"
+    },
+    {
+      "index": 3,
+      "text": "ĐIỀU 4. QUYỀN VÀ NGHĨA VỤ CỦA CÁC BÊN\n\n4.1. Quyền và nghĩa vụ của Bên A:\n- Cung cấp đầy đủ, chính xác hồ sơ, tài liệu phục vụ cho việc tư vấn;\n- Thanh toán phí dịch vụ đúng hạn theo quy định tại Điều 3;\n- Phối hợp với Bên B trong quá trình thực hiện dịch vụ;\n- Có quyền yêu cầu Bên B thay đổi luật sư tư vấn nếu không phù hợp;\n- Có quyền đơn phương chấm dứt hợp đồng nếu Bên B vi phạm nghiêm trọng.\n\n4.2. Quyền và nghĩa vụ của Bên B:\n- Thực hiện dịch vụ tư vấn với tinh thần trách nhiệm cao nhất;\n- Cử luật sư có chuyên môn phù hợp để tư vấn cho Bên A;\n- Bảo mật thông tin của Bên A theo quy định pháp luật và Điều 7;\n- Thông báo kịp thời cho Bên A về các rủi ro pháp lý phát sinh;\n- Có quyền yêu cầu Bên A cung cấp thông tin, tài liệu cần thiết;\n- Có quyền tạm ngừng dịch vụ nếu Bên A chậm thanh toán quá 30 ngày.",
+      "title": "ĐIỀU 4. QUYỀN VÀ NGHĨA VỤ CỦA CÁC BÊN"
+    },
+    {
+      "index": 4,
+      "text": "ĐIỀU 5. BẢO MẬT THÔNG TIN\n\n5.1. Bên B cam kết giữ bí mật mọi thông tin, tài liệu, hồ sơ của Bên A được cung cấp trong quá trình thực hiện hợp đồng.\n\n5.2. Thông tin bảo mật bao gồm:\n- Thông tin tài chính, kế toán, kinh doanh của Bên A;\n- Chiến lược kinh doanh, kế hoạch đầu tư;\n- Thông tin về khách hàng, đối tác của Bên A;\n- Các thông tin khác được Bên A yêu cầu bảo mật.\n\n5.3. Thời hạn bảo mật: 05 (năm) năm kể từ ngày chấm dứt hợp đồng.\n\n5.4. Bên B chỉ được tiết lộ thông tin của Bên A khi:\n- Có văn bản yêu cầu bằng văn bản của Bên A;\n- Theo yêu cầu của cơ quan nhà nước có thẩm quyền;\n- Theo quy định của pháp luật.\n\n5.5. Vi phạm nghĩa vụ bảo mật: Bên vi phạm phải bồi thường thiệt hại thực tế phát sinh và chịu trách nhiệm theo quy định pháp luật.",
+      "title": "ĐIỀU 5. BẢO MẬT THÔNG TIN"
+    },
+    {
+      "index": 5,
+      "text": "ĐIỀU 6. TRÁCH NHIỆM BỒI THƯỜNG THIỆT HẠI\n\n6.1. Bên B chịu trách nhiệm bồi thường cho Bên A các thiệt hại trực tiếp phát sinh do:\n- Tư vấn sai, tư vấn thiếu chính xác dẫn đến tổn thất;\n- Vi phạm nghĩa vụ bảo mật thông tin;\n- Chậm trễ, không thực hiện đúng cam kết trong hợp đồng.\n\n6.2. Mức bồi thường tối đa: Không quá 03 (ba) tháng phí dịch vụ của hợp đồng này.\n\n6.3. Bên B không chịu trách nhiệm về:\n- Các thiệt hại gián tiếp, thiệt hại về lợi nhuận;\n- Các quyết định kinh doanh của Bên A dựa trên tư vấn;\n- Các sự kiện bất khả kháng theo quy định tại Điều 8.\n\n6.4. Yêu cầu bồi thường phải được gửi bằng văn bản trong thời hạn 30 ngày kể từ khi phát sinh thiệt hại.",
+      "title": "ĐIỀU 6. TRÁCH NHIỆM BỒI THƯỜNG THIỆT HẠI"
+    },
+    {
+      "index": 6,
+      "text": "ĐIỀU 7. BẤT KHẢ KHÁNG\n\n7.1. Sự kiện bất khả kháng là những sự kiện xảy ra một cách khách quan, không thể lường trước được và không thể khắc phục được mặc dù đã áp dụng mọi biện pháp cần thiết và khả năng cho phép, bao gồm:\n- Thiên tai: động đất, bão, lũ lụt, hạn hán;\n- Hỏa hoạn;\n- Chiến tranh, bạo động, cấm vận;\n- Dịch bệnh được cơ quan nhà nước công bố;\n- Các quyết định của cơ quan nhà nước có thẩm quyền làm cho hợp đồng không thể thực hiện được.\n\n7.2. Bên gặp sự kiện bất khả kháng phải thông báo bằng văn bản cho bên kia trong thời hạn 05 ngày làm việc kể từ khi xảy ra sự kiện.\n\n7.3. Trong trường hợp bất khả kháng kéo dài quá 30 ngày, mỗi bên đều có quyền đơn phương chấm dứt hợp đồng mà không phải bồi thường.\n\n7.4. Bên gặp sự kiện bất khả kháng được miễn trách nhiệm vi phạm hợp đồng trong thời gian xảy ra sự kiện.",
+      "title": "ĐIỀU 7. BẤT KHẢ KHÁNG"
+    },
+    {
+      "index": 7,
+      "text": "ĐIỀU 8. THỜI HẠN HỢP ĐỒNG\n\n8.1. Hợp đồng có hiệu lực từ ngày 01/02/2024 đến ngày 31/01/2025.\n\n8.2. Hết thời hạn hợp đồng, nếu hai bên không có thỏa thuận khác, hợp đồng sẽ tự động gia hạn thêm 01 năm với các điều khoản không thay đổi, trừ khi một trong hai bên thông báo chấm dứt bằng văn bản trước 30 ngày.\n\n8.3. Hợp đồng có thể được gia hạn bằng văn bản thỏa thuận của hai bên.",
+      "title": "ĐIỀU 8. THỜI HẠN HỢP ĐỒNG"
+    },
+    {
+      "index": 8,
+      "text": "ĐIỀU 9. CHẤM DỨT HỢP ĐỒNG\n\n9.1. Hợp đồng chấm dứt trong các trường hợp sau:\n- Hết thời hạn hợp đồng và không gia hạn;\n- Hai bên thỏa thuận chấm dứt bằng văn bản;\n- Một bên đơn phương chấm dứt hợp đồng theo quy định tại Điều 10;\n- Bị tòa án tuyên bố vô hiệu;\n- Các trường hợp khác theo quy định pháp luật.\n\n9.2. Khi chấm dứt hợp đồng:\n- Bên A thanh toán toàn bộ phí dịch vụ đã phát sinh đến thời điểm chấm dứt;\n- Bên B bàn giao lại toàn bộ hồ sơ, tài liệu của Bên A;\n- Các điều khoản về bảo mật, bồi thường thiệt hại vẫn tiếp tục có hiệu lực.",
+      "title": "ĐIỀU 9. CHẤM DỨT HỢP ĐỒNG"
+    },
+    {
+      "index": 9,
+      "text": "ĐIỀU 10. ĐƠN PHƯƠNG CHẤM DỨT HỢP ĐỒNG\n\n10.1. Bên A có quyền đơn phương chấm dứt hợp đồng nếu:\n- Bên B vi phạm nghiêm trọng nghĩa vụ theo hợp đồng;\n- Bên B cung cấp thông tin tư vấn sai nghiêm trọng gây thiệt hại cho Bên A;\n- Bên B vi phạm nghĩa vụ bảo mật thông tin.\n\n10.2. Bên B có quyền đơn phương chấm dứt hợp đồng nếu:\n- Bên A chậm thanh toán quá 45 ngày;\n- Bên A cung cấp thông tin sai lệch, giả mạo;\n- Bên A có hành vi vi phạm pháp luật trong quá trình sử dụng dịch vụ.\n\n10.3. Bên đơn phương chấm dứt phải thông báo bằng văn bản cho bên kia trước 15 ngày.\n\n10.4. Bên vi phạm gây ra việc chấm dứt hợp đồng phải bồi thường thiệt hại theo quy định.",
+      "title": "ĐIỀU 10. ĐƠN PHƯƠNG CHẤM DỨT HỢP ĐỒNG"
+    },
+    {
+      "index": 10,
+      "text": "ĐIỀU 11. GIẢI QUYẾT TRANH CHẤP\n\n11.1. Mọi tranh chấp phát sinh từ hoặc liên quan đến hợp đồng này sẽ được giải quyết trước tiên thông qua thương lượng giữa hai bên.\n\n11.2. Nếu thương lượng không thành trong thời hạn 30 ngày, tranh chấp sẽ được giải quyết tại Tòa án nhân dân có thẩm quyền theo quy định của Bộ Luật Tố tụng Dân sự số 92/2015/QH13.\n\n11.3. Trong quá trình giải quyết tranh chấp, hai bên vẫn phải tiếp tục thực hiện các nghĩa vụ khác theo hợp đồng, trừ các nghĩa vụ liên quan đến tranh chấp.\n\n11.4. Phán quyết của Tòa án là chung thẩm và ràng buộc cả hai bên. Chi phí giải quyết tranh chấp do bên thua kiện chịu.",
+      "title": "ĐIỀU 11. GIẢI QUYẾT TRANH CHẤP"
+    },
+    {
+      "index": 11,
+      "text": "ĐIỀU 12. SỬA ĐỔI, BỔ SUNG HỢP ĐỒNG\n\n12.1. Hợp đồng này chỉ được sửa đổi, bổ sung khi có văn bản thỏa thuận của cả hai bên.\n\n12.2. Các văn bản sửa đổi, bổ sung hợp đồng phải được lập thành văn bản, có chữ ký và đóng dấu của đại diện có thẩm quyền của hai bên.\n\n12.3. Các văn bản sửa đổi, bổ sung là phần không tách rời của hợp đồng này.\n\n12.4. Trong trường hợp có sửa đổi, bổ sung, các điều khoản không bị sửa đổi vẫn tiếp tục có hiệu lực.",
+      "title": "ĐIỀU 12. SỬA ĐỔI, BỔ SUNG HỢP ĐỒNG"
+    },
+    {
+      "index": 12,
+      "text": "ĐIỀU 13. ĐIỀU KHOẢN CHUNG\n\n13.1. Hợp đồng này được lập thành 04 (bốn) bản có giá trị pháp lý như nhau, mỗi bên giữ 02 (hai) bản.\n\n13.2. Hợp đồng có hiệu lực kể từ ngày hai bên ký kết.\n\n13.3. Các phụ lục kèm theo hợp đồng (nếu có) là phần không tách rời của hợp đồng này.\n\n13.4. Trong quá trình thực hiện, nếu có vấn đề phát sinh ngoài phạm vi điều chỉnh của hợp đồng, hai bên sẽ thương lượng để bổ sung vào hợp đồng bằng văn bản.\n\n13.5. Hợp đồng này tuân thủ quy định của Bộ Luật Dân sự 2015 và các văn bản pháp luật có liên quan.\n\nĐẠI DIỆN BÊN A                                    ĐẠI DIỆN BÊN B\n\n( Ký tên, đóng dấu)                             ( Ký tên, đóng dấu)\n\n\nNGUYỄN VĂN MINH                                 TRẦN THỊ HƯƠNG\nGiám đốc                                         Giám đốc/Luật sư",
+      "title": "ĐIỀU 13. ĐIỀU KHOẢN CHUNG"
+    }
+  ]
+}

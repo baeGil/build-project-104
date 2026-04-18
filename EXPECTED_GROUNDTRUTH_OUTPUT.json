@@ -1,0 +1,244 @@
+{
+  "test_metadata": {
+    "test_name": "Ground Truth Contract Review Test",
+    "contract_file": "test contracts/test_contract_groundtruth.txt",
+    "expected_output_file": "EXPECTED_GROUNDTRUTH_OUTPUT.json",
+    "description": "Test contract designed to match the 50 ingested documents (Sắc lệnh 1950s + Quyết định UBND 1999-2000)",
+    "created_at": "2026-04-15",
+    "test_type": "comprehensive_coverage"
+  },
+  "expected_findings": [
+    {
+      "clause_number": 1,
+      "clause_title": "ĐIỀU 1: PHÍ DỊCH VỤ VÀ GIÁ CẢ",
+      "expected_risk_level": "medium",
+      "expected_verification": "partial_match",
+      "expected_confidence_range": {
+        "min": 65.0,
+        "max": 85.0
+      },
+      "expected_citations": {
+        "must_include_law_ids": [
+          "166/1999/QĐ-UB",
+          "157/1999/QĐ-UB",
+          "28/1999/CT-UB"
+        ],
+        "minimum_count": 2,
+        "relevance_notes": {
+          "166/1999/QĐ-UB": "Quy định giá dịch vụ giữ xe - directly matches clause 1.1",
+          "157/1999/QĐ-UB": "Quy định phí chợ - directly matches clause 1.2",
+          "28/1999/CT-UB": "Niêm yết giá và thanh toán bằng đồng Việt Nam - matches clause 1.3"
+        }
+      },
+      "expected_issues": [
+        "Contract specifies specific prices (3.000 VNĐ, 10.000 VNĐ) but should reference the official price list",
+        "Missing reference to Decision 166/1999/QĐ-UB for parking fees",
+        "Missing reference to Decision 157/1999/QĐ-UB for market fees",
+        "Should cite Directive 28/1999/CT-UB for price display requirement"
+      ],
+      "rationale_keywords": [
+        "giá dịch vụ giữ xe",
+        "phí chợ",
+        "niêm yết giá",
+        "đồng Việt Nam",
+        "Quyết định 166/1999",
+        "Quyết định 157/1999"
+      ]
+    },
+    {
+      "clause_number": 2,
+      "clause_title": "ĐIỀU 2: TỔ CHỨC VÀ QUẢN LÝ BỘ MÁY",
+      "expected_risk_level": "low",
+      "expected_verification": "partial_match",
+      "expected_confidence_range": {
+        "min": 60.0,
+        "max": 80.0
+      },
+      "expected_citations": {
+        "must_include_law_ids": [
+          "75/1999/QĐ-UB",
+          "99/QĐ-UB",
+          "171/1999/QĐ-UB"
+        ],
+        "minimum_count": 2,
+        "relevance_notes": {
+          "75/1999/QĐ-UB": "Chức năng, nhiệm vụ, quyền hạn tổ chức bộ máy - matches clause 2.2",
+          "99/QĐ-UB": "Phân cấp quản lý công tác Tổ chức và Cán bộ - matches clause 2.4",
+          "171/1999/QĐ-UB": "Thành lập Ban quản lý dự án - matches clause 2.1"
+        }
+      },
+      "expected_issues": [
+        "Organization structure should reference Decision 75/1999/QĐ-UB",
+        "Missing citation for project management board establishment (171/1999/QĐ-UB)",
+        "Cadre management should cite Decision 99/QĐ-UB"
+      ],
+      "rationale_keywords": [
+        "tổ chức bộ máy",
+        "chức năng nhiệm vụ",
+        "Ban quản lý dự án",
+        "phân cấp quản lý",
+        "cán bộ"
+      ]
+    },
+    {
+      "clause_number": 3,
+      "clause_title": "ĐIỀU 3: QUẢN LÝ ĐẤT ĐAI VÀ TÀI NGUYÊN",
+      "expected_risk_level": "high",
+      "expected_verification": "violation_found",
+      "expected_confidence_range": {
+        "min": 75.0,
+        "max": 95.0
+      },
+      "expected_citations": {
+        "must_include_law_ids": [
+          "181/1999/QĐ-UB",
+          "24/1999/CT-UB",
+          "90/SL",
+          "88/SL"
+        ],
+        "minimum_count": 3,
+        "relevance_notes": {
+          "181/1999/QĐ-UB": "Ký quỹ phục hồi môi trường trong khai thác khoáng sản - clause 3.2 mentions 500M but Decision specifies different amount",
+          "24/1999/CT-UB": "Quản lý đất lâm nghiệp - clause 3.1 and 3.4 about forestry land",
+          "90/SL": "Sử dụng ruộng đất bỏ hoang - matches clause 3.3",
+          "88/SL": "Thể lệ lĩnh canh ruộng đất - related to land use"
+        }
+      },
+      "expected_issues": [
+        "CRITICAL: Environmental deposit amount (500M VNĐ) must match Decision 181/1999/QĐ-UB requirements",
+        "CRITICAL: Mining without environmental deposit is explicitly prohibited",
+        "Forestry land use must comply with Directive 24/1999/CT-UB",
+        "Abandoned land use must follow Sắc lệnh 90/SL",
+        "Missing reference to land use conversion approval process"
+      ],
+      "rationale_keywords": [
+        "ký quỹ phục hồi môi trường",
+        "khoáng sản tận thu",
+        "đất lâm nghiệp",
+        "ruộng đất bỏ hoang",
+        "lĩnh canh",
+        "khai thác"
+      ]
+    },
+    {
+      "clause_number": 4,
+      "clause_title": "ĐIỀU 4: THỦ TỤC HÀNH CHÍNH VÀ BÁO CÁO",
+      "expected_risk_level": "medium",
+      "expected_verification": "partial_match",
+      "expected_confidence_range": {
+        "min": 60.0,
+        "max": 80.0
+      },
+      "expected_citations": {
+        "must_include_law_ids": [
+          "28/1999/CT-UB",
+          "111/1999/QĐ-UB"
+        ],
+        "minimum_count": 2,
+        "relevance_notes": {
+          "28/1999/CT-UB": "Niêm yết giá - matches clause 4.2",
+          "111/1999/QĐ-UB": "Chức năng, nhiệm vụ quản lý nhà nước - matches clause 4.3 about inspection"
+        }
+      },
+      "expected_issues": [
+        "Penalty amounts (10-50M VNĐ) should reference legal basis",
+        "Monthly reporting requirements should cite specific regulation",
+        "Price display requirement matches Directive 28/1999/CT-UB"
+      ],
+      "rationale_keywords": [
+        "báo cáo định kỳ",
+        "niêm yết giá",
+        "thanh tra kiểm tra",
+        "phạt tiền",
+        "vi phạm"
+      ]
+    },
+    {
+      "clause_number": 5,
+      "clause_title": "ĐIỀU KHOẢN CHUNG",
+      "expected_risk_level": "low",
+      "expected_verification": "no_reference",
+      "expected_confidence_range": {
+        "min": 50.0,
+        "max": 70.0
+      },
+      "expected_citations": {
+        "must_include_law_ids": [],
+        "minimum_count": 0,
+        "relevance_notes": "General contract terms (validity, amendments, copies, dispute resolution) are standard and don't require specific legal citations from the dataset"
+      },
+      "expected_issues": [
+        "Dispute resolution should specify which court has jurisdiction",
+        "Standard contract terms - no major issues expected"
+      ],
+      "rationale_keywords": [
+        "hiệu lực",
+        "sửa đổi",
+        "tranh chấp",
+        "thương lượng"
+      ]
+    }
+  ],
+  "expected_summary": {
+    "total_findings": 5,
+    "risk_distribution": {
+      "high": 1,
+      "medium": 2,
+      "low": 2,
+      "none": 0
+    },
+    "average_confidence_range": {
+      "min": 62.0,
+      "max": 82.0
+    },
+    "total_citations_range": {
+      "min": 9,
+      "max": 15
+    },
+    "unique_law_ids_expected": [
+      "166/1999/QĐ-UB",
+      "157/1999/QĐ-UB",
+      "28/1999/CT-UB",
+      "75/1999/QĐ-UB",
+      "99/QĐ-UB",
+      "171/1999/QĐ-UB",
+      "181/1999/QĐ-UB",
+      "24/1999/CT-UB",
+      "90/SL",
+      "88/SL",
+      "111/1999/QĐ-UB"
+    ]
+  },
+  "performance_targets": {
+    "total_pipeline_time_seconds": {
+      "target": "< 15",
+      "acceptable": "< 20",
+      "notes": "LLM processing 4 clauses with 3 citations each should be fast"
+    },
+    "clause_parsing_time_seconds": {
+      "target": "< 1",
+      "notes": "Simple regex-based parsing"
+    },
+    "retrieval_time_per_clause_seconds": {
+      "target": "< 2",
+      "notes": "Hybrid search (BM25 + dense) should be fast"
+    },
+    "llm_generation_time_per_clause_seconds": {
+      "target": "< 3",
+      "notes": "Single LLM call per clause"
+    }
+  },
+  "quality_criteria": {
+    "citation_relevance_threshold": 0.7,
+    "minimum_high_risk_findings": 1,
+    "must_detect_environmental_violation": true,
+    "must_cite_correct_law_ids": true,
+    "rationale_must_reference_law_content": true
+  },
+  "known_challenges": [
+    "Some Sắc lệnh from 1950s may have different legal context than modern contracts",
+    "Decision amounts may differ from contract amounts - system should flag this",
+    "LLM may be conservative in risk assessment with historical documents",
+    "Semantic search may find tangentially related documents"
+  ]
+}

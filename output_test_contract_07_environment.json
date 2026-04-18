@@ -1,0 +1,387 @@
+{
+  "test_metadata": {
+    "test_name": "Ground Truth Contract Review Test",
+    "contract_file": "test contracts/test_contract_groundtruth.txt",
+    "timestamp": "2026-04-17T10:18:51.263775",
+    "pipeline_version": "1.0"
+  },
+  "contract_analysis": {
+    "total_clauses": 4,
+    "parsing_time": 0.00027608295204117894,
+    "clauses": [
+      {
+        "number": 1,
+        "title": "ĐIỀU 1: THU GOM VÀ XỬ LÝ CHẤT THẢI",
+        "text_preview": "ĐIỀU 1: THU GOM VÀ XỬ LÝ CHẤT THẢI\n\n1.1 Bên B thu gom, vận chuyển và xử lý chất thải rắn trên địa bàn tỉnh\n\n1.2 Khối lượng chất thải xử lý:\n- Chất thải sinh hoạt: 500 tấn/ngày\n- Chất thải công nghiệp:"
+      },
+      {
+        "number": 2,
+        "title": "ĐIỀU 2: KÝ QUỸ PHỤC HỒI MÔI TRƯỜNG",
+        "text_preview": "ĐIỀU 2: KÝ QUỸ PHỤC HỒI MÔI TRƯỜNG\n\n2.1 Bên B phải ký quỹ phục hồi môi trường trước khi hoạt động\n\n2.2 Mức ký quỹ: 5.000.000.000 VNĐ (năm tỷ đồng)\n\n2.3 Tiền ký quỹ được gửi tại ngân hàng thương mại\n\n2"
+      },
+      {
+        "number": 3,
+        "title": "ĐIỀU 3: BẢO VỆ ĐẤT VÀ TÀI NGUYÊN NƯỚC",
+        "text_preview": "ĐIỀU 3: BẢO VỆ ĐẤT VÀ TÀI NGUYÊN NƯỚC\n\n3.1 Nghiêm cấm xả thải chưa qua xử lý ra môi trường\n\n3.2 Chất lượng nước thải sau xử lý phải đạt QCVN 40:2011/BTNMT\n\n3.3 Bảo vệ đất khỏi ô nhiễm do chất thải\n\n3."
+      },
+      {
+        "number": 4,
+        "title": "ĐIỀU 4: GIÁM SÁT VÀ BÁO CÁO MÔI TRƯỜNG",
+        "text_preview": "ĐIỀU 4: GIÁM SÁT VÀ BÁO CÁO MÔI TRƯỜNG\n\n4.1 Lắp đặt hệ thống quan trắc môi trường tự động\n\n4.2 Báo cáo giám sát môi trường hàng tháng cho Sở Tài nguyên và Môi trường\n\n4.3 Nội dung báo cáo:\n- Chất lượn"
+      }
+    ]
+  },
+  "findings": [
+    {
+      "clause_number": 1,
+      "clause_title": "ĐIỀU 1: THU GOM VÀ XỬ LÝ CHẤT THẢI",
+      "clause_text": "ĐIỀU 1: THU GOM VÀ XỬ LÝ CHẤT THẢI\n\n1.1 Bên B thu gom, vận chuyển và xử lý chất thải rắn trên địa bàn tỉnh\n\n1.2 Khối lượng chất thải xử lý:\n- Chất thải sinh hoạt: 500 tấn/ngày\n- Chất thải công nghiệp: 100 tấn/ngày\n- Chất thải y tế: 20 tấn/ngày\n\n1.3 Công nghệ xử lý phải đạt tiêu chuẩn môi trường quốc gia\n\n1.4 Tỷ lệ chôn lấp tối đa: 30% tổng khối lượng\n\n1.5 Tái chế, tái sử dụng: tối thiểu 50%",
+      "retrieved_docs": [
+        {
+          "doc_id": "4242",
+          "law_id": "181/1999/QĐ-UB",
+          "title": "V/v Ban hành qui định về ký quĩ phục hồi môi trườngtrong khai thác tận thu khoáng sản trên địa bàn tỉnh Lâm Đồng",
+          "score": 89.77813802686428,
+          "content_preview": "QUYẾT ĐỊNH\nVề việc ban hành qui định vềký quĩ phục hồi môi trường\ntrong khai thác tận thu khoáng sản trên địa bàn tỉnhLâm Đồng\nỦY BAN NHÂN DÂN TỈNH LÂM ĐỒNG\nCăn cứ Luật Tổ chức HĐND và Ủy ban nhân dân"
+        },
+        {
+          "doc_id": "91",
+          "law_id": "77/SL",
+          "title": "Sắc lệnh quy định chế độ công nhân giúp việc Chính phủ trong thời kỳ kháng chiến (thiếu trang 2)",
+          "score": 35.24180897349258,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH NƯỚC\nSỐ 77/SL NGÀY 22 THÁNG 5 NĂM 1950\nCHỦ TỊCH NƯỚC\nVIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh số 29-SL ngày 12 tháng 3 năm 1947 quy định chế độ lao động trong toàn cõi Việt Nam;\n"
+        },
+        {
+          "doc_id": "4274",
+          "law_id": "105/2000/QĐ-UB",
+          "title": "Về việc giao chỉ tiêu kế hoạch động viên và huy động lực lượng ngành Y tế bảo đảm nhu cầu khi có chiến tranh và các tình huống cần thiết khác đối với ngành Y tế tỉnh Lâm Đồng",
+          "score": 33.19600643261819,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂM ĐỒNG\nVề việc giao chỉ tiêu kế hoạch động viên và huy động lực lượng ngành Y tế\nbảo đảm nhu cầu khi có chiến tranh và các tình huống cần thiết khác đối với ngành"
+        },
+        {
+          "doc_id": "37",
+          "law_id": "159/SL",
+          "title": "Sắc lệnh quy định vấn đề ly hôn",
+          "score": 32.20793770264011,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 159/SL NGÀY 17 THÁNG 11 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh ngày 10 tháng 10 năm 1945 tạm giữ các luật lệ hiện hành "
+        },
+        {
+          "doc_id": "4258",
+          "law_id": "166/1999/QĐ-UB",
+          "title": "Về việc quy định giá dịch vụ giữ xe và phí bến bãi đậu xe trên địa bàn tỉnh Lâm Đồng",
+          "score": 30.02300901833636,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂMĐỒNG\nVề việc quy định giá dịch vụ giữxe và phí bến bãi đậu xe\ntrên địa bàn tỉnh Lâm Đồng\nUỶ BAN NHÂN DÂN TỈNH LÂMĐỒNG\nCăn cứ Luật Tổ chức HĐND và Ủy ban nhân dân"
+        },
+        {
+          "doc_id": "4260",
+          "law_id": "87/1999/QĐ-UB",
+          "title": "Về việc chuyển giao nhiệm vụ quản lý Nhà nước về đất lâm nghiệp từ Sở Nông nghiệp và Phát triển Nông thôn và Chi cục kiểm lâm tỉnh sang Sở Địa chính để quản lý",
+          "score": 21.343345756876595,
+          "content_preview": "QUYẾT ĐỊNH\nVề việc chuyển giao nhiệm vụ quản lý Nhà nước về đất lâm nghiệp\ntừ Sở Nông nghiệp và Phát triển Nông thôn và Chi cục kiểm lâm tỉnh sang Sở Địa chính để quản lý\nỦY BAN NHÂN DÂN TỈNH LÂM ĐỒNG"
+        },
+        {
+          "doc_id": "4280",
+          "law_id": "157/1999/QĐ-UB",
+          "title": "Về viẹc quản lý và quy định thống nhất phí chợ trên địa bàn tỉnh Lâm Đồng",
+          "score": 30.369497075519458,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂMĐỒNG\nVề việc Quản lý và quy địnhthống nhất phí chợ\ntrên địa bàn tỉnh Lâm Đồng\nỦY BAN NHÂN DÂN TỈNH LÂM ĐỒNG\nCăn cứ Luật Tổ chứcHĐND và Ủy ban nhân dân (sửa đổi) "
+        },
+        {
+          "doc_id": "4278",
+          "law_id": "114/1999/QĐ-UB",
+          "title": "Về việc phê duyệt dự án quy hoạch thủy lợi và nước sinh hoạt nông thôn các Huyện Di Linh, Bảo Lâm và Thị xã Bảo Lộc, tỉnh Lâm Đồng",
+          "score": 33.06346205277859,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂM ĐỒNG\nV/v Phê duyệt dự án quy hoạch thủy lợi và nước sinh hoạt nông thôn\ncác Huyện Di Linh, Bảo Lâm và Thị xã Bảo Lộc, tỉnh Lâm Đồng\nỦY BAN NHÂN DÂN TỈNH LÂM ĐỒN"
+        },
+        {
+          "doc_id": "90",
+          "law_id": "97/SL",
+          "title": "Sắc lệnh sửa đổi một số quy lệ và chế định trong dân luật",
+          "score": 34.19789627814548,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH CHÍNH PHỦ\nNƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 97/SL NGÀY 22 THÁNG 5 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh ngày 10 tháng 10 năm 1945 tạm giữ các luật lệ hi"
+        },
+        {
+          "doc_id": "4263",
+          "law_id": "163/1999/QĐ-UB",
+          "title": "Về việc xử lý đối với quỹ nhà thuộc quyền sở hữu Nhà nước do các cơ quan, đơn vị đã tự bố trí cho cán bộ, công nhân viên ở tập thể trên địa bàn thành phố Đà Lạt.",
+          "score": 55.750030418504856,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂMĐỒNG\nVề việc xử lý đối với quỹ nhàthuộc quyền sở hữu Nhà nước\ndo các cơ quan, đơn vị đã tựbố trí cho cán bộ, công nhân viên\nở tập thể trên địa bàn thànhphố Đà Lạ"
+        }
+      ],
+      "status": "retrieved",
+      "retrieval_time": 0.16077837499324232
+    },
+    {
+      "clause_number": 2,
+      "clause_title": "ĐIỀU 2: KÝ QUỸ PHỤC HỒI MÔI TRƯỜNG",
+      "clause_text": "ĐIỀU 2: KÝ QUỸ PHỤC HỒI MÔI TRƯỜNG\n\n2.1 Bên B phải ký quỹ phục hồi môi trường trước khi hoạt động\n\n2.2 Mức ký quỹ: 5.000.000.000 VNĐ (năm tỷ đồng)\n\n2.3 Tiền ký quỹ được gửi tại ngân hàng thương mại\n\n2.4 Hoàn trả tiền ký quỹ khi:\n- Hết hạn hợp đồng và đã phục hồi môi trường\n- Không vi phạm các quy định về môi trường\n\n2.5 Tạm ứng tiền ký quỹ để xử lý sự cố môi trường nếu cần thiết",
+      "retrieved_docs": [
+        {
+          "doc_id": "4242",
+          "law_id": "181/1999/QĐ-UB",
+          "title": "V/v Ban hành qui định về ký quĩ phục hồi môi trườngtrong khai thác tận thu khoáng sản trên địa bàn tỉnh Lâm Đồng",
+          "score": 93.91000417138576,
+          "content_preview": "QUYẾT ĐỊNH\nVề việc ban hành qui định vềký quĩ phục hồi môi trường\ntrong khai thác tận thu khoáng sản trên địa bàn tỉnhLâm Đồng\nỦY BAN NHÂN DÂN TỈNH LÂM ĐỒNG\nCăn cứ Luật Tổ chức HĐND và Ủy ban nhân dân"
+        },
+        {
+          "doc_id": "4278",
+          "law_id": "114/1999/QĐ-UB",
+          "title": "Về việc phê duyệt dự án quy hoạch thủy lợi và nước sinh hoạt nông thôn các Huyện Di Linh, Bảo Lâm và Thị xã Bảo Lộc, tỉnh Lâm Đồng",
+          "score": 38.50392650397867,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂM ĐỒNG\nV/v Phê duyệt dự án quy hoạch thủy lợi và nước sinh hoạt nông thôn\ncác Huyện Di Linh, Bảo Lâm và Thị xã Bảo Lộc, tỉnh Lâm Đồng\nỦY BAN NHÂN DÂN TỈNH LÂM ĐỒN"
+        },
+        {
+          "doc_id": "4263",
+          "law_id": "163/1999/QĐ-UB",
+          "title": "Về việc xử lý đối với quỹ nhà thuộc quyền sở hữu Nhà nước do các cơ quan, đơn vị đã tự bố trí cho cán bộ, công nhân viên ở tập thể trên địa bàn thành phố Đà Lạt.",
+          "score": 25.00913790653039,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂMĐỒNG\nVề việc xử lý đối với quỹ nhàthuộc quyền sở hữu Nhà nước\ndo các cơ quan, đơn vị đã tựbố trí cho cán bộ, công nhân viên\nở tập thể trên địa bàn thànhphố Đà Lạ"
+        },
+        {
+          "doc_id": "59",
+          "law_id": "115/SL",
+          "title": "Sắc lệnh đổi tên Viện Kháng nhiệm thứ ngư là viện \"Thú y\"",
+          "score": 22.4740171779677,
+          "content_preview": "SẮC LỆNH\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 115/SL NGÀY 11 THÁNG 7 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu quyết nghị của Hội đồng Chính phủ ngày 14 tháng 11 năm 1945 thành lập "
+        },
+        {
+          "doc_id": "63",
+          "law_id": "120/SL",
+          "title": "Sắc lệnh đổi tên và định thành phần các Hội đồng và ban tạm cấp ruộng đất tỉnh, xã và đồn điền",
+          "score": 15.710931225544677,
+          "content_preview": "SẮC LỆNH\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 120/SL NGÀY 11 THÁNG 7 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh số 75-SL ngày 1 tháng 7 năm 1949 quy định việc sử dụng ruộng "
+        },
+        {
+          "doc_id": "96",
+          "law_id": "76/SL",
+          "title": "Sắc lệnh ban hành Quy chế Công chức",
+          "score": 15.319612622310968,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH NƯỚC\nNƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 76/SL NGÀY 20 THÁNG 5 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu tình thế hiện thời;\nTheo đề nghị của Bộ trưởng Bộ Nội vụ;\nTheo"
+        },
+        {
+          "doc_id": "91",
+          "law_id": "77/SL",
+          "title": "Sắc lệnh quy định chế độ công nhân giúp việc Chính phủ trong thời kỳ kháng chiến (thiếu trang 2)",
+          "score": 16.516263084672428,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH NƯỚC\nSỐ 77/SL NGÀY 22 THÁNG 5 NĂM 1950\nCHỦ TỊCH NƯỚC\nVIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh số 29-SL ngày 12 tháng 3 năm 1947 quy định chế độ lao động trong toàn cõi Việt Nam;\n"
+        },
+        {
+          "doc_id": "4280",
+          "law_id": "157/1999/QĐ-UB",
+          "title": "Về viẹc quản lý và quy định thống nhất phí chợ trên địa bàn tỉnh Lâm Đồng",
+          "score": 24.42663216094081,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂMĐỒNG\nVề việc Quản lý và quy địnhthống nhất phí chợ\ntrên địa bàn tỉnh Lâm Đồng\nỦY BAN NHÂN DÂN TỈNH LÂM ĐỒNG\nCăn cứ Luật Tổ chứcHĐND và Ủy ban nhân dân (sửa đổi) "
+        },
+        {
+          "doc_id": "4295",
+          "law_id": "146/1999/QĐ-UB",
+          "title": "Về việc quy định tạm thời mức bồi dưỡng tập luyện cho vận động viên, giáo viên, huấn luyện viên năng khiếu thể thao",
+          "score": 37.51729794576511,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂM ĐỒNG\nVề việc quy định tạm thời mức bồi dưỡng tập luyện cho\nvận động viên, giáo viên, huấn luyện viên năng khiếuthể thao\nỦY BAN NHÂN DÂN TỈNH LÂM ĐỒNG\nCăn cứ Luậ"
+        },
+        {
+          "doc_id": "4271",
+          "law_id": "75/1999/QĐ-UB",
+          "title": "Về việc cho phép thành lập Quỹ bảo trợ nạn nhân chất độc da cam tỉnh Lâm Đồng và ban hành Quy chế tổ chức hoạt động của quỹ",
+          "score": 61.84019659400254,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂM ĐỒNG\nVề việc cho phép thành lập Quỹ bảo trợ nạn nhân chất độc da cam tỉnh Lâm Đồng\nvà ban hành Quy chế tổ chức hoạt động của quỹ\nỦY BAN NHÂN DÂN TỈNH LÂM ĐỒNG\nC"
+        }
+      ],
+      "status": "retrieved",
+      "retrieval_time": 0.0656852499814704
+    },
+    {
+      "clause_number": 3,
+      "clause_title": "ĐIỀU 3: BẢO VỆ ĐẤT VÀ TÀI NGUYÊN NƯỚC",
+      "clause_text": "ĐIỀU 3: BẢO VỆ ĐẤT VÀ TÀI NGUYÊN NƯỚC\n\n3.1 Nghiêm cấm xả thải chưa qua xử lý ra môi trường\n\n3.2 Chất lượng nước thải sau xử lý phải đạt QCVN 40:2011/BTNMT\n\n3.3 Bảo vệ đất khỏi ô nhiễm do chất thải\n\n3.4 Các khu vực khai thác khoáng sản phải có phương án phục hồi môi trường\n\n3.5 Ruộng đất bị ô nhiễm phải được cải tạo, phục hồi\n\n3.6 Phạt tiền từ 100.000.000 đến 500.000.000 VNĐ nếu xả thải trái phép",
+      "retrieved_docs": [
+        {
+          "doc_id": "4242",
+          "law_id": "181/1999/QĐ-UB",
+          "title": "V/v Ban hành qui định về ký quĩ phục hồi môi trườngtrong khai thác tận thu khoáng sản trên địa bàn tỉnh Lâm Đồng",
+          "score": 92.83717624763108,
+          "content_preview": "QUYẾT ĐỊNH\nVề việc ban hành qui định vềký quĩ phục hồi môi trường\ntrong khai thác tận thu khoáng sản trên địa bàn tỉnhLâm Đồng\nỦY BAN NHÂN DÂN TỈNH LÂM ĐỒNG\nCăn cứ Luật Tổ chức HĐND và Ủy ban nhân dân"
+        },
+        {
+          "doc_id": "4278",
+          "law_id": "114/1999/QĐ-UB",
+          "title": "Về việc phê duyệt dự án quy hoạch thủy lợi và nước sinh hoạt nông thôn các Huyện Di Linh, Bảo Lâm và Thị xã Bảo Lộc, tỉnh Lâm Đồng",
+          "score": 60.33035756718639,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂM ĐỒNG\nV/v Phê duyệt dự án quy hoạch thủy lợi và nước sinh hoạt nông thôn\ncác Huyện Di Linh, Bảo Lâm và Thị xã Bảo Lộc, tỉnh Lâm Đồng\nỦY BAN NHÂN DÂN TỈNH LÂM ĐỒN"
+        },
+        {
+          "doc_id": "63",
+          "law_id": "120/SL",
+          "title": "Sắc lệnh đổi tên và định thành phần các Hội đồng và ban tạm cấp ruộng đất tỉnh, xã và đồn điền",
+          "score": 57.31607513946872,
+          "content_preview": "SẮC LỆNH\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 120/SL NGÀY 11 THÁNG 7 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh số 75-SL ngày 1 tháng 7 năm 1949 quy định việc sử dụng ruộng "
+        },
+        {
+          "doc_id": "4263",
+          "law_id": "163/1999/QĐ-UB",
+          "title": "Về việc xử lý đối với quỹ nhà thuộc quyền sở hữu Nhà nước do các cơ quan, đơn vị đã tự bố trí cho cán bộ, công nhân viên ở tập thể trên địa bàn thành phố Đà Lạt.",
+          "score": 46.73211389476431,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂMĐỒNG\nVề việc xử lý đối với quỹ nhàthuộc quyền sở hữu Nhà nước\ndo các cơ quan, đơn vị đã tựbố trí cho cán bộ, công nhân viên\nở tập thể trên địa bàn thànhphố Đà Lạ"
+        },
+        {
+          "doc_id": "4255",
+          "law_id": "171/1999/QĐ-UB",
+          "title": "Về việc thành lập Ban quản lý dự án Mở rộng hệ thống cấp nước Thị xã Bảo lộc",
+          "score": 33.35880567904007,
+          "content_preview": "QUYẾT ĐỊNH\nVề việc thành lập Ban quản lýdự án Mở rộng hệ thống\ncấp nước Thị xã Bảo lộc\nỦY BAN NHÂN DÂN TỈNH LÂM ĐỒNG\nCăn cứ Luật Tổ chứcHĐND và Ủy ban nhân dân (sửa đổi) ngày 21/6/1994;\nCăn cứ Nghị đị"
+        },
+        {
+          "doc_id": "37",
+          "law_id": "159/SL",
+          "title": "Sắc lệnh quy định vấn đề ly hôn",
+          "score": 29.30817672141503,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 159/SL NGÀY 17 THÁNG 11 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh ngày 10 tháng 10 năm 1945 tạm giữ các luật lệ hiện hành "
+        },
+        {
+          "doc_id": "4271",
+          "law_id": "75/1999/QĐ-UB",
+          "title": "Về việc cho phép thành lập Quỹ bảo trợ nạn nhân chất độc da cam tỉnh Lâm Đồng và ban hành Quy chế tổ chức hoạt động của quỹ",
+          "score": 43.232223428327046,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂM ĐỒNG\nVề việc cho phép thành lập Quỹ bảo trợ nạn nhân chất độc da cam tỉnh Lâm Đồng\nvà ban hành Quy chế tổ chức hoạt động của quỹ\nỦY BAN NHÂN DÂN TỈNH LÂM ĐỒNG\nC"
+        },
+        {
+          "doc_id": "85",
+          "law_id": "88/SL",
+          "title": "Sắc lệnh định thể lệ lĩnh canh ruộng đất",
+          "score": 54.88021393279148,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH PHỦ NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 88/SL NGÀY 22 THÁNG 5 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh số 78-SL ngày 14 tháng 7 năm 1949 về việc giảm tô;\nChi"
+        },
+        {
+          "doc_id": "84",
+          "law_id": "90/SL",
+          "title": "Sắc lệnh định việc sử dụng các ruộng đất bỏ hoang",
+          "score": 57.6378125383179,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH PHỦ NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 90/SL NGÀY 22 THÁNG 5 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh số 20-SL ngày 12 tháng 2 năm 1950 tổng động viên nhân "
+        },
+        {
+          "doc_id": "4260",
+          "law_id": "87/1999/QĐ-UB",
+          "title": "Về việc chuyển giao nhiệm vụ quản lý Nhà nước về đất lâm nghiệp từ Sở Nông nghiệp và Phát triển Nông thôn và Chi cục kiểm lâm tỉnh sang Sở Địa chính để quản lý",
+          "score": 69.40336570601474,
+          "content_preview": "QUYẾT ĐỊNH\nVề việc chuyển giao nhiệm vụ quản lý Nhà nước về đất lâm nghiệp\ntừ Sở Nông nghiệp và Phát triển Nông thôn và Chi cục kiểm lâm tỉnh sang Sở Địa chính để quản lý\nỦY BAN NHÂN DÂN TỈNH LÂM ĐỒNG"
+        }
+      ],
+      "status": "retrieved",
+      "retrieval_time": 0.06695649999892339
+    },
+    {
+      "clause_number": 4,
+      "clause_title": "ĐIỀU 4: GIÁM SÁT VÀ BÁO CÁO MÔI TRƯỜNG",
+      "clause_text": "ĐIỀU 4: GIÁM SÁT VÀ BÁO CÁO MÔI TRƯỜNG\n\n4.1 Lắp đặt hệ thống quan trắc môi trường tự động\n\n4.2 Báo cáo giám sát môi trường hàng tháng cho Sở Tài nguyên và Môi trường\n\n4.3 Nội dung báo cáo:\n- Chất lượng nước thải đầu ra\n- Chất lượng khí thải\n- Chất lượng đất xung quanh khu vực xử lý\n\n4.4 Công khai thông tin môi trường trên website của công ty\n\n4.5 Tiếp nhận và xử lý khiếu nại của người dân về ô nhiễm môi trường\n\n4.6 Phạt tiền từ 50.000.000 đến 200.000.000 VNĐ nếu báo cáo sai sự thật\n\nĐIỀU KHOẢN CHUNG\n\n5.1 Hợp đồng có hiệu lực từ ngày 01/08/2025 đến ngày 31/07/2035 (10 năm)\n\n5.2 Đánh giá tác động môi trường định kỳ 02 năm/lần\n\n5.3 Hợp đồng được lập thành 08 bản, mỗi bên giữ 04 bản\n\n5.4 Tranh chấp được giải quyết qua thương lượng, nếu không sẽ kiện ra Tòa án nhân dân tỉnh\n\nĐẠI DIỆN BÊN A                          ĐẠI DIỆN BÊN B\n(Ký tên, đóng dấu)                      (Ký tên, đóng dấu)\n\n\nLê Minh Hoàng                            Nguyễn Đức Thành\nGiám đốc Sở                              Giám đốc",
+      "retrieved_docs": [
+        {
+          "doc_id": "4242",
+          "law_id": "181/1999/QĐ-UB",
+          "title": "V/v Ban hành qui định về ký quĩ phục hồi môi trườngtrong khai thác tận thu khoáng sản trên địa bàn tỉnh Lâm Đồng",
+          "score": 88.13963871927609,
+          "content_preview": "QUYẾT ĐỊNH\nVề việc ban hành qui định vềký quĩ phục hồi môi trường\ntrong khai thác tận thu khoáng sản trên địa bàn tỉnhLâm Đồng\nỦY BAN NHÂN DÂN TỈNH LÂM ĐỒNG\nCăn cứ Luật Tổ chức HĐND và Ủy ban nhân dân"
+        },
+        {
+          "doc_id": "92",
+          "law_id": "85/SL",
+          "title": "Sắc lệnh cải cách bộ máy Tư pháp và Luật Tố tụng",
+          "score": 44.40558558546844,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 85/SL NGÀY 22 THÁNG 5 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh số 13-SL ngày 24 tháng 1 năm 1946 và các sắc lệnh tiếp sau"
+        },
+        {
+          "doc_id": "4255",
+          "law_id": "171/1999/QĐ-UB",
+          "title": "Về việc thành lập Ban quản lý dự án Mở rộng hệ thống cấp nước Thị xã Bảo lộc",
+          "score": 41.162995625859125,
+          "content_preview": "QUYẾT ĐỊNH\nVề việc thành lập Ban quản lýdự án Mở rộng hệ thống\ncấp nước Thị xã Bảo lộc\nỦY BAN NHÂN DÂN TỈNH LÂM ĐỒNG\nCăn cứ Luật Tổ chứcHĐND và Ủy ban nhân dân (sửa đổi) ngày 21/6/1994;\nCăn cứ Nghị đị"
+        },
+        {
+          "doc_id": "91",
+          "law_id": "77/SL",
+          "title": "Sắc lệnh quy định chế độ công nhân giúp việc Chính phủ trong thời kỳ kháng chiến (thiếu trang 2)",
+          "score": 37.28705518179355,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH NƯỚC\nSỐ 77/SL NGÀY 22 THÁNG 5 NĂM 1950\nCHỦ TỊCH NƯỚC\nVIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh số 29-SL ngày 12 tháng 3 năm 1947 quy định chế độ lao động trong toàn cõi Việt Nam;\n"
+        },
+        {
+          "doc_id": "60",
+          "law_id": "114/SL",
+          "title": "Sắc lệnh cử ông Nguyễn Ngọc Cừ, Giáo sư trung học giữ chức Phó giám đốc Trung học vụ và ông Hoàng Quy, giáo viên tiểu học giữ chức Phó giám đốc Tiểu học vụ",
+          "score": 35.53269555527304,
+          "content_preview": "SẮC LỆNH\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 114/SL NGÀY 11 THÁNG 7 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh số 7-SL ngày 20 tháng 1 năm 1950 tổ chức Văn phòng các Bộ và "
+        },
+        {
+          "doc_id": "4282",
+          "law_id": "111/1999/QĐ-UB",
+          "title": "Về việc ban hành quy định về chức năng, nhiệm vụ, quyền hạn và tổ chức bộ máy của Ban Dân tộc và Miền núi tỉnh Lâm Đồng",
+          "score": 34.00736104936642,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂM ĐỒNG\nV/v Ban hành quy định về chức năng, nhiệm vụ, quyền hạn và\ntổ chức bộ máy của Ban Dân tộc và Miền núi tỉnh Lâm Đồng\nỦY BAN NHÂN DÂN TỈNH LÂM ĐỒNG\nCăn cứ Lu"
+        },
+        {
+          "doc_id": "59",
+          "law_id": "115/SL",
+          "title": "Sắc lệnh đổi tên Viện Kháng nhiệm thứ ngư là viện \"Thú y\"",
+          "score": 37.27298443103267,
+          "content_preview": "SẮC LỆNH\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 115/SL NGÀY 11 THÁNG 7 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu quyết nghị của Hội đồng Chính phủ ngày 14 tháng 11 năm 1945 thành lập "
+        },
+        {
+          "doc_id": "56",
+          "law_id": "118",
+          "title": "Sắc lệnh bổ nhiệm ông Nghiên Xuân Tiếp, giữ chức Phó Giám đốc Nha thuỷ lâm",
+          "score": 40.28908328130927,
+          "content_preview": "SẮC LỆNH\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 118/SL NGÀY 11 THÁNG 7 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu quyết nghị ngày 14 tháng 11 năm 1945 của Hội đồng Chính phủ thành lập "
+        },
+        {
+          "doc_id": "4263",
+          "law_id": "163/1999/QĐ-UB",
+          "title": "Về việc xử lý đối với quỹ nhà thuộc quyền sở hữu Nhà nước do các cơ quan, đơn vị đã tự bố trí cho cán bộ, công nhân viên ở tập thể trên địa bàn thành phố Đà Lạt.",
+          "score": 41.98941982413626,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂMĐỒNG\nVề việc xử lý đối với quỹ nhàthuộc quyền sở hữu Nhà nước\ndo các cơ quan, đơn vị đã tựbố trí cho cán bộ, công nhân viên\nở tập thể trên địa bàn thànhphố Đà Lạ"
+        },
+        {
+          "doc_id": "4278",
+          "law_id": "114/1999/QĐ-UB",
+          "title": "Về việc phê duyệt dự án quy hoạch thủy lợi và nước sinh hoạt nông thôn các Huyện Di Linh, Bảo Lâm và Thị xã Bảo Lộc, tỉnh Lâm Đồng",
+          "score": 46.37309430132937,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂM ĐỒNG\nV/v Phê duyệt dự án quy hoạch thủy lợi và nước sinh hoạt nông thôn\ncác Huyện Di Linh, Bảo Lâm và Thị xã Bảo Lộc, tỉnh Lâm Đồng\nỦY BAN NHÂN DÂN TỈNH LÂM ĐỒN"
+        }
+      ],
+      "status": "retrieved",
+      "retrieval_time": 0.07577741600107402
+    }
+  ],
+  "performance_metrics": {
+    "warmup_time": "0.09s",
+    "total_pipeline_time": "0.38s",
+    "clause_parsing_time": "0.00s",
+    "average_retrieval_time": "0.09s",
+    "retrieval_times": [
+      "0.16s",
+      "0.07s",
+      "0.07s",
+      "0.08s"
+    ],
+    "total_retrieval_time": "0.37s"
+  },
+  "raw_clauses": [
+    {
+      "index": 0,
+      "text": "ĐIỀU 1: THU GOM VÀ XỬ LÝ CHẤT THẢI\n\n1.1 Bên B thu gom, vận chuyển và xử lý chất thải rắn trên địa bàn tỉnh\n\n1.2 Khối lượng chất thải xử lý:\n- Chất thải sinh hoạt: 500 tấn/ngày\n- Chất thải công nghiệp: 100 tấn/ngày\n- Chất thải y tế: 20 tấn/ngày\n\n1.3 Công nghệ xử lý phải đạt tiêu chuẩn môi trường quốc gia\n\n1.4 Tỷ lệ chôn lấp tối đa: 30% tổng khối lượng\n\n1.5 Tái chế, tái sử dụng: tối thiểu 50%",
+      "title": "ĐIỀU 1: THU GOM VÀ XỬ LÝ CHẤT THẢI"
+    },
+    {
+      "index": 1,
+      "text": "ĐIỀU 2: KÝ QUỸ PHỤC HỒI MÔI TRƯỜNG\n\n2.1 Bên B phải ký quỹ phục hồi môi trường trước khi hoạt động\n\n2.2 Mức ký quỹ: 5.000.000.000 VNĐ (năm tỷ đồng)\n\n2.3 Tiền ký quỹ được gửi tại ngân hàng thương mại\n\n2.4 Hoàn trả tiền ký quỹ khi:\n- Hết hạn hợp đồng và đã phục hồi môi trường\n- Không vi phạm các quy định về môi trường\n\n2.5 Tạm ứng tiền ký quỹ để xử lý sự cố môi trường nếu cần thiết",
+      "title": "ĐIỀU 2: KÝ QUỸ PHỤC HỒI MÔI TRƯỜNG"
+    },
+    {
+      "index": 2,
+      "text": "ĐIỀU 3: BẢO VỆ ĐẤT VÀ TÀI NGUYÊN NƯỚC\n\n3.1 Nghiêm cấm xả thải chưa qua xử lý ra môi trường\n\n3.2 Chất lượng nước thải sau xử lý phải đạt QCVN 40:2011/BTNMT\n\n3.3 Bảo vệ đất khỏi ô nhiễm do chất thải\n\n3.4 Các khu vực khai thác khoáng sản phải có phương án phục hồi môi trường\n\n3.5 Ruộng đất bị ô nhiễm phải được cải tạo, phục hồi\n\n3.6 Phạt tiền từ 100.000.000 đến 500.000.000 VNĐ nếu xả thải trái phép",
+      "title": "ĐIỀU 3: BẢO VỆ ĐẤT VÀ TÀI NGUYÊN NƯỚC"
+    },
+    {
+      "index": 3,
+      "text": "ĐIỀU 4: GIÁM SÁT VÀ BÁO CÁO MÔI TRƯỜNG\n\n4.1 Lắp đặt hệ thống quan trắc môi trường tự động\n\n4.2 Báo cáo giám sát môi trường hàng tháng cho Sở Tài nguyên và Môi trường\n\n4.3 Nội dung báo cáo:\n- Chất lượng nước thải đầu ra\n- Chất lượng khí thải\n- Chất lượng đất xung quanh khu vực xử lý\n\n4.4 Công khai thông tin môi trường trên website của công ty\n\n4.5 Tiếp nhận và xử lý khiếu nại của người dân về ô nhiễm môi trường\n\n4.6 Phạt tiền từ 50.000.000 đến 200.000.000 VNĐ nếu báo cáo sai sự thật\n\nĐIỀU KHOẢN CHUNG\n\n5.1 Hợp đồng có hiệu lực từ ngày 01/08/2025 đến ngày 31/07/2035 (10 năm)\n\n5.2 Đánh giá tác động môi trường định kỳ 02 năm/lần\n\n5.3 Hợp đồng được lập thành 08 bản, mỗi bên giữ 04 bản\n\n5.4 Tranh chấp được giải quyết qua thương lượng, nếu không sẽ kiện ra Tòa án nhân dân tỉnh\n\nĐẠI DIỆN BÊN A                          ĐẠI DIỆN BÊN B\n(Ký tên, đóng dấu)                      (Ký tên, đóng dấu)\n\n\nLê Minh Hoàng                            Nguyễn Đức Thành\nGiám đốc Sở                              Giám đốc",
+      "title": "ĐIỀU 4: GIÁM SÁT VÀ BÁO CÁO MÔI TRƯỜNG"
+    }
+  ]
+}

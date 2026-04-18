@@ -1,0 +1,387 @@
+{
+  "test_metadata": {
+    "test_name": "Ground Truth Contract Review Test",
+    "contract_file": "test contracts/test_contract_groundtruth.txt",
+    "timestamp": "2026-04-17T10:19:18.359172",
+    "pipeline_version": "1.0"
+  },
+  "contract_analysis": {
+    "total_clauses": 4,
+    "parsing_time": 0.000517666048835963,
+    "clauses": [
+      {
+        "number": 1,
+        "title": "ĐIỀU 1: TỔ CHỨC BỘ MÁY VÀ QUẢN LÝ",
+        "text_preview": "ĐIỀU 1: TỔ CHỨC BỘ MÁY VÀ QUẢN LÝ\n\n1.1 Bên B phải thành lập Ban quản lý dự án theo mô hình được UBND tỉnh phê duyệt\n\n1.2 Cơ cấu tổ chức của Ban quản lý:\n- Trưởng ban: 01 người\n- Phó ban phụ trách kỹ t"
+      },
+      {
+        "number": 2,
+        "title": "ĐIỀU 2: BỔ NHIỆM VÀ MIỄN NHIỆM CÁN BỘ",
+        "text_preview": "ĐIỀU 2: BỔ NHIỆM VÀ MIỄN NHIỆM CÁN BỘ\n\n2.1 Trưởng ban và Phó ban do Giám đốc Bên B bổ nhiệm, miễn nhiệm\n\n2.2 Tiêu chuẩn cán bộ quản lý:\n- Có trình độ đại học trở lên\n- Có ít nhất 5 năm kinh nghiệm tro"
+      },
+      {
+        "number": 3,
+        "title": "ĐIỀU 3: THỜI GIỜ LÀM VIỆC VÀ PHỤ CẤP",
+        "text_preview": "ĐIỀU 3: THỜI GIỜ LÀM VIỆC VÀ PHỤ CẤP\n\n3.1 Thời giờ làm việc: 08 giờ/ngày, 40 giờ/tuần\n\n3.2 Phụ cấp cho gia đình cán bộ theo quy định của Sắc lệnh hiện hành\n\n3.3 Nghỉ phép năm: 12 ngày làm việc/năm\n\n3."
+      },
+      {
+        "number": 4,
+        "title": "ĐIỀU 4: TRÁCH NHIỆM VÀ CHẾ TÀI",
+        "text_preview": "ĐIỀU 4: TRÁCH NHIỆM VÀ CHẾ TÀI\n\n4.1 Bên B chịu trách nhiệm trước pháp luật về chất lượng công trình\n\n4.2 Phạt tiền từ 20.000.000 đến 100.000.000 VNĐ nếu vi phạm tiến độ\n\n4.3 Bên A có quyền thanh tra, "
+      }
+    ]
+  },
+  "findings": [
+    {
+      "clause_number": 1,
+      "clause_title": "ĐIỀU 1: TỔ CHỨC BỘ MÁY VÀ QUẢN LÝ",
+      "clause_text": "ĐIỀU 1: TỔ CHỨC BỘ MÁY VÀ QUẢN LÝ\n\n1.1 Bên B phải thành lập Ban quản lý dự án theo mô hình được UBND tỉnh phê duyệt\n\n1.2 Cơ cấu tổ chức của Ban quản lý:\n- Trưởng ban: 01 người\n- Phó ban phụ trách kỹ thuật: 02 người\n- Phó ban phụ trách hành chính: 01 người\n- Nhân viên: theo nhu cầu thực tế\n\n1.3 Chức năng, nhiệm vụ của Ban quản lý:\n- Quản lý, điều hành dự án xây dựng hạ tầng nông thôn\n- Báo cáo định kỳ hàng tháng cho UBND tỉnh\n- Phối hợp với các sở, ban, ngành liên quan\n\n1.4 Phân cấp quản lý cán bộ và tổ chức theo quy định của UBND tỉnh",
+      "retrieved_docs": [
+        {
+          "doc_id": "4204",
+          "law_id": "99/QĐ-UB",
+          "title": "Ban hành quy định phân cấp quản lý công tác Tổ chức và Cán bộ",
+          "score": 93.46090951875752,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH BẮC NINH\nBan hành quy định\nphân cấp quản lý công tác Tổ chức và Cán bộ\nỦy ban nhân dân TỈNH BẮC NINH\nCăn cứ Luật Tổ chức HĐND và Ủy ban nhân dân được Quốc hội nước "
+        },
+        {
+          "doc_id": "4282",
+          "law_id": "111/1999/QĐ-UB",
+          "title": "Về việc ban hành quy định về chức năng, nhiệm vụ, quyền hạn và tổ chức bộ máy của Ban Dân tộc và Miền núi tỉnh Lâm Đồng",
+          "score": 68.96561631825503,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂM ĐỒNG\nV/v Ban hành quy định về chức năng, nhiệm vụ, quyền hạn và\ntổ chức bộ máy của Ban Dân tộc và Miền núi tỉnh Lâm Đồng\nỦY BAN NHÂN DÂN TỈNH LÂM ĐỒNG\nCăn cứ Lu"
+        },
+        {
+          "doc_id": "4278",
+          "law_id": "114/1999/QĐ-UB",
+          "title": "Về việc phê duyệt dự án quy hoạch thủy lợi và nước sinh hoạt nông thôn các Huyện Di Linh, Bảo Lâm và Thị xã Bảo Lộc, tỉnh Lâm Đồng",
+          "score": 39.098173282298234,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂM ĐỒNG\nV/v Phê duyệt dự án quy hoạch thủy lợi và nước sinh hoạt nông thôn\ncác Huyện Di Linh, Bảo Lâm và Thị xã Bảo Lộc, tỉnh Lâm Đồng\nỦY BAN NHÂN DÂN TỈNH LÂM ĐỒN"
+        },
+        {
+          "doc_id": "4280",
+          "law_id": "157/1999/QĐ-UB",
+          "title": "Về viẹc quản lý và quy định thống nhất phí chợ trên địa bàn tỉnh Lâm Đồng",
+          "score": 29.6042910519622,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂMĐỒNG\nVề việc Quản lý và quy địnhthống nhất phí chợ\ntrên địa bàn tỉnh Lâm Đồng\nỦY BAN NHÂN DÂN TỈNH LÂM ĐỒNG\nCăn cứ Luật Tổ chứcHĐND và Ủy ban nhân dân (sửa đổi) "
+        },
+        {
+          "doc_id": "4274",
+          "law_id": "105/2000/QĐ-UB",
+          "title": "Về việc giao chỉ tiêu kế hoạch động viên và huy động lực lượng ngành Y tế bảo đảm nhu cầu khi có chiến tranh và các tình huống cần thiết khác đối với ngành Y tế tỉnh Lâm Đồng",
+          "score": 19.723133022126547,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂM ĐỒNG\nVề việc giao chỉ tiêu kế hoạch động viên và huy động lực lượng ngành Y tế\nbảo đảm nhu cầu khi có chiến tranh và các tình huống cần thiết khác đối với ngành"
+        },
+        {
+          "doc_id": "99",
+          "law_id": "69/SL",
+          "title": "Sắc lệnh đổi tên các Nha lâm chính và Nha thú y mục súc ngư nghiệp",
+          "score": 11.761346851019354,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH\nNƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 68/SL NGÀY 14 THÁNG 5 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nXét nhu cầu công việc;\nChiểu đề nghị của Thủ tướng Chính phủ và Liên bộ K"
+        },
+        {
+          "doc_id": "63",
+          "law_id": "120/SL",
+          "title": "Sắc lệnh đổi tên và định thành phần các Hội đồng và ban tạm cấp ruộng đất tỉnh, xã và đồn điền",
+          "score": 20.650328475809218,
+          "content_preview": "SẮC LỆNH\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 120/SL NGÀY 11 THÁNG 7 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh số 75-SL ngày 1 tháng 7 năm 1949 quy định việc sử dụng ruộng "
+        },
+        {
+          "doc_id": "4271",
+          "law_id": "75/1999/QĐ-UB",
+          "title": "Về việc cho phép thành lập Quỹ bảo trợ nạn nhân chất độc da cam tỉnh Lâm Đồng và ban hành Quy chế tổ chức hoạt động của quỹ",
+          "score": 33.673183526092686,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂM ĐỒNG\nVề việc cho phép thành lập Quỹ bảo trợ nạn nhân chất độc da cam tỉnh Lâm Đồng\nvà ban hành Quy chế tổ chức hoạt động của quỹ\nỦY BAN NHÂN DÂN TỈNH LÂM ĐỒNG\nC"
+        },
+        {
+          "doc_id": "4260",
+          "law_id": "87/1999/QĐ-UB",
+          "title": "Về việc chuyển giao nhiệm vụ quản lý Nhà nước về đất lâm nghiệp từ Sở Nông nghiệp và Phát triển Nông thôn và Chi cục kiểm lâm tỉnh sang Sở Địa chính để quản lý",
+          "score": 48.297750155254555,
+          "content_preview": "QUYẾT ĐỊNH\nVề việc chuyển giao nhiệm vụ quản lý Nhà nước về đất lâm nghiệp\ntừ Sở Nông nghiệp và Phát triển Nông thôn và Chi cục kiểm lâm tỉnh sang Sở Địa chính để quản lý\nỦY BAN NHÂN DÂN TỈNH LÂM ĐỒNG"
+        },
+        {
+          "doc_id": "4255",
+          "law_id": "171/1999/QĐ-UB",
+          "title": "Về việc thành lập Ban quản lý dự án Mở rộng hệ thống cấp nước Thị xã Bảo lộc",
+          "score": 75.36000548933261,
+          "content_preview": "QUYẾT ĐỊNH\nVề việc thành lập Ban quản lýdự án Mở rộng hệ thống\ncấp nước Thị xã Bảo lộc\nỦY BAN NHÂN DÂN TỈNH LÂM ĐỒNG\nCăn cứ Luật Tổ chứcHĐND và Ủy ban nhân dân (sửa đổi) ngày 21/6/1994;\nCăn cứ Nghị đị"
+        }
+      ],
+      "status": "retrieved",
+      "retrieval_time": 0.191568499954883
+    },
+    {
+      "clause_number": 2,
+      "clause_title": "ĐIỀU 2: BỔ NHIỆM VÀ MIỄN NHIỆM CÁN BỘ",
+      "clause_text": "ĐIỀU 2: BỔ NHIỆM VÀ MIỄN NHIỆM CÁN BỘ\n\n2.1 Trưởng ban và Phó ban do Giám đốc Bên B bổ nhiệm, miễn nhiệm\n\n2.2 Tiêu chuẩn cán bộ quản lý:\n- Có trình độ đại học trở lên\n- Có ít nhất 5 năm kinh nghiệm trong lĩnh vực liên quan\n- Lý lịch rõ ràng, không án tích\n\n2.3 Chế độ phụ cấp cho cán bộ quản lý theo quy định hiện hành\n\n2.4 Báo cáo danh sách cán bộ cho UBND tỉnh trong vòng 15 ngày kể từ khi bổ nhiệm",
+      "retrieved_docs": [
+        {
+          "doc_id": "4204",
+          "law_id": "99/QĐ-UB",
+          "title": "Ban hành quy định phân cấp quản lý công tác Tổ chức và Cán bộ",
+          "score": 90.77276262183928,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH BẮC NINH\nBan hành quy định\nphân cấp quản lý công tác Tổ chức và Cán bộ\nỦy ban nhân dân TỈNH BẮC NINH\nCăn cứ Luật Tổ chức HĐND và Ủy ban nhân dân được Quốc hội nước "
+        },
+        {
+          "doc_id": "4282",
+          "law_id": "111/1999/QĐ-UB",
+          "title": "Về việc ban hành quy định về chức năng, nhiệm vụ, quyền hạn và tổ chức bộ máy của Ban Dân tộc và Miền núi tỉnh Lâm Đồng",
+          "score": 63.41720763261488,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂM ĐỒNG\nV/v Ban hành quy định về chức năng, nhiệm vụ, quyền hạn và\ntổ chức bộ máy của Ban Dân tộc và Miền núi tỉnh Lâm Đồng\nỦY BAN NHÂN DÂN TỈNH LÂM ĐỒNG\nCăn cứ Lu"
+        },
+        {
+          "doc_id": "57",
+          "law_id": "117/SL",
+          "title": "Sắc lệnh bổ nhiệm ông Bùi Huy Đáp và Vũ Công Hậu giữ chức Phó Giám đốc Nha nông chính",
+          "score": 56.17152921422271,
+          "content_preview": "SẮC LỆNH\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 117/SL NGÀY 11 THÁNG 7 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu quyết nghị của Hội đồng Chính phủ ngày 14 tháng 11 năm 1945 thành lập "
+        },
+        {
+          "doc_id": "53",
+          "law_id": "122",
+          "title": "Sắc lệnh bổ nhiệm cán bộ của Bộ tổng tư lệnh quân đội quốc gia Việt nam",
+          "score": 41.95077613817677,
+          "content_preview": "SẮC LỆNH\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 122/SL NGÀY 11 THÁNG 7 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh số 34-SL ngày 25 tháng 3 năm 1946 và số 35 ngày 19 tháng 3 nă"
+        },
+        {
+          "doc_id": "95",
+          "law_id": "75/SL",
+          "title": "Sắc lệnh bổ nhiệm ông Nguyễn Xuân Ngọc giữ chức Ban thư ký Ban kinh tế tài chính Chính phủ",
+          "score": 35.022174973247246,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH\nNƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 75/SL NGÀY 20 THÁNG 5 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh số 68-SL ngày 14 tháng 5 năm 1950 thành lập Ban Kinh tế Tà"
+        },
+        {
+          "doc_id": "96",
+          "law_id": "76/SL",
+          "title": "Sắc lệnh ban hành Quy chế Công chức",
+          "score": 27.305320902247725,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH NƯỚC\nNƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 76/SL NGÀY 20 THÁNG 5 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu tình thế hiện thời;\nTheo đề nghị của Bộ trưởng Bộ Nội vụ;\nTheo"
+        },
+        {
+          "doc_id": "60",
+          "law_id": "114/SL",
+          "title": "Sắc lệnh cử ông Nguyễn Ngọc Cừ, Giáo sư trung học giữ chức Phó giám đốc Trung học vụ và ông Hoàng Quy, giáo viên tiểu học giữ chức Phó giám đốc Tiểu học vụ",
+          "score": 36.81883297770108,
+          "content_preview": "SẮC LỆNH\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 114/SL NGÀY 11 THÁNG 7 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh số 7-SL ngày 20 tháng 1 năm 1950 tổ chức Văn phòng các Bộ và "
+        },
+        {
+          "doc_id": "56",
+          "law_id": "118",
+          "title": "Sắc lệnh bổ nhiệm ông Nghiên Xuân Tiếp, giữ chức Phó Giám đốc Nha thuỷ lâm",
+          "score": 47.3377219319337,
+          "content_preview": "SẮC LỆNH\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 118/SL NGÀY 11 THÁNG 7 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu quyết nghị ngày 14 tháng 11 năm 1945 của Hội đồng Chính phủ thành lập "
+        },
+        {
+          "doc_id": "55",
+          "law_id": "119",
+          "title": "Sắc lệnh bổ nhiệm ông Lê Văn Nguôn, giữ chức Phó Đổng lý Văn phòng Bộ lao động",
+          "score": 57.11361366756901,
+          "content_preview": "SẮC LỆNH\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 119/SL NGÀY 11 THÁNG 7 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh số 226-SL ngày 28 tháng 11 năm 1946 tổ chức Bộ Lao động;\nChiể"
+        },
+        {
+          "doc_id": "75",
+          "law_id": "86/SL",
+          "title": "Sắc lệnh bổ nhiệm cán bộ giữ chức Đổng lý Văn phòng Bộ ngoại giao",
+          "score": 85.25372245549424,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 86/SL NGÀY 22 THÁNG 5 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh ngày 14 tháng 3 năm 1946 tổ chức Bộ Ngoại giao;\nChiểu sắc "
+        }
+      ],
+      "status": "retrieved",
+      "retrieval_time": 0.07706595800118521
+    },
+    {
+      "clause_number": 3,
+      "clause_title": "ĐIỀU 3: THỜI GIỜ LÀM VIỆC VÀ PHỤ CẤP",
+      "clause_text": "ĐIỀU 3: THỜI GIỜ LÀM VIỆC VÀ PHỤ CẤP\n\n3.1 Thời giờ làm việc: 08 giờ/ngày, 40 giờ/tuần\n\n3.2 Phụ cấp cho gia đình cán bộ theo quy định của Sắc lệnh hiện hành\n\n3.3 Nghỉ phép năm: 12 ngày làm việc/năm\n\n3.4 Làm thêm giờ được thanh toán theo quy định của Bộ luật Lao động",
+      "retrieved_docs": [
+        {
+          "doc_id": "65",
+          "law_id": "127",
+          "title": "Sắc lệnh sửa đổi điều 3 của Sắc lệnh số 3 ngày 22-05-1950 về phụ cấp cho gia đình các vị trong ban thường trực Quốc hội",
+          "score": 92.0393024803963,
+          "content_preview": "SẮC LỆNH\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 127/SL NGÀY 11 THÁNG 7 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh số 83-SL ngày 22 tháng 5 năm 1950 ấn định phí cấp hàng tháng "
+        },
+        {
+          "doc_id": "4295",
+          "law_id": "146/1999/QĐ-UB",
+          "title": "Về việc quy định tạm thời mức bồi dưỡng tập luyện cho vận động viên, giáo viên, huấn luyện viên năng khiếu thể thao",
+          "score": 37.809315159152206,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂM ĐỒNG\nVề việc quy định tạm thời mức bồi dưỡng tập luyện cho\nvận động viên, giáo viên, huấn luyện viên năng khiếuthể thao\nỦY BAN NHÂN DÂN TỈNH LÂM ĐỒNG\nCăn cứ Luậ"
+        },
+        {
+          "doc_id": "73",
+          "law_id": "100/SL",
+          "title": "Sắc lệnh đổi các Điều 3, 8 và 12 Sắc lệnh số 68-SL ngày 30-11-1945 quy định việc trưng thu, trưng dụng và trưng tập trong thời kỳ kháng chiến",
+          "score": 33.289224398185524,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 100/SL NGÀY 30 THÁNG 5 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh số 68 ngày 30-11-1945 quy định việc trưng thu, trưng dụng"
+        },
+        {
+          "doc_id": "4242",
+          "law_id": "181/1999/QĐ-UB",
+          "title": "V/v Ban hành qui định về ký quĩ phục hồi môi trườngtrong khai thác tận thu khoáng sản trên địa bàn tỉnh Lâm Đồng",
+          "score": 20.483846063479074,
+          "content_preview": "QUYẾT ĐỊNH\nVề việc ban hành qui định vềký quĩ phục hồi môi trường\ntrong khai thác tận thu khoáng sản trên địa bàn tỉnhLâm Đồng\nỦY BAN NHÂN DÂN TỈNH LÂM ĐỒNG\nCăn cứ Luật Tổ chức HĐND và Ủy ban nhân dân"
+        },
+        {
+          "doc_id": "4204",
+          "law_id": "99/QĐ-UB",
+          "title": "Ban hành quy định phân cấp quản lý công tác Tổ chức và Cán bộ",
+          "score": 16.53869493374077,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH BẮC NINH\nBan hành quy định\nphân cấp quản lý công tác Tổ chức và Cán bộ\nỦy ban nhân dân TỈNH BẮC NINH\nCăn cứ Luật Tổ chức HĐND và Ủy ban nhân dân được Quốc hội nước "
+        },
+        {
+          "doc_id": "4271",
+          "law_id": "75/1999/QĐ-UB",
+          "title": "Về việc cho phép thành lập Quỹ bảo trợ nạn nhân chất độc da cam tỉnh Lâm Đồng và ban hành Quy chế tổ chức hoạt động của quỹ",
+          "score": 15.554137883159761,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂM ĐỒNG\nVề việc cho phép thành lập Quỹ bảo trợ nạn nhân chất độc da cam tỉnh Lâm Đồng\nvà ban hành Quy chế tổ chức hoạt động của quỹ\nỦY BAN NHÂN DÂN TỈNH LÂM ĐỒNG\nC"
+        },
+        {
+          "doc_id": "4273",
+          "law_id": "74/1999/QĐ-UB",
+          "title": "Về việc chuyển chức năng QLNN về Thể dục thể thao và 02 đơn vị từ Sở Văn hóa Thông tin và Thể thao Lâm Đồng sang Sở Thể dục Thể thao Lâm Đồng",
+          "score": 17.61313246449795,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂM ĐỒNG\nVề việc chuyển chức năng QLNN về Thể dục thể thao và 02 đơn\nvị từ Sở Văn hóa Thông tin và Thể thao Lâm Đồng sang Sở Thể dục Thể thao Lâm Đồng\nỦY BAN NHÂN D"
+        },
+        {
+          "doc_id": "4265",
+          "law_id": "24/1999/CT-UB",
+          "title": "Về việc thực hiện Quyết định số 53/1999/QĐ-TTg ngày 26 tháng 3 năm 1999 của Thủ tướng Chính phủ",
+          "score": 24.45499987540297,
+          "content_preview": "CHỈ THỊ CỦA Ủy ban nhân dân TỈNH LÂM ĐỒNG\nVề việc thực hiện Quyết định số 53/1999/Quyết định Thủ tướng Chính phủ\nngày 26 tháng 3 năm 1999 của Thủ tướng Chính phủ\nNgày 26/3/1999 Thủ tướng Chính phủ đã "
+        },
+        {
+          "doc_id": "96",
+          "law_id": "76/SL",
+          "title": "Sắc lệnh ban hành Quy chế Công chức",
+          "score": 35.37567285819368,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH NƯỚC\nNƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 76/SL NGÀY 20 THÁNG 5 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu tình thế hiện thời;\nTheo đề nghị của Bộ trưởng Bộ Nội vụ;\nTheo"
+        },
+        {
+          "doc_id": "91",
+          "law_id": "77/SL",
+          "title": "Sắc lệnh quy định chế độ công nhân giúp việc Chính phủ trong thời kỳ kháng chiến (thiếu trang 2)",
+          "score": 86.89803110328887,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH NƯỚC\nSỐ 77/SL NGÀY 22 THÁNG 5 NĂM 1950\nCHỦ TỊCH NƯỚC\nVIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh số 29-SL ngày 12 tháng 3 năm 1947 quy định chế độ lao động trong toàn cõi Việt Nam;\n"
+        }
+      ],
+      "status": "retrieved",
+      "retrieval_time": 0.07673966698348522
+    },
+    {
+      "clause_number": 4,
+      "clause_title": "ĐIỀU 4: TRÁCH NHIỆM VÀ CHẾ TÀI",
+      "clause_text": "ĐIỀU 4: TRÁCH NHIỆM VÀ CHẾ TÀI\n\n4.1 Bên B chịu trách nhiệm trước pháp luật về chất lượng công trình\n\n4.2 Phạt tiền từ 20.000.000 đến 100.000.000 VNĐ nếu vi phạm tiến độ\n\n4.3 Bên A có quyền thanh tra, kiểm tra việc thực hiện hợp đồng\n\n4.4 Bồi thường thiệt hại nếu gây ảnh hưởng đến môi trường và đời sống nhân dân\n\nĐIỀU KHOẢN CHUNG\n\n5.1 Hợp đồng có hiệu lực từ ngày 01/03/2025 đến ngày 28/02/2027\n\n5.2 Mọi sửa đổi phải được lập thành văn bản\n\n5.3 Hợp đồng được lập thành 06 bản, mỗi bên giữ 03 bản\n\n5.4 Tranh chấp được giải quyết qua thương lượng, nếu không sẽ kiện ra Tòa án nhân dân tỉnh\n\nĐẠI DIỆN BÊN A                          ĐẠI DIỆN BÊN B\n(Ký tên, đóng dấu)                      (Ký tên, đóng dấu)\n\n\nNguyễn Văn Minh                          Lê Thị Hồng\nChủ tịch UBND                            Tổng Giám đốc",
+      "retrieved_docs": [
+        {
+          "doc_id": "90",
+          "law_id": "97/SL",
+          "title": "Sắc lệnh sửa đổi một số quy lệ và chế định trong dân luật",
+          "score": 85.85350957039012,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH CHÍNH PHỦ\nNƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 97/SL NGÀY 22 THÁNG 5 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh ngày 10 tháng 10 năm 1945 tạm giữ các luật lệ hi"
+        },
+        {
+          "doc_id": "4263",
+          "law_id": "163/1999/QĐ-UB",
+          "title": "Về việc xử lý đối với quỹ nhà thuộc quyền sở hữu Nhà nước do các cơ quan, đơn vị đã tự bố trí cho cán bộ, công nhân viên ở tập thể trên địa bàn thành phố Đà Lạt.",
+          "score": 72.77332195997478,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂMĐỒNG\nVề việc xử lý đối với quỹ nhàthuộc quyền sở hữu Nhà nước\ndo các cơ quan, đơn vị đã tựbố trí cho cán bộ, công nhân viên\nở tập thể trên địa bàn thànhphố Đà Lạ"
+        },
+        {
+          "doc_id": "4257",
+          "law_id": "28/1999/CT-UB",
+          "title": "Về việc niêm yết giá, nhận thanh toán hàng hóa và dịch vụ bằng đồng Việt Nam",
+          "score": 66.62418010379113,
+          "content_preview": "CHỈ THỊ CỦA Ủy ban nhân dân TỈNH LÂM ĐỒNG\nVề việc niêm yết giá, nhận thanh toán hàng hóa và dịch vụ bằng đồng Việt Nam\nCăn cứ Nghị định số 63/1998/Nghị định Chính phủ của Chính phủ ban hành ngày 17/08"
+        },
+        {
+          "doc_id": "96",
+          "law_id": "76/SL",
+          "title": "Sắc lệnh ban hành Quy chế Công chức",
+          "score": 57.614145836437366,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH NƯỚC\nNƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 76/SL NGÀY 20 THÁNG 5 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu tình thế hiện thời;\nTheo đề nghị của Bộ trưởng Bộ Nội vụ;\nTheo"
+        },
+        {
+          "doc_id": "4258",
+          "law_id": "166/1999/QĐ-UB",
+          "title": "Về việc quy định giá dịch vụ giữ xe và phí bến bãi đậu xe trên địa bàn tỉnh Lâm Đồng",
+          "score": 40.642186996410004,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂMĐỒNG\nVề việc quy định giá dịch vụ giữxe và phí bến bãi đậu xe\ntrên địa bàn tỉnh Lâm Đồng\nUỶ BAN NHÂN DÂN TỈNH LÂMĐỒNG\nCăn cứ Luật Tổ chức HĐND và Ủy ban nhân dân"
+        },
+        {
+          "doc_id": "63",
+          "law_id": "120/SL",
+          "title": "Sắc lệnh đổi tên và định thành phần các Hội đồng và ban tạm cấp ruộng đất tỉnh, xã và đồn điền",
+          "score": 37.559830795820076,
+          "content_preview": "SẮC LỆNH\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 120/SL NGÀY 11 THÁNG 7 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh số 75-SL ngày 1 tháng 7 năm 1949 quy định việc sử dụng ruộng "
+        },
+        {
+          "doc_id": "67",
+          "law_id": "111",
+          "title": "Sắc lệnh chỉ định ông Nguyễn Duy Trinh làm Chủ tịch, ông Trần Đình Tri làm phó Chủ tịch UBKCHC miền Nam trung bộ",
+          "score": 41.80404898259455,
+          "content_preview": "SẮC LỆNH\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 111/SL NGÀY 20 THÁNG 6 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh số 254-SL ngày 19 tháng 11 năm 1948 tổ chức chính quyền nhân "
+        },
+        {
+          "doc_id": "4242",
+          "law_id": "181/1999/QĐ-UB",
+          "title": "V/v Ban hành qui định về ký quĩ phục hồi môi trườngtrong khai thác tận thu khoáng sản trên địa bàn tỉnh Lâm Đồng",
+          "score": 59.071920541764825,
+          "content_preview": "QUYẾT ĐỊNH\nVề việc ban hành qui định vềký quĩ phục hồi môi trường\ntrong khai thác tận thu khoáng sản trên địa bàn tỉnhLâm Đồng\nỦY BAN NHÂN DÂN TỈNH LÂM ĐỒNG\nCăn cứ Luật Tổ chức HĐND và Ủy ban nhân dân"
+        },
+        {
+          "doc_id": "91",
+          "law_id": "77/SL",
+          "title": "Sắc lệnh quy định chế độ công nhân giúp việc Chính phủ trong thời kỳ kháng chiến (thiếu trang 2)",
+          "score": 67.4329055259696,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH NƯỚC\nSỐ 77/SL NGÀY 22 THÁNG 5 NĂM 1950\nCHỦ TỊCH NƯỚC\nVIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh số 29-SL ngày 12 tháng 3 năm 1947 quy định chế độ lao động trong toàn cõi Việt Nam;\n"
+        },
+        {
+          "doc_id": "92",
+          "law_id": "85/SL",
+          "title": "Sắc lệnh cải cách bộ máy Tư pháp và Luật Tố tụng",
+          "score": 73.30582224932812,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 85/SL NGÀY 22 THÁNG 5 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh số 13-SL ngày 24 tháng 1 năm 1946 và các sắc lệnh tiếp sau"
+        }
+      ],
+      "status": "retrieved",
+      "retrieval_time": 0.1003129169694148
+    }
+  ],
+  "performance_metrics": {
+    "warmup_time": "8.15s",
+    "total_pipeline_time": "0.46s",
+    "clause_parsing_time": "0.00s",
+    "average_retrieval_time": "0.11s",
+    "retrieval_times": [
+      "0.19s",
+      "0.08s",
+      "0.08s",
+      "0.10s"
+    ],
+    "total_retrieval_time": "0.45s"
+  },
+  "raw_clauses": [
+    {
+      "index": 0,
+      "text": "ĐIỀU 1: TỔ CHỨC BỘ MÁY VÀ QUẢN LÝ\n\n1.1 Bên B phải thành lập Ban quản lý dự án theo mô hình được UBND tỉnh phê duyệt\n\n1.2 Cơ cấu tổ chức của Ban quản lý:\n- Trưởng ban: 01 người\n- Phó ban phụ trách kỹ thuật: 02 người\n- Phó ban phụ trách hành chính: 01 người\n- Nhân viên: theo nhu cầu thực tế\n\n1.3 Chức năng, nhiệm vụ của Ban quản lý:\n- Quản lý, điều hành dự án xây dựng hạ tầng nông thôn\n- Báo cáo định kỳ hàng tháng cho UBND tỉnh\n- Phối hợp với các sở, ban, ngành liên quan\n\n1.4 Phân cấp quản lý cán bộ và tổ chức theo quy định của UBND tỉnh",
+      "title": "ĐIỀU 1: TỔ CHỨC BỘ MÁY VÀ QUẢN LÝ"
+    },
+    {
+      "index": 1,
+      "text": "ĐIỀU 2: BỔ NHIỆM VÀ MIỄN NHIỆM CÁN BỘ\n\n2.1 Trưởng ban và Phó ban do Giám đốc Bên B bổ nhiệm, miễn nhiệm\n\n2.2 Tiêu chuẩn cán bộ quản lý:\n- Có trình độ đại học trở lên\n- Có ít nhất 5 năm kinh nghiệm trong lĩnh vực liên quan\n- Lý lịch rõ ràng, không án tích\n\n2.3 Chế độ phụ cấp cho cán bộ quản lý theo quy định hiện hành\n\n2.4 Báo cáo danh sách cán bộ cho UBND tỉnh trong vòng 15 ngày kể từ khi bổ nhiệm",
+      "title": "ĐIỀU 2: BỔ NHIỆM VÀ MIỄN NHIỆM CÁN BỘ"
+    },
+    {
+      "index": 2,
+      "text": "ĐIỀU 3: THỜI GIỜ LÀM VIỆC VÀ PHỤ CẤP\n\n3.1 Thời giờ làm việc: 08 giờ/ngày, 40 giờ/tuần\n\n3.2 Phụ cấp cho gia đình cán bộ theo quy định của Sắc lệnh hiện hành\n\n3.3 Nghỉ phép năm: 12 ngày làm việc/năm\n\n3.4 Làm thêm giờ được thanh toán theo quy định của Bộ luật Lao động",
+      "title": "ĐIỀU 3: THỜI GIỜ LÀM VIỆC VÀ PHỤ CẤP"
+    },
+    {
+      "index": 3,
+      "text": "ĐIỀU 4: TRÁCH NHIỆM VÀ CHẾ TÀI\n\n4.1 Bên B chịu trách nhiệm trước pháp luật về chất lượng công trình\n\n4.2 Phạt tiền từ 20.000.000 đến 100.000.000 VNĐ nếu vi phạm tiến độ\n\n4.3 Bên A có quyền thanh tra, kiểm tra việc thực hiện hợp đồng\n\n4.4 Bồi thường thiệt hại nếu gây ảnh hưởng đến môi trường và đời sống nhân dân\n\nĐIỀU KHOẢN CHUNG\n\n5.1 Hợp đồng có hiệu lực từ ngày 01/03/2025 đến ngày 28/02/2027\n\n5.2 Mọi sửa đổi phải được lập thành văn bản\n\n5.3 Hợp đồng được lập thành 06 bản, mỗi bên giữ 03 bản\n\n5.4 Tranh chấp được giải quyết qua thương lượng, nếu không sẽ kiện ra Tòa án nhân dân tỉnh\n\nĐẠI DIỆN BÊN A                          ĐẠI DIỆN BÊN B\n(Ký tên, đóng dấu)                      (Ký tên, đóng dấu)\n\n\nNguyễn Văn Minh                          Lê Thị Hồng\nChủ tịch UBND                            Tổng Giám đốc",
+      "title": "ĐIỀU 4: TRÁCH NHIỆM VÀ CHẾ TÀI"
+    }
+  ]
+}

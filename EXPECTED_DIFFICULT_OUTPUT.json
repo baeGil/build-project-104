@@ -1,0 +1,464 @@
+{
+  "test_metadata": {
+    "test_name": "Extremely Difficult Deceptive Contract Review Test",
+    "contract_file": "test contracts/test_contract_extremely_difficult.txt",
+    "expected_output_file": "EXPECTED_DIFFICULT_OUTPUT.json",
+    "description": "Extremely challenging contract with ambiguous language, mixed domains, misleading terms, legal violations, and edge cases designed to test retrieval system robustness",
+    "created_at": "2026-04-17",
+    "test_type": "extreme_difficulty_deceptive",
+    "total_clauses": 8,
+    "difficulty_level": "extreme",
+    "deceptive_techniques": [
+      "ambiguous_language",
+      "mixed_domains",
+      "misleading_prices",
+      "unclear_legal_basis",
+      "contradictory_terms",
+      "missing_specifications",
+      "excessive_complexity"
+    ]
+  },
+  "expected_findings": [
+    {
+      "clause_number": 1,
+      "clause_title": "MỤC TIÊU VÀ PHẠM VI ĐẦU TƯ LƯỠNG NAN",
+      "expected_risk_level": "critical",
+      "expected_verification": "violation_found",
+      "expected_confidence_range": {
+        "min": 85.0,
+        "max": 95.0
+      },
+      "expected_citations": {
+        "must_include_law_ids": [
+          "87/1999/QĐ-UB",
+          "90/SL",
+          "88/SL"
+        ],
+        "minimum_count": 2,
+        "relevance_notes": {
+          "87/1999/QĐ-UB": "Chuyển giao quản lý đất lâm nghiệp - clause 1.1b converts 50 hectares of forestry land, requires proper legal procedure",
+          "90/SL": "Sử dụng ruộng đất bỏ hoang - clause 1.1 mentions land use conversion",
+          "88/SL": "Thể lệ lĩnh canh ruộng đất - land use rights and conversion regulations"
+        }
+      },
+      "expected_issues": [
+        "CRITICAL: Converting 50 hectares of forestry land requires provincial approval per Decision 87/1999/QĐ-UB",
+        "CRITICAL: Land use conversion must follow legal procedures - cannot be 'negotiated later'",
+        "Environmental impact assessment (ĐTM) is MANDATORY before conversion, not optional",
+        "Clause 1.3 'open provision' is legally dangerous - allows ambiguous interpretation",
+        "Missing specification of legal basis for land conversion"
+      ],
+      "rationale_keywords": [
+        "đất lâm nghiệp",
+        "chuyển đổi mục đích",
+        "UBND cấp tỉnh",
+        "đánh giá tác động môi trường",
+        "ký quỹ phục hồi môi trường"
+      ],
+      "deceptive_elements": [
+        "Clause 1.3 uses vague language 'phù hợp với pháp luật và thực tế' - too ambiguous",
+        "Mixes different land types (forestry, agricultural, residential) without clear legal framework",
+        "Suggests land conversion is simple when it's actually complex legal process"
+      ]
+    },
+    {
+      "clause_number": 2,
+      "clause_title": "CƠ CẤU VỐN VÀ TÀI CHÍNH PHỨC TẠP",
+      "expected_risk_level": "high",
+      "expected_verification": "violation_found",
+      "expected_confidence_range": {
+        "min": 80.0,
+        "max": 92.0
+      },
+      "expected_citations": {
+        "must_include_law_ids": [
+          "166/1999/QĐ-UB",
+          "157/1999/QĐ-UB",
+          "28/1999/CT-UB"
+        ],
+        "minimum_count": 3,
+        "relevance_notes": {
+          "166/1999/QĐ-UB": "Price for parking (5.000 VNĐ motorbike, 15.000 VNĐ car) may exceed Decision 166/1999/QĐ-UB official rates",
+          "157/1999/QĐ-UB": "Market stall fee (200.000 VNĐ/stall/day) may violate Decision 157/1999/QĐ-UB price framework",
+          "28/1999/CT-UB": "All prices must be publicly displayed and comply with Directive 28/1999/CT-UB"
+        }
+      },
+      "expected_issues": [
+        "CRITICAL: Parking fees (5.000 VNĐ, 15.000 VNĐ) LIKELY EXCEED official rates in Decision 166/1999/QĐ-UB",
+        "CRITICAL: Market stall fee (200.000 VNĐ) LIKELY EXCEEDS Decision 157/1999/QĐ-UB limits",
+        "CRITICAL: Contract sets FIXED PRICES instead of referencing official price lists - illegal!",
+        "Clause 2.4 admits prices 'may violate regulations' - RED FLAG!",
+        "Public capital (100 billion from budget) requires special legal procedures",
+        "Missing legal basis for private use of public funds"
+      ],
+      "rationale_keywords": [
+        "giá dịch vụ",
+        "phí chợ",
+        "niêm yết giá",
+        "khung giá",
+        "UBND tỉnh quy định"
+      ],
+      "deceptive_elements": [
+        "Clause 2.3 explicitly asks 'cao hơn giá UBND tỉnh quy định?' - admits potential violation!",
+        "Sets prices 2-3x higher than typical rates to test if system catches this",
+        "Uses question marks to create doubt about legality"
+      ]
+    },
+    {
+      "clause_number": 3,
+      "clause_title": "QUẢN LÝ TÀI NGUYÊN NƯỚC VÀ MÔI TRƯỜNG NHẠY CẢM",
+      "expected_risk_level": "critical",
+      "expected_verification": "violation_found",
+      "expected_confidence_range": {
+        "min": 88.0,
+        "max": 96.0
+      },
+      "expected_citations": {
+        "must_include_law_ids": [
+          "181/1999/QĐ-UB",
+          "114/1999/QĐ-UB",
+          "118"
+        ],
+        "minimum_count": 2,
+        "relevance_notes": {
+          "181/1999/QĐ-UB": "Environmental deposit (500M VNĐ) is INSUFFICIENT - clause 3.3 admits may need 2-3 billion VNĐ",
+          "114/1999/QĐ-UB": "Water resource management and irrigation planning for 65.000 m³/day usage",
+          "118": "Historical water resource management regulations"
+        }
+      },
+      "expected_issues": [
+        "CRITICAL: Environmental deposit (500M VNĐ) is INSUFFICIENT per Decision 181/1999/QĐ-UB - clause admits needs 2-3 billion!",
+        "CRITICAL: Mining 100.000 m³ sand/gravel WITHOUT proper licensing is illegal",
+        "CRITICAL: Extracting 65.000 m³ water/day requires water use license",
+        "Clause 3.4 'vague commitment' about 'international standards' has NO legal basis",
+        "Missing specification of WHICH standards, WHO monitors, WHAT timeline",
+        "Massive scale of resource extraction (350.000 m³ total) requires provincial approval"
+      ],
+      "rationale_keywords": [
+        "ký quỹ phục hồi môi trường",
+        "khoáng sản tận thu",
+        "khai thác",
+        "nước",
+        "sông Đa Dâng",
+        "tiêu chuẩn quốc tế"
+      ],
+      "deceptive_elements": [
+        "Clause 3.3 ADMITS deposit may be insufficient ('có thể cần tới 2-3 tỷ đồng')",
+        "Uses 'international standards' without specifying which ones",
+        "Massive numbers (65.000 m³/day) to test if system notices scale"
+      ]
+    },
+    {
+      "clause_number": 4,
+      "clause_title": "TỔ CHỨC QUẢN LÝ MÂU THUẪN",
+      "expected_risk_level": "high",
+      "expected_verification": "violation_found",
+      "expected_confidence_range": {
+        "min": 78.0,
+        "max": 88.0
+      },
+      "expected_citations": {
+        "must_include_law_ids": [
+          "99/QĐ-UB",
+          "75/1999/QĐ-UB",
+          "171/1999/QĐ-UB"
+        ],
+        "minimum_count": 2,
+        "relevance_notes": {
+          "99/QĐ-UB": "Cadre management and organizational hierarchy - clause 4.3 allows project manager to appoint/remove staff without legal basis",
+          "75/1999/QĐ-UB": "Functions and duties of organizational structure - clause 4.4 is too vague",
+          "171/1999/QĐ-UB": "Project management board must be approved by provincial level, not commune level!"
+        }
+      },
+      "expected_issues": [
+        "CRITICAL: Project management board requires PROVINCIAL approval (Decision 171/1999/QĐ-UB), not commune!",
+        "CRITICAL: Clause 4.3 violates cadre management regulations (Decision 99/QĐ-UB)",
+        "CRITICAL: Contradiction between Party A's 'autonomy' and Party C's 'must request permission'",
+        "Clause 4.4 reporting requirements too vague - what, when, to whom?",
+        "Commune-level involvement inappropriate for provincial-scale project",
+        "Missing legal basis for 'independent experts' authority"
+      ],
+      "rationale_keywords": [
+        "Ban quản lý dự án",
+        "UBND cấp tỉnh",
+        "phân cấp quản lý",
+        "tổ chức bộ máy",
+        "cán bộ",
+        "bổ nhiệm"
+      ],
+      "deceptive_elements": [
+        "Creates deliberate contradiction: Party A wants autonomy vs Party C wants control",
+        "Uses wrong administrative level (commune instead of province)",
+        "Vague functions and reporting to avoid accountability"
+      ]
+    },
+    {
+      "clause_number": 5,
+      "clause_title": "LAO ĐỘNG, Y TẾ VÀ AN SINH XÃ HỘI THIẾU CĂN CỨ",
+      "expected_risk_level": "medium",
+      "expected_verification": "partial_match",
+      "expected_confidence_range": {
+        "min": 70.0,
+        "max": 82.0
+      },
+      "expected_citations": {
+        "must_include_law_ids": [
+          "105/2000/QĐ-UB",
+          "115/SL",
+          "146/1999/QĐ-UB"
+        ],
+        "minimum_count": 1,
+        "relevance_notes": {
+          "105/2000/QĐ-UB": "Healthcare workforce mobilization for 500 workers - clause 5.2 mentions emergency response",
+          "115/SL": "Health/veterinary services - related to healthcare station in clause 5.2",
+          "146/1999/QĐ-UB": "Training and education support - clause 5.3 mentions scholarships"
+        }
+      },
+      "expected_issues": [
+        "Healthcare services for 500 workers requires proper licensing and funding source",
+        "Clause 5.2 'mobilize healthcare workforce' needs legal basis (Decision 105/2000/QĐ-UB)",
+        "Scholarship support (clause 5.3) has no specific amount or criteria",
+        "Missing specification of healthcare standards and accreditation",
+        "Training partnerships with universities not formalized"
+      ],
+      "rationale_keywords": [
+        "y tế",
+        "khám sức khỏe",
+        "trạm y tế",
+        "huy động lực lượng",
+        "đào tạo",
+        "học bổng"
+      ],
+      "deceptive_elements": [
+        "Makes grand promises (500 jobs, healthcare, scholarships) without funding details",
+        "Uses impressive numbers without legal or financial basis",
+        "Vague commitments that sound good but are unenforceable"
+      ]
+    },
+    {
+      "clause_number": 6,
+      "clause_title": "GIÁM SÁT, THANH TRA VÀ XỬ LÝ VI PHẠM KHÔNG RÕ RÀNG",
+      "expected_risk_level": "high",
+      "expected_verification": "violation_found",
+      "expected_confidence_range": {
+        "min": 82.0,
+        "max": 92.0
+      },
+      "expected_citations": {
+        "must_include_law_ids": [
+          "85/SL",
+          "76/SL"
+        ],
+        "minimum_count": 1,
+        "relevance_notes": {
+          "85/SL": "Judicial reform and legal procedures - clause 6.3 inspection authority needs legal basis",
+          "76/SL": "Civil service regulations - clause 6.1 reporting obligations for public officials"
+        }
+      },
+      "expected_issues": [
+        "CRITICAL: Reporting frequency (weekly!) is UNREALISTIC and not required by law",
+        "CRITICAL: Penalty amounts (50M-1B VNĐ) have NO legal basis - appear made up!",
+        "Clause 6.3 'when necessary' for inspections is too vague - who decides?",
+        "Multiple inspection bodies (province, district, sectoral) creates confusion",
+        "No specific reporting templates or standards specified",
+        "Penalty ranges too broad (10x difference between min and max)"
+      ],
+      "rationale_keywords": [
+        "báo cáo",
+        "thanh tra",
+        "kiểm tra",
+        "xử lý vi phạm",
+        "phạt tiền",
+        "định kỳ"
+      ],
+      "deceptive_elements": [
+        "Weekly reporting is intentionally unrealistic to test if system notices",
+        "Penalty amounts are 'invented' without legal basis",
+        "Multiple inspection authorities create jurisdictional confusion",
+        "'When necessary' gives unlimited discretion"
+      ]
+    },
+    {
+      "clause_number": 7,
+      "clause_title": "BẤT KHẢ KHÁNG VÀ TRANH CHẤP KHÓ GIẢI QUYẾT",
+      "expected_risk_level": "medium",
+      "expected_verification": "partial_match",
+      "expected_confidence_range": {
+        "min": 72.0,
+        "max": 85.0
+      },
+      "expected_citations": {
+        "must_include_law_ids": [
+          "157/SL",
+          "97/SL"
+        ],
+        "minimum_count": 1,
+        "relevance_notes": {
+          "157/SL": "Court organization - clause 7.2 mentions 5 levels of dispute resolution",
+          "97/SL": "Civil law modifications - force majeure and contract dispute regulations"
+        }
+      },
+      "expected_issues": [
+        "Market fluctuations are NOT force majeure under Vietnamese law",
+        "5-step dispute resolution is EXCESSIVELY COMPLEX and contradictory",
+        "Clause 7.3 cites THREE legal sources without priority order",
+        "International arbitration clause may conflict with Vietnamese court jurisdiction",
+        "Auto-renewal (clause 8.1) for 5 years without review is risky",
+        "Missing specification of WHICH international arbitration center"
+      ],
+      "rationale_keywords": [
+        "bất khả kháng",
+        "tranh chấp",
+        "tòa án",
+        "trọng tài",
+        "thương lượng",
+        "pháp luật"
+      ],
+      "deceptive_elements": [
+        "Deliberately includes 'market fluctuations' as force majeure (legally incorrect)",
+        "5-step dispute process designed to be confusing and contradictory",
+        "Three legal sources without hierarchy creates ambiguity"
+      ]
+    },
+    {
+      "clause_number": 8,
+      "clause_title": "ĐIỀU KHOẢN CUỐI CÙNG BẤT THƯỜNG",
+      "expected_risk_level": "medium",
+      "expected_verification": "partial_match",
+      "expected_confidence_range": {
+        "min": 68.0,
+        "max": 80.0
+      },
+      "expected_citations": {
+        "must_include_law_ids": [
+          "28/1999/CT-UB"
+        ],
+        "minimum_count": 1,
+        "relevance_notes": {
+          "28/1999/CT-UB": "General contract administration and legal compliance requirements"
+        }
+      },
+      "expected_issues": [
+        "Contract is INCOMPLETE - all 5 appendices 'will be completed later'",
+        "Auto-renewal for 5 years without performance review is dangerous",
+        "Missing copies for tax authority and land management authority",
+        "10-year duration is very long for such an incomplete contract",
+        "Signing incomplete contract violates basic legal principles"
+      ],
+      "rationale_keywords": [
+        "phụ lục",
+        "hiệu lực",
+        "gia hạn",
+        "lưu trữ",
+        "hoàn thiện sau"
+      ],
+      "deceptive_elements": [
+        "Contract admits it's incomplete but still asks parties to sign!",
+        "Auto-renewal traps parties for 5 more years without review",
+        "Missing critical stakeholder copies (tax, land authorities)"
+      ]
+    }
+  ],
+  "expected_summary": {
+    "total_findings": 8,
+    "risk_distribution": {
+      "critical": 2,
+      "high": 3,
+      "medium": 3,
+      "low": 0,
+      "none": 0
+    },
+    "average_confidence_range": {
+      "min": 77.9,
+      "max": 88.8
+    },
+    "total_citations_range": {
+      "min": 12,
+      "max": 18
+    },
+    "unique_law_ids_expected": [
+      "87/1999/QĐ-UB",
+      "90/SL",
+      "88/SL",
+      "166/1999/QĐ-UB",
+      "157/1999/QĐ-UB",
+      "28/1999/CT-UB",
+      "181/1999/QĐ-UB",
+      "114/1999/QĐ-UB",
+      "118",
+      "99/QĐ-UB",
+      "75/1999/QĐ-UB",
+      "171/1999/QĐ-UB",
+      "105/2000/QĐ-UB",
+      "115/SL",
+      "146/1999/QĐ-UB",
+      "85/SL",
+      "76/SL",
+      "157/SL",
+      "97/SL"
+    ],
+    "deception_analysis": {
+      "total_deceptive_elements": 24,
+      "critical_violations": 8,
+      "ambiguous_clauses": 6,
+      "contradictory_terms": 3,
+      "missing_legal_basis": 7,
+      "unrealistic_requirements": 2
+    }
+  },
+  "performance_targets": {
+    "total_pipeline_time_seconds": {
+      "target": "< 25",
+      "acceptable": "< 30",
+      "notes": "8 complex clauses with deceptive language should take longer"
+    },
+    "clause_parsing_time_seconds": {
+      "target": "< 1",
+      "notes": "Regex parsing should handle complex formatting"
+    },
+    "retrieval_time_per_clause_seconds": {
+      "target": "< 2",
+      "notes": "Hybrid search with 200 candidates"
+    },
+    "deception_detection_rate": {
+      "target": "> 80%",
+      "notes": "System should identify most deceptive elements"
+    }
+  },
+  "quality_criteria": {
+    "citation_relevance_threshold": 0.75,
+    "minimum_critical_findings": 2,
+    "minimum_high_risk_findings": 3,
+    "must_detect_price_violations": true,
+    "must_detect_environmental_violations": true,
+    "must_detect_land_conversion_issues": true,
+    "must_detect_organizational_contradictions": true,
+    "must_cite_correct_law_ids": true,
+    "deception_detection_rate": 0.80,
+    "ambiguous_language_detection": 0.75
+  },
+  "test_difficulty_metrics": {
+    "total_clauses": 8,
+    "total_expected_citations": 19,
+    "unique_legal_domains": 8,
+    "deceptive_techniques_used": 7,
+    "critical_violations_planted": 8,
+    "ambiguous_statements": 12,
+    "contradictory_clauses": 3,
+    "missing_specifications": 9,
+    "contract_complexity": "extreme",
+    "realistic_scenario": true,
+    "designed_to_trick_system": true
+  },
+  "known_challenges": [
+    "Contract deliberately uses ambiguous language to confuse retrieval",
+    "Price violations are hidden in complex financial structure",
+    "Land conversion issues spread across multiple clauses",
+    "Organizational contradictions require deep legal analysis",
+    "Missing legal basis for many requirements",
+    "System must distinguish between legitimate and fabricated penalties",
+    "Force majeure clause includes legally incorrect elements",
+    "Contract admits its own incompleteness"
+  ],
+  "evaluation_notes": "This contract is DESIGNED to be extremely difficult. It contains deliberate legal violations, ambiguous language, contradictory terms, and missing specifications. A good system should identify most of these issues. Perfect performance is not expected - the goal is to test system robustness under extreme conditions."
+}

@@ -1,0 +1,52 @@
+{
+  "test_suite_metadata": {
+    "test_name": "Ground Truth Contract Review Test Suite",
+    "timestamp": "2026-04-17T10:18:51.753336",
+    "total_contracts": 8,
+    "successful": 8,
+    "failed": 0,
+    "total_time_seconds": 12.65
+  },
+  "results": [
+    {
+      "contract_file": "test_contract_01_labor_organization.txt",
+      "status": "success",
+      "error": null
+    },
+    {
+      "contract_file": "test_contract_02_land_forestry.txt",
+      "status": "success",
+      "error": null
+    },
+    {
+      "contract_file": "test_contract_03_pricing_services.txt",
+      "status": "success",
+      "error": null
+    },
+    {
+      "contract_file": "test_contract_04_healthcare_water.txt",
+      "status": "success",
+      "error": null
+    },
+    {
+      "contract_file": "test_contract_05_agriculture_irrigation.txt",
+      "status": "success",
+      "error": null
+    },
+    {
+      "contract_file": "test_contract_06_urban_management.txt",
+      "status": "success",
+      "error": null
+    },
+    {
+      "contract_file": "test_contract_07_environment.txt",
+      "status": "success",
+      "error": null
+    },
+    {
+      "contract_file": "test_contract_groundtruth.txt",
+      "status": "success",
+      "error": null
+    }
+  ]
+}

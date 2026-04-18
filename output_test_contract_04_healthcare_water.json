@@ -1,0 +1,387 @@
+{
+  "test_metadata": {
+    "test_name": "Ground Truth Contract Review Test",
+    "contract_file": "test contracts/test_contract_groundtruth.txt",
+    "timestamp": "2026-04-17T10:18:49.896705",
+    "pipeline_version": "1.0"
+  },
+  "contract_analysis": {
+    "total_clauses": 4,
+    "parsing_time": 0.0002882910193875432,
+    "clauses": [
+      {
+        "number": 1,
+        "title": "ĐIỀU 1: CUNG CẤP DỊCH VỤ Y TẾ",
+        "text_preview": "ĐIỀU 1: CUNG CẤP DỊCH VỤ Y TẾ\n\n1.1 Bên B cung cấp dịch vụ khám chữa bệnh cho nhân dân trên địa bàn tỉnh\n\n1.2 Chỉ tiêu kế hoạch động viên lực lượng ngành Y tế:\n- Số giường bệnh: 200 giường\n- Số bác sĩ:"
+      },
+      {
+        "number": 2,
+        "title": "ĐIỀU 2: QUY HOẠCH THỦY LỢI VÀ NƯỚC SINH HOẠT",
+        "text_preview": "ĐIỀU 2: QUY HOẠCH THỦY LỢI VÀ NƯỚC SINH HOẠT\n\n2.1 Bên B đầu tư hệ thống cấp nước sinh hoạt cho các huyện theo quy hoạch được phê duyệt\n\n2.2 Chỉ tiêu kỹ thuật:\n- Công suất: 10.000 m³/ngày đêm\n- Diện tí"
+      },
+      {
+        "number": 3,
+        "title": "ĐIỀU 3: BỔ NHIỆM NHÂN SỰ CHUYÊN MÔN",
+        "text_preview": "ĐIỀU 3: BỔ NHIỆM NHÂN SỰ CHUYÊN MÔN\n\n3.1 Giám đốc, Phó giám đốc bệnh viện do Bên B bổ nhiệm\n\n3.2 Tiêu chuẩn bác sĩ trưởng khoa:\n- Có chứng chỉ hành nghề\n- Ít nhất 10 năm kinh nghiệm\n- Chuyên khoa cấp "
+      },
+      {
+        "number": 4,
+        "title": "ĐIỀU 4: TRÁCH NHIỆM VÀ CHẾ TÀI",
+        "text_preview": "ĐIỀU 4: TRÁCH NHIỆM VÀ CHẾ TÀI\n\n4.1 Bên B chịu trách nhiệm về chất lượng dịch vụ y tế và cấp nước\n\n4.2 Xử lý vi phạm:\n- Vi phạm chất lượng nước: Phạt từ 30.000.000 đến 100.000.000 VNĐ\n- Vi phạm chất l"
+      }
+    ]
+  },
+  "findings": [
+    {
+      "clause_number": 1,
+      "clause_title": "ĐIỀU 1: CUNG CẤP DỊCH VỤ Y TẾ",
+      "clause_text": "ĐIỀU 1: CUNG CẤP DỊCH VỤ Y TẾ\n\n1.1 Bên B cung cấp dịch vụ khám chữa bệnh cho nhân dân trên địa bàn tỉnh\n\n1.2 Chỉ tiêu kế hoạch động viên lực lượng ngành Y tế:\n- Số giường bệnh: 200 giường\n- Số bác sĩ: 30 người\n- Số y tá, điều dưỡng: 80 người\n\n1.3 Chất lượng dịch vụ y tế phải đạt tiêu chuẩn của Bộ Y tế\n\n1.4 Giá dịch vụ khám chữa bệnh theo quy định của UBND tỉnh\n\n1.5 Báo cáo định kỳ hàng tháng cho Sở Y tế về:\n- Số lượt khám bệnh\n- Số ca điều trị nội trú\n- Tình hình dịch bệnh",
+      "retrieved_docs": [
+        {
+          "doc_id": "4274",
+          "law_id": "105/2000/QĐ-UB",
+          "title": "Về việc giao chỉ tiêu kế hoạch động viên và huy động lực lượng ngành Y tế bảo đảm nhu cầu khi có chiến tranh và các tình huống cần thiết khác đối với ngành Y tế tỉnh Lâm Đồng",
+          "score": 94.19525137543,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂM ĐỒNG\nVề việc giao chỉ tiêu kế hoạch động viên và huy động lực lượng ngành Y tế\nbảo đảm nhu cầu khi có chiến tranh và các tình huống cần thiết khác đối với ngành"
+        },
+        {
+          "doc_id": "4280",
+          "law_id": "157/1999/QĐ-UB",
+          "title": "Về viẹc quản lý và quy định thống nhất phí chợ trên địa bàn tỉnh Lâm Đồng",
+          "score": 39.33368044914177,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂMĐỒNG\nVề việc Quản lý và quy địnhthống nhất phí chợ\ntrên địa bàn tỉnh Lâm Đồng\nỦY BAN NHÂN DÂN TỈNH LÂM ĐỒNG\nCăn cứ Luật Tổ chứcHĐND và Ủy ban nhân dân (sửa đổi) "
+        },
+        {
+          "doc_id": "91",
+          "law_id": "77/SL",
+          "title": "Sắc lệnh quy định chế độ công nhân giúp việc Chính phủ trong thời kỳ kháng chiến (thiếu trang 2)",
+          "score": 30.52186643274825,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH NƯỚC\nSỐ 77/SL NGÀY 22 THÁNG 5 NĂM 1950\nCHỦ TỊCH NƯỚC\nVIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh số 29-SL ngày 12 tháng 3 năm 1947 quy định chế độ lao động trong toàn cõi Việt Nam;\n"
+        },
+        {
+          "doc_id": "4278",
+          "law_id": "114/1999/QĐ-UB",
+          "title": "Về việc phê duyệt dự án quy hoạch thủy lợi và nước sinh hoạt nông thôn các Huyện Di Linh, Bảo Lâm và Thị xã Bảo Lộc, tỉnh Lâm Đồng",
+          "score": 28.27986776108823,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂM ĐỒNG\nV/v Phê duyệt dự án quy hoạch thủy lợi và nước sinh hoạt nông thôn\ncác Huyện Di Linh, Bảo Lâm và Thị xã Bảo Lộc, tỉnh Lâm Đồng\nỦY BAN NHÂN DÂN TỈNH LÂM ĐỒN"
+        },
+        {
+          "doc_id": "4282",
+          "law_id": "111/1999/QĐ-UB",
+          "title": "Về việc ban hành quy định về chức năng, nhiệm vụ, quyền hạn và tổ chức bộ máy của Ban Dân tộc và Miền núi tỉnh Lâm Đồng",
+          "score": 26.302555243452726,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂM ĐỒNG\nV/v Ban hành quy định về chức năng, nhiệm vụ, quyền hạn và\ntổ chức bộ máy của Ban Dân tộc và Miền núi tỉnh Lâm Đồng\nỦY BAN NHÂN DÂN TỈNH LÂM ĐỒNG\nCăn cứ Lu"
+        },
+        {
+          "doc_id": "4295",
+          "law_id": "146/1999/QĐ-UB",
+          "title": "Về việc quy định tạm thời mức bồi dưỡng tập luyện cho vận động viên, giáo viên, huấn luyện viên năng khiếu thể thao",
+          "score": 20.915584830541487,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂM ĐỒNG\nVề việc quy định tạm thời mức bồi dưỡng tập luyện cho\nvận động viên, giáo viên, huấn luyện viên năng khiếuthể thao\nỦY BAN NHÂN DÂN TỈNH LÂM ĐỒNG\nCăn cứ Luậ"
+        },
+        {
+          "doc_id": "4203",
+          "law_id": "40/1999/QĐ-UB",
+          "title": "Uỷ quyền cho Sở Thương mại và Du lịch xét duyệt kế hoạch và quản lý hoạt động xuất khẩu, nhập khẩu cho các Doanh nghiệpcó vốn đầu tư nước ngoài, các bên hợp doanh trên cơ sở hợp đồng hợp tác kinh doanh trên địa bàn tỉnh",
+          "score": 26.48581814596326,
+          "content_preview": "QUYẾT ĐỊNH CỦ UỶ BAN NHÂN DÂN TỈNH BẮC NINH\nUỷ quyền cho Sở Thương mại và Du lịch xét duyệt kế hoạch và quản lý hoạt động xuất khẩu, nhập khẩu cho các Doanh nghiệpcó vốn đầu tư nước ngoài, các bên hợp"
+        },
+        {
+          "doc_id": "96",
+          "law_id": "76/SL",
+          "title": "Sắc lệnh ban hành Quy chế Công chức",
+          "score": 29.6731540079034,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH NƯỚC\nNƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 76/SL NGÀY 20 THÁNG 5 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu tình thế hiện thời;\nTheo đề nghị của Bộ trưởng Bộ Nội vụ;\nTheo"
+        },
+        {
+          "doc_id": "4204",
+          "law_id": "99/QĐ-UB",
+          "title": "Ban hành quy định phân cấp quản lý công tác Tổ chức và Cán bộ",
+          "score": 36.20226578096683,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH BẮC NINH\nBan hành quy định\nphân cấp quản lý công tác Tổ chức và Cán bộ\nỦy ban nhân dân TỈNH BẮC NINH\nCăn cứ Luật Tổ chức HĐND và Ủy ban nhân dân được Quốc hội nước "
+        },
+        {
+          "doc_id": "4258",
+          "law_id": "166/1999/QĐ-UB",
+          "title": "Về việc quy định giá dịch vụ giữ xe và phí bến bãi đậu xe trên địa bàn tỉnh Lâm Đồng",
+          "score": 73.21397380022533,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂMĐỒNG\nVề việc quy định giá dịch vụ giữxe và phí bến bãi đậu xe\ntrên địa bàn tỉnh Lâm Đồng\nUỶ BAN NHÂN DÂN TỈNH LÂMĐỒNG\nCăn cứ Luật Tổ chức HĐND và Ủy ban nhân dân"
+        }
+      ],
+      "status": "retrieved",
+      "retrieval_time": 0.15593845798866823
+    },
+    {
+      "clause_number": 2,
+      "clause_title": "ĐIỀU 2: QUY HOẠCH THỦY LỢI VÀ NƯỚC SINH HOẠT",
+      "clause_text": "ĐIỀU 2: QUY HOẠCH THỦY LỢI VÀ NƯỚC SINH HOẠT\n\n2.1 Bên B đầu tư hệ thống cấp nước sinh hoạt cho các huyện theo quy hoạch được phê duyệt\n\n2.2 Chỉ tiêu kỹ thuật:\n- Công suất: 10.000 m³/ngày đêm\n- Diện tích phục vụ: 5 huyện\n- Số hộ dân được cấp nước: 20.000 hộ\n\n2.3 Chất lượng nước phải đạt QCVN 01:2009/BYT của Bộ Y tế\n\n2.4 Giá nước sinh hoạt theo khung giá của UBND tỉnh:\n- Hộ nghèo: 5.000 VNĐ/m³\n- Hộ cận nghèo: 7.000 VNĐ/m³\n- Hộ khác: 10.000 VNĐ/m³\n\n2.5 Bảo trì, bảo dưỡng hệ thống định kỳ 06 tháng/lần",
+      "retrieved_docs": [
+        {
+          "doc_id": "4278",
+          "law_id": "114/1999/QĐ-UB",
+          "title": "Về việc phê duyệt dự án quy hoạch thủy lợi và nước sinh hoạt nông thôn các Huyện Di Linh, Bảo Lâm và Thị xã Bảo Lộc, tỉnh Lâm Đồng",
+          "score": 94.37111094531073,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂM ĐỒNG\nV/v Phê duyệt dự án quy hoạch thủy lợi và nước sinh hoạt nông thôn\ncác Huyện Di Linh, Bảo Lâm và Thị xã Bảo Lộc, tỉnh Lâm Đồng\nỦY BAN NHÂN DÂN TỈNH LÂM ĐỒN"
+        },
+        {
+          "doc_id": "4274",
+          "law_id": "105/2000/QĐ-UB",
+          "title": "Về việc giao chỉ tiêu kế hoạch động viên và huy động lực lượng ngành Y tế bảo đảm nhu cầu khi có chiến tranh và các tình huống cần thiết khác đối với ngành Y tế tỉnh Lâm Đồng",
+          "score": 55.13703755022863,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂM ĐỒNG\nVề việc giao chỉ tiêu kế hoạch động viên và huy động lực lượng ngành Y tế\nbảo đảm nhu cầu khi có chiến tranh và các tình huống cần thiết khác đối với ngành"
+        },
+        {
+          "doc_id": "4242",
+          "law_id": "181/1999/QĐ-UB",
+          "title": "V/v Ban hành qui định về ký quĩ phục hồi môi trườngtrong khai thác tận thu khoáng sản trên địa bàn tỉnh Lâm Đồng",
+          "score": 35.144771630791546,
+          "content_preview": "QUYẾT ĐỊNH\nVề việc ban hành qui định vềký quĩ phục hồi môi trường\ntrong khai thác tận thu khoáng sản trên địa bàn tỉnhLâm Đồng\nỦY BAN NHÂN DÂN TỈNH LÂM ĐỒNG\nCăn cứ Luật Tổ chức HĐND và Ủy ban nhân dân"
+        },
+        {
+          "doc_id": "4260",
+          "law_id": "87/1999/QĐ-UB",
+          "title": "Về việc chuyển giao nhiệm vụ quản lý Nhà nước về đất lâm nghiệp từ Sở Nông nghiệp và Phát triển Nông thôn và Chi cục kiểm lâm tỉnh sang Sở Địa chính để quản lý",
+          "score": 29.078644560323163,
+          "content_preview": "QUYẾT ĐỊNH\nVề việc chuyển giao nhiệm vụ quản lý Nhà nước về đất lâm nghiệp\ntừ Sở Nông nghiệp và Phát triển Nông thôn và Chi cục kiểm lâm tỉnh sang Sở Địa chính để quản lý\nỦY BAN NHÂN DÂN TỈNH LÂM ĐỒNG"
+        },
+        {
+          "doc_id": "4258",
+          "law_id": "166/1999/QĐ-UB",
+          "title": "Về việc quy định giá dịch vụ giữ xe và phí bến bãi đậu xe trên địa bàn tỉnh Lâm Đồng",
+          "score": 25.02064628939152,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂMĐỒNG\nVề việc quy định giá dịch vụ giữxe và phí bến bãi đậu xe\ntrên địa bàn tỉnh Lâm Đồng\nUỶ BAN NHÂN DÂN TỈNH LÂMĐỒNG\nCăn cứ Luật Tổ chức HĐND và Ủy ban nhân dân"
+        },
+        {
+          "doc_id": "63",
+          "law_id": "120/SL",
+          "title": "Sắc lệnh đổi tên và định thành phần các Hội đồng và ban tạm cấp ruộng đất tỉnh, xã và đồn điền",
+          "score": 24.22150313346639,
+          "content_preview": "SẮC LỆNH\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 120/SL NGÀY 11 THÁNG 7 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh số 75-SL ngày 1 tháng 7 năm 1949 quy định việc sử dụng ruộng "
+        },
+        {
+          "doc_id": "4204",
+          "law_id": "99/QĐ-UB",
+          "title": "Ban hành quy định phân cấp quản lý công tác Tổ chức và Cán bộ",
+          "score": 25.758024688723587,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH BẮC NINH\nBan hành quy định\nphân cấp quản lý công tác Tổ chức và Cán bộ\nỦy ban nhân dân TỈNH BẮC NINH\nCăn cứ Luật Tổ chức HĐND và Ủy ban nhân dân được Quốc hội nước "
+        },
+        {
+          "doc_id": "4203",
+          "law_id": "40/1999/QĐ-UB",
+          "title": "Uỷ quyền cho Sở Thương mại và Du lịch xét duyệt kế hoạch và quản lý hoạt động xuất khẩu, nhập khẩu cho các Doanh nghiệpcó vốn đầu tư nước ngoài, các bên hợp doanh trên cơ sở hợp đồng hợp tác kinh doanh trên địa bàn tỉnh",
+          "score": 29.552799899381707,
+          "content_preview": "QUYẾT ĐỊNH CỦ UỶ BAN NHÂN DÂN TỈNH BẮC NINH\nUỷ quyền cho Sở Thương mại và Du lịch xét duyệt kế hoạch và quản lý hoạt động xuất khẩu, nhập khẩu cho các Doanh nghiệpcó vốn đầu tư nước ngoài, các bên hợp"
+        },
+        {
+          "doc_id": "4280",
+          "law_id": "157/1999/QĐ-UB",
+          "title": "Về viẹc quản lý và quy định thống nhất phí chợ trên địa bàn tỉnh Lâm Đồng",
+          "score": 35.34321503477662,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂMĐỒNG\nVề việc Quản lý và quy địnhthống nhất phí chợ\ntrên địa bàn tỉnh Lâm Đồng\nỦY BAN NHÂN DÂN TỈNH LÂM ĐỒNG\nCăn cứ Luật Tổ chứcHĐND và Ủy ban nhân dân (sửa đổi) "
+        },
+        {
+          "doc_id": "4255",
+          "law_id": "171/1999/QĐ-UB",
+          "title": "Về việc thành lập Ban quản lý dự án Mở rộng hệ thống cấp nước Thị xã Bảo lộc",
+          "score": 77.82703412843922,
+          "content_preview": "QUYẾT ĐỊNH\nVề việc thành lập Ban quản lýdự án Mở rộng hệ thống\ncấp nước Thị xã Bảo lộc\nỦY BAN NHÂN DÂN TỈNH LÂM ĐỒNG\nCăn cứ Luật Tổ chứcHĐND và Ủy ban nhân dân (sửa đổi) ngày 21/6/1994;\nCăn cứ Nghị đị"
+        }
+      ],
+      "status": "retrieved",
+      "retrieval_time": 0.06895216699922457
+    },
+    {
+      "clause_number": 3,
+      "clause_title": "ĐIỀU 3: BỔ NHIỆM NHÂN SỰ CHUYÊN MÔN",
+      "clause_text": "ĐIỀU 3: BỔ NHIỆM NHÂN SỰ CHUYÊN MÔN\n\n3.1 Giám đốc, Phó giám đốc bệnh viện do Bên B bổ nhiệm\n\n3.2 Tiêu chuẩn bác sĩ trưởng khoa:\n- Có chứng chỉ hành nghề\n- Ít nhất 10 năm kinh nghiệm\n- Chuyên khoa cấp I trở lên\n\n3.3 Chế độ phụ cấp cho nhân viên y tế theo quy định hiện hành\n\n3.4 Đào tạo, bồi dưỡng nghiệp vụ hàng năm cho toàn bộ nhân viên\n\n3.5 Báo cáo danh sách nhân sự cho Sở Y tế trong vòng 30 ngày",
+      "retrieved_docs": [
+        {
+          "doc_id": "4274",
+          "law_id": "105/2000/QĐ-UB",
+          "title": "Về việc giao chỉ tiêu kế hoạch động viên và huy động lực lượng ngành Y tế bảo đảm nhu cầu khi có chiến tranh và các tình huống cần thiết khác đối với ngành Y tế tỉnh Lâm Đồng",
+          "score": 89.96126413536693,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂM ĐỒNG\nVề việc giao chỉ tiêu kế hoạch động viên và huy động lực lượng ngành Y tế\nbảo đảm nhu cầu khi có chiến tranh và các tình huống cần thiết khác đối với ngành"
+        },
+        {
+          "doc_id": "4295",
+          "law_id": "146/1999/QĐ-UB",
+          "title": "Về việc quy định tạm thời mức bồi dưỡng tập luyện cho vận động viên, giáo viên, huấn luyện viên năng khiếu thể thao",
+          "score": 57.52455574212939,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂM ĐỒNG\nVề việc quy định tạm thời mức bồi dưỡng tập luyện cho\nvận động viên, giáo viên, huấn luyện viên năng khiếuthể thao\nỦY BAN NHÂN DÂN TỈNH LÂM ĐỒNG\nCăn cứ Luậ"
+        },
+        {
+          "doc_id": "59",
+          "law_id": "115/SL",
+          "title": "Sắc lệnh đổi tên Viện Kháng nhiệm thứ ngư là viện \"Thú y\"",
+          "score": 40.641290023372704,
+          "content_preview": "SẮC LỆNH\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 115/SL NGÀY 11 THÁNG 7 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu quyết nghị của Hội đồng Chính phủ ngày 14 tháng 11 năm 1945 thành lập "
+        },
+        {
+          "doc_id": "58",
+          "law_id": "116/SL",
+          "title": "Sắc lệnh chấp nhận đơn xin từ chức của bác sĩ Phạm Văn Huyên Tổng giám đốc Nha chăn nuôi",
+          "score": 38.909349297898075,
+          "content_preview": "SẮC LỆNH\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 116/SL NGÀY 11 THÁNG 7 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu quyết định của Hội Đồng Chính phủ ngày 14 tháng 11 năm 1945 thành lập "
+        },
+        {
+          "doc_id": "4204",
+          "law_id": "99/QĐ-UB",
+          "title": "Ban hành quy định phân cấp quản lý công tác Tổ chức và Cán bộ",
+          "score": 32.71587202511816,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH BẮC NINH\nBan hành quy định\nphân cấp quản lý công tác Tổ chức và Cán bộ\nỦy ban nhân dân TỈNH BẮC NINH\nCăn cứ Luật Tổ chức HĐND và Ủy ban nhân dân được Quốc hội nước "
+        },
+        {
+          "doc_id": "4260",
+          "law_id": "87/1999/QĐ-UB",
+          "title": "Về việc chuyển giao nhiệm vụ quản lý Nhà nước về đất lâm nghiệp từ Sở Nông nghiệp và Phát triển Nông thôn và Chi cục kiểm lâm tỉnh sang Sở Địa chính để quản lý",
+          "score": 29.151635974931285,
+          "content_preview": "QUYẾT ĐỊNH\nVề việc chuyển giao nhiệm vụ quản lý Nhà nước về đất lâm nghiệp\ntừ Sở Nông nghiệp và Phát triển Nông thôn và Chi cục kiểm lâm tỉnh sang Sở Địa chính để quản lý\nỦY BAN NHÂN DÂN TỈNH LÂM ĐỒNG"
+        },
+        {
+          "doc_id": "56",
+          "law_id": "118",
+          "title": "Sắc lệnh bổ nhiệm ông Nghiên Xuân Tiếp, giữ chức Phó Giám đốc Nha thuỷ lâm",
+          "score": 38.85978478044984,
+          "content_preview": "SẮC LỆNH\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 118/SL NGÀY 11 THÁNG 7 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu quyết nghị ngày 14 tháng 11 năm 1945 của Hội đồng Chính phủ thành lập "
+        },
+        {
+          "doc_id": "91",
+          "law_id": "77/SL",
+          "title": "Sắc lệnh quy định chế độ công nhân giúp việc Chính phủ trong thời kỳ kháng chiến (thiếu trang 2)",
+          "score": 40.19471639596021,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH NƯỚC\nSỐ 77/SL NGÀY 22 THÁNG 5 NĂM 1950\nCHỦ TỊCH NƯỚC\nVIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh số 29-SL ngày 12 tháng 3 năm 1947 quy định chế độ lao động trong toàn cõi Việt Nam;\n"
+        },
+        {
+          "doc_id": "96",
+          "law_id": "76/SL",
+          "title": "Sắc lệnh ban hành Quy chế Công chức",
+          "score": 42.2405615858605,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH NƯỚC\nNƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 76/SL NGÀY 20 THÁNG 5 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu tình thế hiện thời;\nTheo đề nghị của Bộ trưởng Bộ Nội vụ;\nTheo"
+        },
+        {
+          "doc_id": "60",
+          "law_id": "114/SL",
+          "title": "Sắc lệnh cử ông Nguyễn Ngọc Cừ, Giáo sư trung học giữ chức Phó giám đốc Trung học vụ và ông Hoàng Quy, giáo viên tiểu học giữ chức Phó giám đốc Tiểu học vụ",
+          "score": 73.27006464952791,
+          "content_preview": "SẮC LỆNH\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 114/SL NGÀY 11 THÁNG 7 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh số 7-SL ngày 20 tháng 1 năm 1950 tổ chức Văn phòng các Bộ và "
+        }
+      ],
+      "status": "retrieved",
+      "retrieval_time": 0.05845141602912918
+    },
+    {
+      "clause_number": 4,
+      "clause_title": "ĐIỀU 4: TRÁCH NHIỆM VÀ CHẾ TÀI",
+      "clause_text": "ĐIỀU 4: TRÁCH NHIỆM VÀ CHẾ TÀI\n\n4.1 Bên B chịu trách nhiệm về chất lượng dịch vụ y tế và cấp nước\n\n4.2 Xử lý vi phạm:\n- Vi phạm chất lượng nước: Phạt từ 30.000.000 đến 100.000.000 VNĐ\n- Vi phạm chất lượng khám chữa bệnh: Phạt từ 20.000.000 đến 80.000.000 VNĐ\n- Gây hậu quả nghiêm trọng: Đình chỉ hoạt động\n\n4.3 Bồi thường thiệt hại cho người dân nếu để xảy ra sự cố\n\n4.4 Bên A có quyền thanh tra, kiểm tra đột xuất\n\n4.5 Thu hồi giấy phép hoạt động nếu vi phạm nghiêm trọng\n\nĐIỀU KHOẢN CHUNG\n\n5.1 Hợp đồng có hiệu lực từ ngày 01/04/2025 đến ngày 31/03/2030 (05 năm)\n\n5.2 Đánh giá chất lượng dịch vụ hàng năm\n\n5.3 Hợp đồng được lập thành 06 bản, mỗi bên giữ 03 bản\n\n5.4 Tranh chấp được giải quyết qua thương lượng, nếu không sẽ kiện ra Tòa án nhân dân tỉnh\n\nĐẠI DIỆN BÊN A                          ĐẠI DIỆN BÊN B\n(Ký tên, đóng dấu)                      (Ký tên, đóng dấu)\n\n\nĐỗ Văn Phúc                              Vũ Thị Lan\nGiám đốc Sở                              Tổng Giám đốc",
+      "retrieved_docs": [
+        {
+          "doc_id": "4274",
+          "law_id": "105/2000/QĐ-UB",
+          "title": "Về việc giao chỉ tiêu kế hoạch động viên và huy động lực lượng ngành Y tế bảo đảm nhu cầu khi có chiến tranh và các tình huống cần thiết khác đối với ngành Y tế tỉnh Lâm Đồng",
+          "score": 88.38773469391371,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂM ĐỒNG\nVề việc giao chỉ tiêu kế hoạch động viên và huy động lực lượng ngành Y tế\nbảo đảm nhu cầu khi có chiến tranh và các tình huống cần thiết khác đối với ngành"
+        },
+        {
+          "doc_id": "4257",
+          "law_id": "28/1999/CT-UB",
+          "title": "Về việc niêm yết giá, nhận thanh toán hàng hóa và dịch vụ bằng đồng Việt Nam",
+          "score": 62.86733383805305,
+          "content_preview": "CHỈ THỊ CỦA Ủy ban nhân dân TỈNH LÂM ĐỒNG\nVề việc niêm yết giá, nhận thanh toán hàng hóa và dịch vụ bằng đồng Việt Nam\nCăn cứ Nghị định số 63/1998/Nghị định Chính phủ của Chính phủ ban hành ngày 17/08"
+        },
+        {
+          "doc_id": "4271",
+          "law_id": "75/1999/QĐ-UB",
+          "title": "Về việc cho phép thành lập Quỹ bảo trợ nạn nhân chất độc da cam tỉnh Lâm Đồng và ban hành Quy chế tổ chức hoạt động của quỹ",
+          "score": 56.640596620324935,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂM ĐỒNG\nVề việc cho phép thành lập Quỹ bảo trợ nạn nhân chất độc da cam tỉnh Lâm Đồng\nvà ban hành Quy chế tổ chức hoạt động của quỹ\nỦY BAN NHÂN DÂN TỈNH LÂM ĐỒNG\nC"
+        },
+        {
+          "doc_id": "4258",
+          "law_id": "166/1999/QĐ-UB",
+          "title": "Về việc quy định giá dịch vụ giữ xe và phí bến bãi đậu xe trên địa bàn tỉnh Lâm Đồng",
+          "score": 47.858030776225114,
+          "content_preview": "QUYẾT ĐỊNH CỦA Ủy ban nhân dân TỈNH LÂMĐỒNG\nVề việc quy định giá dịch vụ giữxe và phí bến bãi đậu xe\ntrên địa bàn tỉnh Lâm Đồng\nUỶ BAN NHÂN DÂN TỈNH LÂMĐỒNG\nCăn cứ Luật Tổ chức HĐND và Ủy ban nhân dân"
+        },
+        {
+          "doc_id": "71",
+          "law_id": "106/SL",
+          "title": "Sắc lệnh định việc trừng trị những tội làm chậm trễ hay ngăn trở việc thi hành nghĩa vụ quân sự và lệnh tòng quân",
+          "score": 47.12636821395823,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH PHỦ NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 106/SL NGÀY 15 THÁNG 6 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nCHIỂU SẮC LỆNH SỐ 71-SL NGÀY 22 THÁNG 5 NĂM 1946 ẤN ĐỊNH QUY TẮC QUÂ"
+        },
+        {
+          "doc_id": "96",
+          "law_id": "76/SL",
+          "title": "Sắc lệnh ban hành Quy chế Công chức",
+          "score": 44.77385869273093,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH NƯỚC\nNƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 76/SL NGÀY 20 THÁNG 5 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu tình thế hiện thời;\nTheo đề nghị của Bộ trưởng Bộ Nội vụ;\nTheo"
+        },
+        {
+          "doc_id": "58",
+          "law_id": "116/SL",
+          "title": "Sắc lệnh chấp nhận đơn xin từ chức của bác sĩ Phạm Văn Huyên Tổng giám đốc Nha chăn nuôi",
+          "score": 47.7193361192631,
+          "content_preview": "SẮC LỆNH\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 116/SL NGÀY 11 THÁNG 7 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu quyết định của Hội Đồng Chính phủ ngày 14 tháng 11 năm 1945 thành lập "
+        },
+        {
+          "doc_id": "67",
+          "law_id": "111",
+          "title": "Sắc lệnh chỉ định ông Nguyễn Duy Trinh làm Chủ tịch, ông Trần Đình Tri làm phó Chủ tịch UBKCHC miền Nam trung bộ",
+          "score": 48.15585739628593,
+          "content_preview": "SẮC LỆNH\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 111/SL NGÀY 20 THÁNG 6 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh số 254-SL ngày 19 tháng 11 năm 1948 tổ chức chính quyền nhân "
+        },
+        {
+          "doc_id": "91",
+          "law_id": "77/SL",
+          "title": "Sắc lệnh quy định chế độ công nhân giúp việc Chính phủ trong thời kỳ kháng chiến (thiếu trang 2)",
+          "score": 57.984580505764,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH NƯỚC\nSỐ 77/SL NGÀY 22 THÁNG 5 NĂM 1950\nCHỦ TỊCH NƯỚC\nVIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh số 29-SL ngày 12 tháng 3 năm 1947 quy định chế độ lao động trong toàn cõi Việt Nam;\n"
+        },
+        {
+          "doc_id": "92",
+          "law_id": "85/SL",
+          "title": "Sắc lệnh cải cách bộ máy Tư pháp và Luật Tố tụng",
+          "score": 66.65814238930463,
+          "content_preview": "SẮC LỆNH\nCỦA CHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nSỐ 85/SL NGÀY 22 THÁNG 5 NĂM 1950\nCHỦ TỊCH NƯỚC VIỆT NAM DÂN CHỦ CỘNG HOÀ\nChiểu sắc lệnh số 13-SL ngày 24 tháng 1 năm 1946 và các sắc lệnh tiếp sau"
+        }
+      ],
+      "status": "retrieved",
+      "retrieval_time": 0.07433362497249618
+    }
+  ],
+  "performance_metrics": {
+    "warmup_time": "0.09s",
+    "total_pipeline_time": "0.37s",
+    "clause_parsing_time": "0.00s",
+    "average_retrieval_time": "0.09s",
+    "retrieval_times": [
+      "0.16s",
+      "0.07s",
+      "0.06s",
+      "0.07s"
+    ],
+    "total_retrieval_time": "0.36s"
+  },
+  "raw_clauses": [
+    {
+      "index": 0,
+      "text": "ĐIỀU 1: CUNG CẤP DỊCH VỤ Y TẾ\n\n1.1 Bên B cung cấp dịch vụ khám chữa bệnh cho nhân dân trên địa bàn tỉnh\n\n1.2 Chỉ tiêu kế hoạch động viên lực lượng ngành Y tế:\n- Số giường bệnh: 200 giường\n- Số bác sĩ: 30 người\n- Số y tá, điều dưỡng: 80 người\n\n1.3 Chất lượng dịch vụ y tế phải đạt tiêu chuẩn của Bộ Y tế\n\n1.4 Giá dịch vụ khám chữa bệnh theo quy định của UBND tỉnh\n\n1.5 Báo cáo định kỳ hàng tháng cho Sở Y tế về:\n- Số lượt khám bệnh\n- Số ca điều trị nội trú\n- Tình hình dịch bệnh",
+      "title": "ĐIỀU 1: CUNG CẤP DỊCH VỤ Y TẾ"
+    },
+    {
+      "index": 1,
+      "text": "ĐIỀU 2: QUY HOẠCH THỦY LỢI VÀ NƯỚC SINH HOẠT\n\n2.1 Bên B đầu tư hệ thống cấp nước sinh hoạt cho các huyện theo quy hoạch được phê duyệt\n\n2.2 Chỉ tiêu kỹ thuật:\n- Công suất: 10.000 m³/ngày đêm\n- Diện tích phục vụ: 5 huyện\n- Số hộ dân được cấp nước: 20.000 hộ\n\n2.3 Chất lượng nước phải đạt QCVN 01:2009/BYT của Bộ Y tế\n\n2.4 Giá nước sinh hoạt theo khung giá của UBND tỉnh:\n- Hộ nghèo: 5.000 VNĐ/m³\n- Hộ cận nghèo: 7.000 VNĐ/m³\n- Hộ khác: 10.000 VNĐ/m³\n\n2.5 Bảo trì, bảo dưỡng hệ thống định kỳ 06 tháng/lần",
+      "title": "ĐIỀU 2: QUY HOẠCH THỦY LỢI VÀ NƯỚC SINH HOẠT"
+    },
+    {
+      "index": 2,
+      "text": "ĐIỀU 3: BỔ NHIỆM NHÂN SỰ CHUYÊN MÔN\n\n3.1 Giám đốc, Phó giám đốc bệnh viện do Bên B bổ nhiệm\n\n3.2 Tiêu chuẩn bác sĩ trưởng khoa:\n- Có chứng chỉ hành nghề\n- Ít nhất 10 năm kinh nghiệm\n- Chuyên khoa cấp I trở lên\n\n3.3 Chế độ phụ cấp cho nhân viên y tế theo quy định hiện hành\n\n3.4 Đào tạo, bồi dưỡng nghiệp vụ hàng năm cho toàn bộ nhân viên\n\n3.5 Báo cáo danh sách nhân sự cho Sở Y tế trong vòng 30 ngày",
+      "title": "ĐIỀU 3: BỔ NHIỆM NHÂN SỰ CHUYÊN MÔN"
+    },
+    {
+      "index": 3,
+      "text": "ĐIỀU 4: TRÁCH NHIỆM VÀ CHẾ TÀI\n\n4.1 Bên B chịu trách nhiệm về chất lượng dịch vụ y tế và cấp nước\n\n4.2 Xử lý vi phạm:\n- Vi phạm chất lượng nước: Phạt từ 30.000.000 đến 100.000.000 VNĐ\n- Vi phạm chất lượng khám chữa bệnh: Phạt từ 20.000.000 đến 80.000.000 VNĐ\n- Gây hậu quả nghiêm trọng: Đình chỉ hoạt động\n\n4.3 Bồi thường thiệt hại cho người dân nếu để xảy ra sự cố\n\n4.4 Bên A có quyền thanh tra, kiểm tra đột xuất\n\n4.5 Thu hồi giấy phép hoạt động nếu vi phạm nghiêm trọng\n\nĐIỀU KHOẢN CHUNG\n\n5.1 Hợp đồng có hiệu lực từ ngày 01/04/2025 đến ngày 31/03/2030 (05 năm)\n\n5.2 Đánh giá chất lượng dịch vụ hàng năm\n\n5.3 Hợp đồng được lập thành 06 bản, mỗi bên giữ 03 bản\n\n5.4 Tranh chấp được giải quyết qua thương lượng, nếu không sẽ kiện ra Tòa án nhân dân tỉnh\n\nĐẠI DIỆN BÊN A                          ĐẠI DIỆN BÊN B\n(Ký tên, đóng dấu)                      (Ký tên, đóng dấu)\n\n\nĐỗ Văn Phúc                              Vũ Thị Lan\nGiám đốc Sở                              Tổng Giám đốc",
+      "title": "ĐIỀU 4: TRÁCH NHIỆM VÀ CHẾ TÀI"
+    }
+  ]
+}
