@@ -49,8 +49,66 @@ import aiohttp
 
 from packages.common.config import get_settings
 from packages.ingestion.pipeline import IngestionPipeline
+from scripts.check_existing_docs import get_existing_document_ids
 
 logger = logging.getLogger(__name__)
+
+# ---------------------------------------------------------------------------
+# Vietnamese document-type normalisation
+# The dataset field `loai_van_ban` contains full Vietnamese names (e.g. "Luật",
+# "Nghị định"). These must be mapped to the DocumentType enum values used
+# throughout the pipeline. ALL ingestion paths must apply this mapping so
+# that doc_type is consistent across PostgreSQL, Qdrant, OpenSearch and Neo4j.
+# ---------------------------------------------------------------------------
+_LOAI_VAN_BAN_TO_DOC_TYPE: dict[str, str] = {
+    # Core legal document types
+    "luật": "luat",
+    "bộ luật": "luat",
+    "hiến pháp": "luat",            # Constitution → Law
+    "nghị định": "nghi_dinh",
+    "nghị định thư": "nghi_dinh",    # Protocol decree
+    "thông tư": "thong_tu",
+    "thông tư liên tịch": "thong_tu",
+    "thông tư liên bộ": "thong_tu",  # Inter-ministerial circular
+    "quyết định": "quyet_dinh",
+    "nghị quyết": "nghi_quyet",
+    "nghị Quyết": "nghi_quyet",     # Handle inconsistent capitalisation
+    "nghị quyết liên tịch": "nghi_quyet",
+    # Historical and specialised types → map to closest modern equivalent
+    "sắc lệnh": "quyet_dinh",        # Historical royal decree
+    "sắc luật": "luat",             # Historical law decree
+    "lệnh": "quyet_dinh",            # Order → Decision
+    "pháp lệnh": "quyet_dinh",       # Ordinance
+    "chỉ thị": "quyet_dinh",         # Directive
+    # Administrative / reference types → OTHER (not core legal docs)
+    "công văn": "other",             # Official letter
+    "thông báo": "other",             # Notification
+    "hiệp định": "other",             # Agreement / treaty
+    "công ước": "other",             # Convention
+    "văn bản hợp nhất": "other",    # Consolidated document
+    "văn bản liên quan": "other",    # Related document (metadata only)
+    "chương trình": "other",          # Programme
+    "văn bản khác": "other",         # Other
+    "bản ghi nhớ": "other",          # Memorandum
+    "thỏa thuận": "other",           # Agreement
+}
+
+
+def map_loai_van_ban(loai_van_ban: str | None) -> str:
+    """Normalise Vietnamese document-type name to DocumentType enum value.
+
+    Args:
+        loai_van_ban: Raw Vietnamese document type from dataset.
+
+    Returns:
+        DocumentType enum string value, e.g. 'luat', 'nghi_dinh'. Falls back
+        to 'other' for unrecognised types.
+    """
+    if not loai_van_ban:
+        return "other"
+    key = loai_van_ban.lower().strip()
+    return _LOAI_VAN_BAN_TO_DOC_TYPE.get(key, "other")
+
 
 # Cache directory for downloaded parquet files
 CACHE_DIR = Path("data/cache/datasets")
@@ -196,18 +254,44 @@ def clean_html_to_text(html_content: str) -> str:
         return ""
 
 
-def clean_html_batch(html_contents: list[str], max_workers: int = 4) -> list[str]:
-    """Clean multiple HTML contents in parallel.
+def clean_html_batch(html_contents: list[str], max_workers: int = 6, show_progress: bool = True) -> list[str]:
+    """Clean multiple HTML contents in parallel with progress bar.
 
     Args:
         html_contents: List of HTML content strings
         max_workers: Number of parallel workers
+        show_progress: Whether to show progress bar
 
     Returns:
         List of cleaned text strings
     """
-    with ThreadPoolExecutor(max_workers=max_workers) as executor:
-        results = list(executor.map(clean_html_to_text, html_contents))
+    results = [None] * len(html_contents)
+    completed = 0
+    
+    if show_progress and HAS_RICH:
+        from rich.progress import Progress, SpinnerColumn, BarColumn, TaskProgressColumn, TimeElapsedColumn
+        
+        with Progress(
+            SpinnerColumn(),
+            TextColumn("[bold cyan]{task.description}[/bold cyan]"),
+            BarColumn(),
+            TaskProgressColumn(),
+            TimeElapsedColumn(),
+        ) as progress:
+            task = progress.add_task(f"Cleaning {len(html_contents)} docs", total=len(html_contents))
+            
+            with ThreadPoolExecutor(max_workers=max_workers) as executor:
+                futures = {executor.submit(clean_html_to_text, html): i for i, html in enumerate(html_contents)}
+                
+                for future in concurrent.futures.as_completed(futures):
+                    idx = futures[future]
+                    results[idx] = future.result()
+                    progress.update(task, advance=1)
+    else:
+        # No progress bar - simple parallel execution
+        with ThreadPoolExecutor(max_workers=max_workers) as executor:
+            results = list(executor.map(clean_html_to_text, html_contents))
+    
     return results
 
 
@@ -291,23 +375,24 @@ def load_and_merge_with_polars(
         style="green"
     )
 
-    # Step 5: Apply limit AFTER join (not before!)
+    # Step 5: Apply limit BEFORE cleaning HTML (to save time)
     if limit and limit < len(merged_df):
         print_console(f"    → Applying limit: {limit} documents", style="dim")
         merged_df = merged_df.head(limit)
 
-    # Step 6: Extract data and clean HTML in parallel
+    # Step 6: Extract data and clean HTML in parallel with PROGRESS BAR
     step_start = time.time()
-    print_console(f"    → Cleaning HTML content (parallel processing)...", style="dim")
-
+    
     # Convert to list of dicts for processing
     rows = merged_df.to_dicts()
+    total_docs = len(rows)
+    print_console(f"\n    📝 Cleaning {total_docs} documents in parallel (4 workers)...", style="cyan")
 
     # Extract HTML content for batch cleaning
     html_contents = [row.get("content_html", "") or "" for row in rows]
 
-    # Clean in parallel (4 workers)
-    cleaned_texts = clean_html_batch(html_contents, max_workers=4)
+    # Clean in parallel (6 workers for better throughput)
+    cleaned_texts = clean_html_batch(html_contents, max_workers=6)
 
     # Build final document list
     documents = []
@@ -322,11 +407,14 @@ def load_and_merge_with_polars(
             "id": str(row.get("id", "")),
             "title": row.get("title", "") or f"Document {row.get('id', '')}",
             "content": content_text,
-            "doc_type": row.get("loai_van_ban", "unknown") or "unknown",
+            # Map Vietnamese loai_van_ban → DocumentType enum value (e.g. 'luat')
+            "doc_type": map_loai_van_ban(row.get("loai_van_ban")),
             "metadata": {
-                "so_ky_hieu": row.get("so_ky_hieu", "") or "",
-                "ngay_ban_hanh": str(row.get("ngay_ban_hanh", "") or ""),
-                "ngay_co_hieu_luc": str(row.get("ngay_co_hieu_luc", "") or ""),
+                "so_ky_hieu": row.get("so_ky_hieu") or None,  # None if empty, not ""
+                # Keep native date objects (polars to_dicts returns datetime.date);
+                # string conversion is deferred to storage layer.
+                "ngay_ban_hanh": row.get("ngay_ban_hanh"),
+                "ngay_co_hieu_luc": row.get("ngay_co_hieu_luc"),
                 "co_quan_ban_hanh": row.get("co_quan_ban_hanh", "") or "",
             }
         }
@@ -414,6 +502,8 @@ async def ingest_dataset_optimized(
     batch_size: int = 10,
     dataset_name: str = "th1nhng0/vietnamese-legal-documents",
     use_cache: bool = True,
+    reindex: bool = False,
+    skip_existing: bool = True,
 ) -> None:
     """Main ingestion function with optimized processing.
 
@@ -422,19 +512,53 @@ async def ingest_dataset_optimized(
         batch_size: Batch size for indexing operations
         dataset_name: HuggingFace dataset name
         use_cache: Whether to use cached parquet files
+        reindex: Whether to clear existing indices before ingestion
+        skip_existing: Whether to skip already-indexed documents (default: True)
     """
     print_console("\n" + "=" * 70)
     print_console("🚀 VIETNAMESE LEGAL DATASET INGESTION (OPTIMIZED)", style="bold cyan")
     print_console("=" * 70 + "\n")
 
-    print_console("📊 Configuration:", style="bold")
-    print_console(f"   Dataset: {dataset_name}")
-    print_console(f"   Documents: {limit}")
-    print_console(f"   Batch size: {batch_size}")
-    print_console()
+    # Display configuration
+    if limit is None:
+        print_console("📊 Configuration:", style="bold")
+        print_console(f"   Dataset: {dataset_name}")
+        print_console(f"   Documents: ALL (no limit)", style="bold yellow")
+        print_console(f"   Batch size: {batch_size}")
+        print_console()
+    else:
+        print_console("📊 Configuration:", style="bold")
+        print_console(f"   Dataset: {dataset_name}")
+        print_console(f"   Documents: {limit}")
+        print_console(f"   Batch size: {batch_size}")
+        print_console()
 
     settings = get_settings()
     pipeline = IngestionPipeline(settings)
+    
+    # Optional: Clear existing indices for re-indexing with article-level chunking
+    if reindex:
+        print_console("\n" + "=" * 70, style="bold yellow")
+        print_console("🔄 RE-INDEXING MODE: Clearing existing indices...", style="bold yellow")
+        print_console("=" * 70 + "\n")
+        
+        print_console("  Clearing Qdrant collection...", style="dim")
+        try:
+            await pipeline.indexer.qdrant_indexer.delete_collection()
+            await pipeline.indexer.qdrant_indexer.ensure_collection()
+            print_console("  ✓ Qdrant cleared", style="green")
+        except Exception as e:
+            print_console(f"  ⚠️  Qdrant clear warning: {e}", style="yellow")
+        
+        print_console("  Clearing OpenSearch index...", style="dim")
+        try:
+            await pipeline.indexer.opensearch_indexer.delete_index()
+            # Note: create_index() may not exist, OpenSearch auto-creates on first index
+            print_console("  ✓ OpenSearch cleared (will auto-create on indexing)", style="green")
+        except Exception as e:
+            print_console(f"  ⚠️  OpenSearch clear warning: {e}", style="yellow")
+        
+        print_console()
 
     metadata_url = get_parquet_url(dataset_name, "metadata")
     content_url = get_parquet_url(dataset_name, "content")
@@ -490,30 +614,107 @@ async def ingest_dataset_optimized(
             metadata_path=metadata_path,
             content_path=content_path,
             relationships_path=relationships_path,
-            limit=limit,
+            limit=limit,  # Apply limit BEFORE cleaning HTML to save time
         )
 
         if not merged_docs:
             print_console("\n❌ No documents to ingest after processing", style="bold red")
             return
 
+        # Filter out already-indexed documents (skip-existing mode)
+        new_docs = []
+        
+        if skip_existing and not reindex:
+            print_console("\n🔍 Checking for already indexed documents...", style="cyan")
+            existing_ids = get_existing_document_ids(
+                qdrant_host=settings.qdrant_host,
+                qdrant_port=settings.qdrant_port,
+                collection_name=settings.qdrant_collection,
+            )
+            
+            if existing_ids:
+                for doc in merged_docs:
+                    doc_id = doc.get("id", "")
+                    if doc_id not in existing_ids:
+                        new_docs.append(doc)
+                
+                skipped_count = len(merged_docs) - len(new_docs)
+                print_console(f"\n✅ Found {len(existing_ids)} existing documents", style="green")
+                print_console(f"   📝 Will ingest {len(new_docs)} new documents", style="cyan")
+                print_console(f"   ⏭️  Skipping {skipped_count} already indexed documents", style="dim")
+                
+                if not new_docs:
+                    print_console("\n✨ All documents are already indexed! Nothing to do.", style="bold green")
+                    return
+            else:
+                print_console("   → No existing documents found, will index all", style="dim")
+                new_docs = merged_docs
+        else:
+            new_docs = merged_docs
+            if reindex:
+                print_console("   → Reindex mode: will index all documents", style="dim")
+            else:
+                print_console("   → Skip-existing disabled: will index all documents", style="dim")
+        
+        # Use new_docs instead of merged_docs for ingestion
+        merged_docs = new_docs
+
         # Store relationships for Phase 4 (relationship ingestion)
         # relationships_df is a Polars DataFrame with columns: doc_id, other_doc_id, relationship
         # Both ID columns are cast to String for consistency with document IDs
         # Relationships are filtered to only include rows where BOTH IDs exist in merged_docs
 
-        # Phase 3: Ingest into databases with OPTIMIZED batch processing
-        print_console("\n💾 Phase 3: Ingesting into databases (BATCH MODE)", style="bold yellow")
-        print_console(f"  🚀 Using parallel processing with batch size: {batch_size}")
+        # Phase 3: Ingest into databases with PROGRESS BAR
+        print_console("\n💾 Phase 3: Ingesting into databases (OPTIMIZED)", style="bold yellow")
+        print_console(f"  🚀 Batch size: {batch_size} | Workers: 6 (parsing)")
+        
+        # Detect and print acceleration device
+        try:
+            import torch
+            if torch.cuda.is_available():
+                device_name = torch.cuda.get_device_name(0)
+                accel_text = f"✓ NVIDIA GPU (CUDA): {device_name}"
+            elif torch.backends.mps.is_available():
+                accel_text = "✓ Apple Silicon GPU (MPS)"
+            else:
+                accel_text = "⚠️  CPU (no GPU available)"
+            print_console(f"  ⚡ Acceleration: {accel_text}")
+        except Exception:
+            print_console(f"  ⚡ Acceleration: Unknown")
+        
         print_console()
         
         start_time = time.time()
         
-        # Use optimized batch ingestion
-        stats = await pipeline.ingest_batch_documents(
-            documents=merged_docs,
-            batch_size=batch_size,
-        )
+        # Create progress bar for Phase 3
+        if HAS_RICH:
+            from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, TaskProgressColumn, TimeElapsedColumn
+            
+            with Progress(
+                SpinnerColumn(),
+                TextColumn("[bold yellow]{task.description}[/bold yellow]"),
+                BarColumn(),
+                TaskProgressColumn(),
+                TimeElapsedColumn(),
+            ) as progress:
+                task = progress.add_task("Ingesting", total=len(merged_docs))
+                
+                # Progress callback function
+                def update_progress(current, total, stage):
+                    progress.update(task, completed=int(current), description=stage)
+                
+                # Use optimized batch ingestion with progress tracking
+                stats = await pipeline.ingest_batch_documents(
+                    documents=merged_docs,
+                    batch_size=batch_size,
+                    progress_callback=update_progress,
+                )
+        else:
+            # Fallback without progress bar
+            stats = await pipeline.ingest_batch_documents(
+                documents=merged_docs,
+                batch_size=batch_size,
+            )
         
         total_elapsed = time.time() - start_time
 
@@ -567,50 +768,14 @@ async def ingest_dataset_optimized(
         print_console()
 
         # Phase 4: Relationship Ingestion
-        print_console("\n🔗 Phase 4: Syncing documents to Neo4j and ingesting relationships", style="bold yellow")
+        # Neo4j document nodes were already synced in Phase 3:
+        # ingest_batch_documents() calls graph_sync.sync_legal_node(node) for every
+        # parsed LegalNode (with full content and all metadata) — so no re-sync needed here.
+        print_console("\n🔗 Phase 4: Ingesting document relationships", style="bold yellow")
         print_console()
 
-        # Step 4a: Sync documents to Neo4j first
-        print_console("  📄 Step 4a: Syncing documents to Neo4j...", style="dim")
-        neo4j_doc_count = 0
-        try:
-            from packages.graph.legal_graph import LegalGraphClient
-            from packages.common.types import LegalNode, DocumentType
-
-            graph = LegalGraphClient(pipeline.settings)
-            await graph.create_indexes()
-
-            doc_synced = 0
-            for doc in merged_docs:
-                # Create LegalNode from document dict
-                # Handle invalid DocumentType gracefully
-                doc_type_str = doc.get("doc_type", "unknown")
-                try:
-                    doc_type = DocumentType(doc_type_str) if doc_type_str else None
-                except ValueError:
-                    doc_type = DocumentType.OTHER  # Fallback for unknown types
-                
-                node = LegalNode(
-                    id=doc["id"],
-                    title=doc.get("title", ""),
-                    content=doc.get("content", "")[:5000],  # Limit content size
-                    doc_type=doc_type,
-                    metadata=doc.get("metadata", {}),
-                )
-                await graph.upsert_document(node)
-                doc_synced += 1
-
-            print_console(f"  ✓ Neo4j: {doc_synced} documents synced", style="green")
-            neo4j_doc_count = doc_synced
-            
-            await graph.close()
-
-        except Exception as e:
-            logger.warning(f"Neo4j document sync skipped: {e}")
-            print_console(f"  ⚠️  Neo4j document sync skipped: {type(e).__name__}", style="yellow")
-
-        # Step 4b: Ingest relationships
-        print_console("\n  🔗 Step 4b: Ingesting relationships...", style="dim")
+        # Ingest relationships into PostgreSQL and Neo4j
+        print_console("  🔗 Ingesting relationships...", style="dim")
 
         rel_stats = await ingest_relationships_phase4(
             relationships_df=relationships_df,
@@ -624,6 +789,328 @@ async def ingest_dataset_optimized(
         print_console("=" * 70)
         print_console()
 
+        # Print current database statistics
+        print_console("📊 Current Database Statistics:", style="bold cyan")
+        try:
+            from qdrant_client import QdrantClient
+            import asyncpg
+            from neo4j import GraphDatabase
+            
+            # ========================================
+            # QDRANT STATS
+            # ========================================
+            qdrant_client = QdrantClient(host=settings.qdrant_host, port=settings.qdrant_port)
+            qdrant_info = qdrant_client.get_collection(settings.qdrant_collection)
+            total_points = qdrant_info.points_count
+            
+            # Count unique documents (not points!) by checking parent_doc_id
+            # Root docs: chunk_type in ['document', 'root', 'full'] OR parent_doc_id is NULL
+            # Articles: chunk_type == 'article' (will have parent_doc_id set)
+            unique_doc_ids = set()
+            articles_count = 0
+            root_docs_count = 0
+            
+            # Scroll to analyze (cap at 10k for performance)
+            scroll_limit = min(total_points, 10000)
+            records, _ = qdrant_client.scroll(
+                collection_name=settings.qdrant_collection,
+                limit=scroll_limit,
+                with_payload=True,
+                with_vectors=False,
+            )
+            
+            for record in records:
+                payload = record.payload or {}
+                chunk_type = payload.get('chunk_type', 'unknown')
+                # For articles, use parent_doc_id; for root docs, use law_id or document_number
+                parent_doc_id = payload.get('parent_doc_id')
+                law_id = payload.get('law_id')
+                
+                if chunk_type == 'article':
+                    articles_count += 1
+                    # Article belongs to parent document
+                    if parent_doc_id:
+                        unique_doc_ids.add(parent_doc_id)
+                elif chunk_type in ['document', 'root', 'full']:
+                    root_docs_count += 1
+                    # Root document - use law_id or some unique identifier
+                    if law_id:
+                        unique_doc_ids.add(law_id)
+                    elif parent_doc_id:
+                        unique_doc_ids.add(parent_doc_id)
+                else:
+                    # Unknown type, count as root
+                    root_docs_count += 1
+                    if law_id:
+                        unique_doc_ids.add(law_id)
+            
+            # Estimate unique documents if we sampled
+            if total_points > 10000 and len(unique_doc_ids) > 0:
+                # Scale based on sample ratio
+                sample_ratio = scroll_limit / total_points
+                estimated_unique_docs = int(len(unique_doc_ids) / sample_ratio)
+            else:
+                estimated_unique_docs = len(unique_doc_ids)
+            
+            qdrant_client.close()
+            
+            # ========================================
+            # POSTGRESQL STATS  
+            # ========================================
+            pg_pool = await asyncpg.create_pool(
+                host=settings.postgres_host,
+                port=settings.postgres_port,
+                database=settings.postgres_db,
+                user=settings.postgres_user,
+                password=settings.postgres_password,
+            )
+            
+            async with pg_pool.acquire() as conn:
+                # Total legal documents (văn bản pháp luật)
+                pg_doc_count = await conn.fetchval("SELECT COUNT(*) FROM legal_documents")
+                
+                # ALL relationships (not just current batch!)
+                pg_total_rels = await conn.fetchval("SELECT COUNT(*) FROM document_relationships")
+                
+                # Relationship types distribution
+                pg_rel_types = await conn.fetch("""
+                    SELECT relationship_type, COUNT(*) as count 
+                    FROM document_relationships 
+                    GROUP BY relationship_type 
+                    ORDER BY count DESC
+                """)
+                
+                # Documents with relationships
+                pg_docs_with_rels = await conn.fetchval("""
+                    SELECT COUNT(DISTINCT source_doc_id) 
+                    FROM document_relationships
+                """)
+                
+                # Check for orphaned relationships
+                pg_orphaned = await conn.fetchval("""
+                    SELECT COUNT(*) FROM document_relationships dr
+                    WHERE NOT EXISTS (SELECT 1 FROM legal_documents ld WHERE ld.id = dr.source_doc_id)
+                    OR NOT EXISTS (SELECT 1 FROM legal_documents ld WHERE ld.id = dr.target_doc_id)
+                """)
+            
+            await pg_pool.close()
+            
+            # ========================================
+            # NEO4J STATS
+            # ========================================
+            neo4j_driver = GraphDatabase.driver(
+                settings.neo4j_uri,
+                auth=(settings.neo4j_user, settings.neo4j_password)
+            )
+            
+            with neo4j_driver.session() as session:
+                # Total nodes
+                neo4j_total_nodes = session.run("MATCH (n) RETURN count(n) as count").single()["count"]
+                
+                # Document nodes (legal documents) - Note: label is 'Document', not 'LegalDocument'
+                neo4j_legal_docs = session.run("MATCH (n:Document) RETURN count(n) as count").single()["count"]
+                
+                # Article nodes
+                neo4j_articles = session.run("MATCH (n:Article) RETURN count(n) as count").single()["count"]
+                
+                # Subsection nodes
+                neo4j_subsections = session.run("MATCH (n:Subsection) RETURN count(n) as count").single()["count"]
+                
+                # All relationships
+                neo4j_total_rels = session.run("MATCH ()-[r]->() RETURN count(r) as count").single()["count"]
+                
+                # Relationship types
+                neo4j_rel_types = session.run("""
+                    MATCH ()-[r]->()
+                    RETURN type(r) as rel_type, count(r) as count
+                    ORDER BY count DESC
+                """)
+                neo4j_rel_type_dict = {record["rel_type"]: record["count"] for record in neo4j_rel_types}
+                
+                # Check for duplicates (true duplicates = same source, target, AND type property)
+                neo4j_duplicates = session.run("""
+                    MATCH (s)-[r]->(t)
+                    WITH s, type(r) as rel_type, t, r.type as rel_subtype, count(r) as cnt
+                    WHERE cnt > 1
+                    RETURN count(*) as duplicate_groups
+                """).single()["duplicate_groups"]
+            
+            neo4j_driver.close()
+            
+            # ========================================
+            # OPENSEARCH STATS (if available)
+            # ========================================
+            try:
+                import requests
+                os_url = f"http://{settings.opensearch_host}:{settings.opensearch_port}"
+                os_index = settings.opensearch_index
+                
+                response = requests.get(f"{os_url}/{os_index}/_count", timeout=5)
+                if response.status_code == 200:
+                    os_doc_count = response.json()["count"]
+                    os_available = True
+                else:
+                    os_doc_count = 0
+                    os_available = False
+            except Exception:
+                os_doc_count = 0
+                os_available = False
+            
+            # ========================================
+            # PRINT STATS TABLE
+            # ========================================
+            if HAS_RICH:
+                stats_table = Table(show_header=True, header_style="bold magenta")
+                stats_table.add_column("Database", style="cyan")
+                stats_table.add_column("Metric", style="yellow")
+                stats_table.add_column("Count", style="green")
+                stats_table.add_column("Details", style="dim")
+                
+                # Qdrant
+                stats_table.add_row(
+                    "Qdrant (Vector)",
+                    "Total Points",
+                    f"{total_points:,}",
+                    "Vector embeddings"
+                )
+                stats_table.add_row(
+                    "",
+                    "Unique Documents",
+                    f"{estimated_unique_docs:,}",
+                    f"{root_docs_count:,} root + {articles_count:,} articles (sampled)"
+                )
+                
+                # PostgreSQL
+                stats_table.add_row(
+                    "PostgreSQL (Relational)",
+                    "Legal Documents",
+                    f"{pg_doc_count:,}",
+                    "Số văn bản pháp luật"
+                )
+                stats_table.add_row(
+                    "",
+                    "Relationships",
+                    f"{pg_total_rels:,}",
+                    f"{pg_docs_with_rels:,} docs có relationships"
+                )
+                if pg_orphaned > 0:
+                    stats_table.add_row(
+                        "",
+                        "⚠️ Orphaned Rels",
+                        f"{pg_orphaned:,}",
+                        "References to missing docs"
+                    )
+                
+                # Neo4j
+                stats_table.add_row(
+                    "Neo4j (Graph)",
+                    "Legal Documents",
+                    f"{neo4j_legal_docs:,}",
+                    "Document nodes (văn bản)"
+                )
+                stats_table.add_row(
+                    "",
+                    "Articles",
+                    f"{neo4j_articles:,}",
+                    "Article nodes (điều khoản)"
+                )
+                stats_table.add_row(
+                    "",
+                    "Subsections",
+                    f"{neo4j_subsections:,}",
+                    "Subsection nodes (khoản)"
+                )
+                stats_table.add_row(
+                    "",
+                    "Total Nodes",
+                    f"{neo4j_total_nodes:,}",
+                    "All node types"
+                )
+                stats_table.add_row(
+                    "",
+                    "Relationships",
+                    f"{neo4j_total_rels:,}",
+                    ", ".join([f"{k}: {v:,}" for k, v in list(neo4j_rel_type_dict.items())[:3]]) + 
+                    (f" + {len(neo4j_rel_type_dict)-3} more" if len(neo4j_rel_type_dict) > 3 else "")
+                )
+                if neo4j_duplicates > 0:
+                    stats_table.add_row(
+                        "",
+                        "⚠️ Duplicate Groups",
+                        f"{neo4j_duplicates:,}",
+                        "Run fix_neo4j_duplicates.py"
+                    )
+                
+                # OpenSearch
+                if os_available:
+                    stats_table.add_row(
+                        "OpenSearch (Full-text)",
+                        "Indexed Docs",
+                        f"{os_doc_count:,}",
+                        "BM25 full-text search"
+                    )
+                
+                # ========================================
+                # CROSS-DB CONSISTENCY CHECK
+                # ========================================
+                stats_table.add_section()
+                stats_table.add_row(
+                    "Consistency",
+                    "PG vs Neo4j Docs",
+                    f"{pg_doc_count:,} vs {neo4j_legal_docs:,}",
+                    "PostgreSQL legal documents vs Neo4j LegalDocument nodes"
+                )
+                
+                if pg_doc_count > 0 and neo4j_legal_docs > 0:
+                    sync_ratio = neo4j_legal_docs / pg_doc_count * 100
+                    if sync_ratio < 95:
+                        stats_table.add_row(
+                            "",
+                            "⚠️ Sync Ratio",
+                            f"{sync_ratio:.1f}%",
+                            f"Neo4j có {pg_doc_count - neo4j_legal_docs:,} docs thiếu"
+                        )
+                    else:
+                        stats_table.add_row(
+                            "",
+                            "✅ Sync Ratio",
+                            f"{sync_ratio:.1f}%",
+                            "Good synchronization"
+                        )
+                
+                if pg_total_rels > 0 and neo4j_total_rels > 0:
+                    rel_ratio = neo4j_total_rels / pg_total_rels
+                    stats_table.add_row(
+                        "",
+                        "PG vs Neo4j Rels",
+                        f"{pg_total_rels:,} vs {neo4j_total_rels:,}",
+                        f"Ratio: {rel_ratio:.2f}x (Neo4j stores all history)"
+                    )
+                
+                if total_points > 0 and pg_doc_count > 0:
+                    articles_per_doc = total_points / pg_doc_count
+                    stats_table.add_row(
+                        "",
+                        "Articles/Doc",
+                        f"{articles_per_doc:.1f}x",
+                        f"{total_points:,} points / {pg_doc_count:,} docs (normal: 10-20x)"
+                    )
+                
+                print_console(stats_table)
+            else:
+                # Fallback for non-rich terminal
+                print(f"\nQdrant: {total_points:,} points, ~{estimated_unique_docs:,} unique documents")
+                print(f"PostgreSQL: {pg_doc_count:,} legal documents, {pg_total_rels:,} relationships")
+                print(f"Neo4j: {neo4j_legal_docs:,} LegalDocument nodes, {neo4j_articles:,} articles, {neo4j_total_rels:,} relationships")
+                if os_available:
+                    print(f"OpenSearch: {os_doc_count:,} indexed documents")
+            
+        except Exception as e:
+            print_console(f"   ⚠️  Could not fetch DB stats: {e}", style="yellow")
+            print_console("   → This is normal on first run or if services are down", style="dim")
+            import traceback
+            logger.debug(f"DB stats error: {traceback.format_exc()}")
+
         if HAS_RICH:
             final_table = Table(show_header=True, header_style="bold magenta")
             final_table.add_column("Phase", style="cyan")
@@ -633,15 +1120,27 @@ async def ingest_dataset_optimized(
             final_table.add_row("Phase 1", "✅ Complete", "Downloaded 3 parquet files")
             final_table.add_row("Phase 2", "✅ Complete", f"Processed {len(merged_docs)} documents")
             final_table.add_row("Phase 3", "✅ Complete", f"Ingested {stats['success']} documents")
+            
+            # Show TOTAL relationships in DB, not just current batch
+            if 'pg_total_rels' in locals():
+                phase4_detail = f"{pg_total_rels:,} total relationships in DB, Neo4j: {rel_stats['neo4j_synced']} synced"
+            else:
+                phase4_detail = f"{rel_stats['postgres_inserted']} relationships synced, Neo4j: {rel_stats['neo4j_synced']}"
+            
             final_table.add_row("Phase 4", "✅ Complete" if rel_stats["postgres_inserted"] >= 0 else "⚠️ Skipped", 
-                              f"{rel_stats['postgres_inserted']} relationships, Neo4j docs: {neo4j_doc_count}, rels: {rel_stats['neo4j_synced']}")
+                              phase4_detail)
 
             print_console(final_table)
         else:
             print(f"\nPhase 1: Downloaded parquet files")
             print(f"Phase 2: Processed {len(merged_docs)} documents")
             print(f"Phase 3: Ingested {stats['success']} documents")
-            print(f"Phase 4: {rel_stats['postgres_inserted']} relationships")
+            
+            # Show TOTAL relationships in DB
+            if 'pg_total_rels' in locals():
+                print(f"Phase 4: {pg_total_rels:,} total relationships in DB")
+            else:
+                print(f"Phase 4: {rel_stats['postgres_inserted']} relationships")
 
         print_console()
 
@@ -775,7 +1274,13 @@ async def ingest_relationships_phase4(
             (str(row["doc_id"]), str(row["other_doc_id"]), row["relationship"])
             for row in relationships_df.iter_rows(named=True)
         ]
-
+        
+        # Deduplicate to prevent Neo4j duplicate relationships
+        rel_tuples_unique = list(set(rel_tuples))
+        dup_count = len(rel_tuples) - len(rel_tuples_unique)
+        if dup_count > 0:
+            print_console(f"  ⚠️  Found {dup_count:,} duplicate relationships (removed)", style="yellow")
+        
         inserted = 0
 
         if HAS_RICH:
@@ -787,10 +1292,10 @@ async def ingest_relationships_phase4(
                 TimeElapsedColumn(),
                 console=console,
             ) as progress:
-                task = progress.add_task("Inserting relationships", total=len(rel_tuples))
-
-                for batch_start in range(0, len(rel_tuples), batch_size):
-                    batch = rel_tuples[batch_start:batch_start + batch_size]
+                task = progress.add_task("Inserting relationships", total=len(rel_tuples_unique))
+        
+                for batch_start in range(0, len(rel_tuples_unique), batch_size):
+                    batch = rel_tuples_unique[batch_start:batch_start + batch_size]
 
                     async with pool.acquire() as conn:
                         await conn.executemany(
@@ -806,8 +1311,8 @@ async def ingest_relationships_phase4(
 
                     progress.update(task, advance=len(batch))
         else:
-            for batch_start in range(0, len(rel_tuples), batch_size):
-                batch = rel_tuples[batch_start:batch_start + batch_size]
+            for batch_start in range(0, len(rel_tuples_unique), batch_size):
+                batch = rel_tuples_unique[batch_start:batch_start + batch_size]
                 async with pool.acquire() as conn:
                     await conn.executemany(
                         """
@@ -844,9 +1349,9 @@ async def ingest_relationships_phase4(
             # Test connectivity
             await driver_obj.verify_connectivity()
             print_console("    ✓ Connected to Neo4j", style="dim")
-
+        
             neo4j_inserted = 0
-
+        
             if HAS_RICH:
                 with Progress(
                     SpinnerColumn(),
@@ -856,10 +1361,10 @@ async def ingest_relationships_phase4(
                     TimeElapsedColumn(),
                     console=console,
                 ) as progress:
-                    task = progress.add_task("Syncing to Neo4j", total=len(rel_tuples))
-
-                    for batch_start in range(0, len(rel_tuples), batch_size):
-                        batch = rel_tuples[batch_start:batch_start + batch_size]
+                    task = progress.add_task("Syncing to Neo4j", total=len(rel_tuples_unique))
+        
+                    for batch_start in range(0, len(rel_tuples_unique), batch_size):
+                        batch = rel_tuples_unique[batch_start:batch_start + batch_size]
 
                         # Use UNWIND for batch processing
                         params = {
@@ -879,6 +1384,7 @@ async def ingest_relationships_phase4(
                         MATCH (t:Document {id: rel.target_id})
                         MERGE (s)-[r:RELATES_TO {type: rel.rel_type}]->(t)
                         ON CREATE SET r.created_at = datetime()
+                        ON MATCH SET r.last_updated = datetime()
                         RETURN count(r) AS count
                         """
 
@@ -890,8 +1396,8 @@ async def ingest_relationships_phase4(
 
                         progress.update(task, advance=len(batch))
             else:
-                for batch_start in range(0, len(rel_tuples), batch_size):
-                    batch = rel_tuples[batch_start:batch_start + batch_size]
+                for batch_start in range(0, len(rel_tuples_unique), batch_size):
+                    batch = rel_tuples_unique[batch_start:batch_start + batch_size]
                     params = {
                         "relationships": [
                             {"source_id": r[0], "target_id": r[1], "rel_type": r[2]}
@@ -1022,6 +1528,9 @@ Examples:
   # Ingest 500 documents with batch size 20
   python scripts/ingest_dataset.py --limit 500 --batch-size 20
 
+  # Re-index with article-level chunking (clears existing indices)
+  python scripts/ingest_dataset.py --limit 50 --reindex
+
   # Check cache status
   python scripts/ingest_dataset.py --cache-info
 
@@ -1040,10 +1549,15 @@ Examples:
         help="Number of documents to ingest (default: 50)",
     )
     parser.add_argument(
+        "--all",
+        action="store_true",
+        help="Ingest ALL documents from dataset (no limit)",
+    )
+    parser.add_argument(
         "--batch-size",
         type=int,
-        default=10,
-        help="Batch size for ingestion (default: 10)",
+        default=100,
+        help="Batch size for ingestion (default: 100)",
     )
     parser.add_argument(
         "--dataset",
@@ -1065,6 +1579,22 @@ Examples:
         "--no-cache",
         action="store_true",
         help="Don't use cache, download fresh",
+    )
+    parser.add_argument(
+        "--reindex",
+        action="store_true",
+        help="Clear existing Qdrant/OpenSearch indices before ingestion (for article-level chunking)",
+    )
+    parser.add_argument(
+        "--skip-existing",
+        action="store_true",
+        default=True,
+        help="Skip documents that are already indexed (default: True)",
+    )
+    parser.add_argument(
+        "--no-skip-existing",
+        action="store_true",
+        help="Disable skip-existing, re-index all documents",
     )
     parser.add_argument(
         "--verbose", "-v",
@@ -1092,10 +1622,12 @@ Examples:
 
     # Run ingestion
     asyncio.run(ingest_dataset_optimized(
-        limit=args.limit,
+        limit=args.limit if not args.all else None,
         batch_size=args.batch_size,
         dataset_name=args.dataset,
         use_cache=not args.no_cache,
+        reindex=args.reindex,
+        skip_existing=args.skip_existing and not args.no_skip_existing,
     ))
 
 
