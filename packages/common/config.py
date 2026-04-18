@@ -9,10 +9,10 @@ class Settings(BaseSettings):
         case_sensitive=False,
     )
     
-    # Groq
-    groq_api_key: str = ""
-    groq_model_primary: str = "llama-3.1-8b-instant"
-    groq_model_fallback: str = "llama-3.3-70b-versatile"
+    # LLM Provider (OpenAI-compatible: OpenRouter, Ollama, etc.)
+    llm_base_url: str = "https://openrouter.ai/api/v1"
+    llm_api_key: str = ""
+    llm_model: str = "thudm/glm-4-9b"
     
     # Qdrant
     qdrant_host: str = "localhost"
@@ -25,6 +25,8 @@ class Settings(BaseSettings):
     opensearch_index: str = "legal_docs"
     opensearch_user: str = "admin"
     opensearch_password: str = "SecureP@ssw0rd!2024"
+    opensearch_use_ssl: bool = False
+    opensearch_verify_certs: bool = False
     
     # PostgreSQL
     postgres_host: str = "localhost"
@@ -52,7 +54,21 @@ class Settings(BaseSettings):
     app_port: int = 8000
     app_env: str = "development"
     log_level: str = "info"
-    
+
+    # Search parameters
+    search_bm25_candidates: int = 200
+    search_dense_candidates: int = 200
+    search_rrf_k: int = 60
+    search_rrf_top_n: int = 200
+    search_expansion_max_variants: int = 4
+    search_expansion_boost: float = 0.7
+    search_reranker_budget_ms: int = 300
+    search_reranker_input_k: int = 15
+    search_aggregation_threshold: float = 1.0
+    search_chunk_size_tokens: int = 400
+    search_chunk_overlap: float = 0.5
+    search_min_chunk_tokens: int = 100
+
     @property
     def postgres_dsn(self) -> str:
         return f"postgresql://{self.postgres_user}:{self.postgres_password}@{self.postgres_host}:{self.postgres_port}/{self.postgres_db}"

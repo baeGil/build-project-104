@@ -36,19 +36,19 @@ class LegalGenerator:
     
     def __init__(self, settings: Settings):
         self.settings = settings
-        self._groq_client = None
+        self._llm_client = None
         self._cache: dict[str, Any] = {}  # In-memory cache for generation results
     
     @property
-    def groq_client(self):
-        """Lazy-init Groq client."""
-        if self._groq_client is None:
-            import groq
-            self._groq_client = groq.AsyncGroq(
-                api_key=self.settings.groq_api_key,
-                timeout=30.0,
+    def llm_client(self):
+        """Lazy-init LLM client (OpenAI-compatible: OpenRouter, Ollama, etc.)."""
+        if self._llm_client is None:
+            import openai
+            self._llm_client = openai.AsyncOpenAI(
+                base_url=self.settings.llm_base_url,
+                api_key=self.settings.llm_api_key or "no-key",
             )
-        return self._groq_client
+        return self._llm_client
     
     async def generate_finding(self, evidence_pack: EvidencePack) -> ReviewFinding:
         """
@@ -75,7 +75,7 @@ class LegalGenerator:
             prompt = self._build_review_prompt(evidence_pack)
             
             try:
-                response = await self._call_groq_with_fallback(
+                response = await self._call_llm(
                     prompt,
                     temperature=0,
                     max_tokens=800,
@@ -99,6 +99,16 @@ class LegalGenerator:
                 evidence_pack.verification_level or VerificationLevel.NO_REFERENCE
             )
             
+            # Validate risk_level against verification_level — override if inconsistent
+            verification = evidence_pack.verification_level or VerificationLevel.NO_REFERENCE
+            expected_risk = self._extract_risk_level(verification)
+            if risk_level != expected_risk:
+                # LLM returned inconsistent risk level — use expected based on verification
+                logger.debug(
+                    f"Risk level override: LLM said {risk_level}, but verification={verification.value} → {expected_risk}"
+                )
+                risk_level = expected_risk
+            
             # Fix confidence if LLM didn't return it (calculate from verification level)
             if parsed.get("confidence", 0) == 0:
                 # Use verification level to determine meaningful confidence
@@ -106,11 +116,11 @@ class LegalGenerator:
                     VerificationLevel.ENTAILED: 95.0,           # Fully supported
                     VerificationLevel.CONTRADICTED: 85.0,       # Clear contradiction
                     VerificationLevel.PARTIALLY_SUPPORTED: 75.0, # Partially supported
-                    VerificationLevel.NO_REFERENCE: 60.0,        # No reference found
+                    VerificationLevel.NO_REFERENCE: 45.0,        # No reference found (lowered from 60)
                 }
                 parsed["confidence"] = confidence_map.get(
                     evidence_pack.verification_level or VerificationLevel.NO_REFERENCE,
-                    60.0
+                    45.0
                 )
                 logger.debug(f"Confidence set from verification level: {parsed['confidence']}")
             
@@ -150,7 +160,7 @@ class LegalGenerator:
             prompt = self._build_chat_prompt(query, evidence_pack)
             
             try:
-                response = await self._call_groq_with_fallback(
+                response = await self._call_llm(
                     prompt,
                     temperature=0,
                     max_tokens=1000,
@@ -215,7 +225,7 @@ Cung cấp tóm tắt điều hành ngắn gọn (2-3 đoạn) nêu bật:
 Tóm tắt:"""
             
             try:
-                response = await self._call_groq_with_fallback(
+                response = await self._call_llm(
                     prompt,
                     temperature=0,
                     max_tokens=500,
@@ -236,40 +246,27 @@ Tóm tắt:"""
     ) -> AsyncGenerator[str, None]:
         """
         Async generator yielding tokens for SSE streaming.
-        Uses Groq streaming API.
+        Uses OpenAI-compatible streaming API.
         """
         prompt = self._build_chat_prompt(query, evidence_pack)
+        model = self.settings.llm_model
         
-        models = [
-            self.settings.groq_model_primary,
-            self.settings.groq_model_fallback,
-        ]
-        
-        last_error = None
-        for model in models:
-            try:
-                logger.info(f"Streaming with Groq model: {model}")
-                stream = await self.groq_client.chat.completions.create(
-                    model=model,
-                    messages=[{"role": "user", "content": prompt}],
-                    temperature=0,
-                    max_tokens=1000,
-                    stream=True,
-                )
-                
-                async for chunk in stream:
-                    if chunk.choices and chunk.choices[0].delta.content:
-                        yield chunk.choices[0].delta.content
-                
-                return  # Success, exit
-            except Exception as e:
-                last_error = e
-                logger.warning(f"Streaming model {model} failed: {e}")
-                continue  # Always try next model
-        
-        # Both models failed
-        logger.error(f"All streaming models failed: {last_error}")
-        yield f"\n\n[Error: Service temporarily unavailable. Please try again later.]"
+        try:
+            logger.info(f"Streaming with model: {model}")
+            stream = await self.llm_client.chat.completions.create(
+                model=model,
+                messages=[{"role": "user", "content": prompt}],
+                temperature=0,
+                max_completion_tokens=1000,
+                stream=True,
+            )
+            
+            async for chunk in stream:
+                if chunk.choices and chunk.choices[0].delta.content:
+                    yield chunk.choices[0].delta.content
+        except Exception as e:
+            logger.error(f"Streaming model {model} failed: {e}")
+            yield f"\n\n[Error: Service temporarily unavailable. Please try again later.]"
     
     def _build_review_prompt(self, evidence_pack: EvidencePack) -> str:
         """Build structured prompt from EvidencePack for review with chain-of-thought and strict grounding."""
@@ -300,11 +297,11 @@ Trạng thái xác minh: {evidence_pack.verification_level.value if evidence_pac
 
 Cung cấp phân tích theo định dạng SAU ĐÂY - MỖI FIELD PHẢI Ở DÒNG RIÊNG:
 
-RATIONALE: [Chỉ chứa phân tích 4 bước. SỬ DỤNG [1], [2], [3] để tham chiếu. KHÔNG được chứa revision suggestion hay negotiation note ở đây.]
+RATIONALE: [Viết phân tích mạch lạc bằng tiếng Việt, KHÔNG dùng "Bước 1, Bước 2...". Giải thích rõ điều khoản này phù hợp hay mâu thuẫn với pháp luật. SỬ DỤNG [1], [2], [3] để tham chiếu.] 
 
-RISK_LEVEL: high
+RISK_LEVEL: [Chọn MỘT: high nếu vi phạm rõ ràng, medium nếu có điểm chưa rõ ràng, low nếu không tìm thấy văn bản pháp lý liên quan, none nếu hoàn toàn phù hợp]
 
-CONFIDENCE: 85
+CONFIDENCE: [Số 0-100. high=80-95, medium=60-79, low=40-59, none=20-39]
 
 REVISION_SUGGESTION: [Chỉ chứa đề xuất sửa đổi cụ thể. Nếu không cần sửa, ghi: "Không cần sửa đổi"]
 
@@ -315,6 +312,8 @@ QUAN TRỌNG:
 - KHÔNG được chèn field này vào field khác
 - CONFIDENCE phải là số từ 0-100
 - RISK_LEVEL phải là một trong: high, medium, low, none
+- KHÔNG lặp lại các từ "Bước 1", "Bước 2" trong RATIONALE
+- RATIONALE phải viết tự nhiên như văn bản phân tích pháp lý
 
 Giữ câu trả lời có cấu trúc và ngắn gọn. Nhớ sử dụng tiếng Việt hoàn toàn."""
         return prompt
@@ -530,31 +529,26 @@ Câu trả lời:"""
         return section
     
     
-    async def _call_groq_with_fallback(
+    async def _call_llm(
         self, prompt: str, temperature: float, max_tokens: int
     ) -> str:
-        """Call Groq API with fallback model on rate limit."""
-        models = [
-            self.settings.groq_model_primary,
-            self.settings.groq_model_fallback,
-        ]
-    
-        last_error = None
-        for model in models:
-            try:
-                logger.info(f"Calling Groq with model: {model}")
-                response = await self.groq_client.chat.completions.create(
-                    model=model,
-                    messages=[{"role": "user", "content": prompt}],
-                    temperature=temperature,
-                    max_tokens=max_tokens,
-                )
-                return response.choices[0].message.content or ""
-            except Exception as e:
-                last_error = e
-                logger.warning(f"Groq model {model} failed: {e}")
-                continue  # Always try next model
-    
-        # Both models failed
-        logger.error(f"All Groq models failed: {last_error}")
-        raise last_error or Exception("Groq API call failed")
+        """Call LLM via OpenAI-compatible API (OpenRouter, Ollama, etc.)."""
+        model = self.settings.llm_model
+        try:
+            logger.info(f"Calling LLM model: {model}")
+            response = await self.llm_client.chat.completions.create(
+                model=model,
+                messages=[{"role": "user", "content": prompt}],
+                temperature=temperature,
+                max_completion_tokens=max_tokens,
+            )
+            return response.choices[0].message.content or ""
+        except Exception as e:
+            error_str = str(e)
+            if "Connection" in error_str or "timeout" in error_str.lower():
+                logger.error(f"LLM connection error (model={model}): {e}")
+                logger.error(f"Prompt length: {len(prompt)} chars")
+                logger.error(f"LLM base URL: {self.settings.llm_base_url}")
+            else:
+                logger.error(f"LLM model {model} failed: {e}")
+            raise

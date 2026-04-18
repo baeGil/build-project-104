@@ -11,12 +11,117 @@ import asyncio
 import logging
 import os
 import random
+import re
 from typing import Any, Callable
 
 from packages.common.config import Settings
 from packages.common.types import LegalNode
 
 logger = logging.getLogger(__name__)
+
+
+def chunk_document(
+    title: str,
+    content: str,
+    chunk_size_tokens: int = 400,
+    chunk_overlap: float = 0.5,
+    min_chunk_tokens: int = 100,
+) -> list[dict]:
+    """Split document into overlapping chunks using Vietnamese sentence boundaries.
+
+    Args:
+        title: Document title (prepended to each chunk for context)
+        content: Document content to chunk
+        chunk_size_tokens: Target chunk size in tokens (approximated by words)
+        chunk_overlap: Overlap ratio between chunks (0.0-1.0)
+        min_chunk_tokens: Minimum chunk size to trigger chunking
+
+    Returns:
+        List of dicts: [{"text": str, "chunk_index": int, "start_char": int, "end_char": int}]
+        Returns empty list if content is shorter than min_chunk_tokens.
+    """
+    # Approximate token count by word count (Vietnamese: ~1.3 tokens/word)
+    words = content.split()
+    approx_tokens = len(words) * 1.3
+
+    if approx_tokens < min_chunk_tokens:
+        # Document is short enough, no chunking needed
+        return []
+
+    # Vietnamese sentence boundary detection: split on ., \n, ; followed by whitespace
+    # This pattern captures sentence-ending punctuation in Vietnamese legal texts
+    sentence_pattern = r'(?<=[.\n;])\s+'
+    sentences = re.split(sentence_pattern, content)
+    sentences = [s.strip() for s in sentences if s.strip()]
+
+    if not sentences:
+        return []
+
+    # Calculate chunk parameters (convert tokens to approximate words)
+    chunk_size_words = int(chunk_size_tokens / 1.3)
+    overlap_words = int(chunk_size_words * chunk_overlap)
+    stride_words = chunk_size_words - overlap_words
+
+    chunks = []
+    current_chunk_sentences = []
+    current_chunk_word_count = 0
+    chunk_index = 0
+    start_char = 0
+
+    for sentence in sentences:
+        sentence_word_count = len(sentence.split())
+
+        if current_chunk_word_count + sentence_word_count <= chunk_size_words:
+            # Add sentence to current chunk
+            current_chunk_sentences.append(sentence)
+            current_chunk_word_count += sentence_word_count
+        else:
+            # Finalize current chunk
+            if current_chunk_sentences:
+                chunk_text = " ".join(current_chunk_sentences)
+                end_char = start_char + len(chunk_text)
+                # Prepend title for embedding context
+                full_text = f"{title}\n{chunk_text}" if title else chunk_text
+                chunks.append({
+                    "text": full_text,
+                    "chunk_index": chunk_index,
+                    "start_char": start_char,
+                    "end_char": end_char,
+                    "content": chunk_text,  # Store original chunk content without title
+                })
+                chunk_index += 1
+
+                # Calculate overlap for next chunk
+                # Keep last N sentences that fit within overlap budget
+                overlap_sentences = []
+                overlap_word_count = 0
+                for s in reversed(current_chunk_sentences):
+                    s_word_count = len(s.split())
+                    if overlap_word_count + s_word_count <= overlap_words:
+                        overlap_sentences.insert(0, s)
+                        overlap_word_count += s_word_count
+                    else:
+                        break
+
+                # Start new chunk with overlap sentences + current sentence
+                current_chunk_sentences = overlap_sentences + [sentence]
+                current_chunk_word_count = overlap_word_count + sentence_word_count
+                start_char = end_char - len(" ".join(overlap_sentences)) if overlap_sentences else end_char
+
+    # Don't forget the last chunk
+    if current_chunk_sentences:
+        chunk_text = " ".join(current_chunk_sentences)
+        end_char = start_char + len(chunk_text)
+        full_text = f"{title}\n{chunk_text}" if title else chunk_text
+        chunks.append({
+            "text": full_text,
+            "chunk_index": chunk_index,
+            "start_char": start_char,
+            "end_char": end_char,
+            "content": chunk_text,
+        })
+
+    return chunks
 
 # Prevent transformers from probing TensorFlow at import time.
 os.environ.setdefault("TRANSFORMERS_NO_TF", "1")
@@ -148,7 +253,9 @@ class QdrantIndexer:
         return self._client
 
     async def _get_embedding_model(self) -> Any:
-        """Get or load embedding model.
+        """Get or load embedding model with GPU acceleration.
+        
+        Device priority: CUDA > MPS (Apple Silicon) > CPU
 
         Returns:
             SentenceTransformer model instance.
@@ -156,9 +263,38 @@ class QdrantIndexer:
         if self._embedding_model is None:
             try:
                 from sentence_transformers import SentenceTransformer
+                import torch
 
                 logger.info(f"Loading embedding model: {self.settings.embedding_model}")
-                self._embedding_model = SentenceTransformer(self.settings.embedding_model)
+                
+                # Determine best available device
+                if torch.cuda.is_available():
+                    device = 'cuda'
+                    device_name = torch.cuda.get_device_name(0)
+                    logger.info(f"✓ Using GPU (CUDA): {device_name}")
+                elif torch.backends.mps.is_available():
+                    device = 'mps'
+                    device_name = 'Apple Silicon GPU (MPS)'
+                    logger.info(f"✓ Using GPU (MPS): {device_name}")
+                else:
+                    device = 'cpu'
+                    device_name = 'CPU'
+                    logger.info(f"⚠️  Using CPU (no GPU available)")
+                
+                # Print device info
+                logger.info(f"📊 Device: {device.upper()} | PyTorch {torch.__version__}")
+                
+                self._embedding_model = SentenceTransformer(
+                    self.settings.embedding_model,
+                    device=device
+                )
+                
+                # Print model info
+                max_seq_length = self._embedding_model.max_seq_length
+                embedding_dim = self._embedding_model.get_embedding_dimension()
+                logger.info(f"📝 Model: {self.settings.embedding_model}")
+                logger.info(f"📏 Embedding dim: {embedding_dim} | Max seq length: {max_seq_length}")
+                
             except ImportError:
                 logger.error("sentence-transformers not installed")
                 raise
@@ -225,7 +361,7 @@ class QdrantIndexer:
                 {"doc_id": {"related_doc_ids": [...], "relationship_types": [...], "related_doc_count": N}}
 
         Returns:
-            Number of documents successfully indexed.
+            Number of documents successfully indexed (including chunks).
         """
         if not nodes:
             return 0
@@ -234,6 +370,11 @@ class QdrantIndexer:
         model = await self._get_embedding_model()
         collection_name = self.settings.qdrant_collection
         batch_size = batch_size or self._batch_size
+
+        # Get chunking parameters from config
+        chunk_size_tokens = getattr(self.settings, 'search_chunk_size_tokens', 400)
+        chunk_overlap = getattr(self.settings, 'search_chunk_overlap', 0.5)
+        min_chunk_tokens = getattr(self.settings, 'search_min_chunk_tokens', 100)
 
         # Ensure collection exists
         await self.ensure_collection()
@@ -247,19 +388,71 @@ class QdrantIndexer:
             for i in range(0, len(nodes), batch_size):
                 batch = nodes[i : i + batch_size]
 
-                # Prepare texts for embedding
-                texts = [f"{node.title}\n{node.content}" for node in batch]
+                # Prepare texts and chunk info for embedding
+                # Each item: (text, node, is_chunk, chunk_info)
+                items_to_embed = []
+                for node in batch:
+                    # Check if document should be chunked
+                    chunks = chunk_document(
+                        title=node.title,
+                        content=node.content,
+                        chunk_size_tokens=chunk_size_tokens,
+                        chunk_overlap=chunk_overlap,
+                        min_chunk_tokens=min_chunk_tokens,
+                    )
 
-                # Generate embeddings
-                logger.debug(f"Generating embeddings for batch {i//batch_size + 1}")
+                    # Get original doc ID
+                    if node.id.isdigit():
+                        original_doc_id = int(node.id)
+                    elif "_article_" in node.id:
+                        try:
+                            parts = node.id.split("_article_")
+                            doc_id_part = parts[0]
+                            article_num_part = parts[1]
+                            if doc_id_part.isdigit() and article_num_part.isdigit():
+                                original_doc_id = int(doc_id_part) * 10000 + int(article_num_part)
+                            else:
+                                original_doc_id = hash(node.id) % 1000000000
+                        except Exception:
+                            original_doc_id = hash(node.id) % 1000000000
+                    else:
+                        original_doc_id = node.id
+
+                    if chunks:
+                        # Add chunks for embedding
+                        for chunk in chunks:
+                            items_to_embed.append((
+                                chunk["text"],
+                                node,
+                                True,  # is_chunk
+                                {
+                                    "chunk_index": chunk["chunk_index"],
+                                    "chunk_content": chunk["content"],
+                                    "original_doc_id": original_doc_id,
+                                }
+                            ))
+
+                    # Always add the original full document (backward compatibility)
+                    items_to_embed.append((
+                        f"{node.title}\n{node.content}",
+                        node,
+                        False,  # is_chunk
+                        {"original_doc_id": original_doc_id}
+                    ))
+
+                # Generate embeddings for all items
+                texts = [item[0] for item in items_to_embed]
+                logger.debug(f"Generating embeddings for batch {i//batch_size + 1} ({len(texts)} items)")
                 embeddings = model.encode(texts, show_progress_bar=False)
 
                 # Prepare points for upsert
                 points = []
-                for node, embedding in zip(batch, embeddings):
+                for (text, node, is_chunk, chunk_info), embedding in zip(items_to_embed, embeddings):
+                    original_doc_id = chunk_info["original_doc_id"]
+
+                    # Build base payload
                     payload = {
                         "title": node.title,
-                        "content": node.content,
                         "doc_type": node.doc_type.value,
                         "level": node.level,
                         "parent_id": node.parent_id,
@@ -268,10 +461,33 @@ class QdrantIndexer:
                         "effective_date": node.effective_date.isoformat() if node.effective_date else None,
                         "issuing_body": node.issuing_body,
                         "document_number": node.document_number,
+                        "law_id": node.law_id,
                         "amendment_refs": node.amendment_refs,
                         "citation_refs": node.citation_refs,
                         "keywords": node.keywords,
                     }
+
+                    if is_chunk:
+                        # Chunk-specific fields
+                        chunk_index = chunk_info["chunk_index"]
+                        qdrant_id = original_doc_id * 100000 + chunk_index
+                        payload.update({
+                            "content": chunk_info["chunk_content"],
+                            "chunk_type": "chunk",
+                            "chunk_index": chunk_index,
+                            "doc_id": original_doc_id,
+                            "parent_doc_id": original_doc_id,
+                            "article_number": node.metadata.get("article_number"),
+                        })
+                    else:
+                        # Full document fields - use original_doc_id as qdrant_id
+                        qdrant_id = original_doc_id
+                        payload.update({
+                            "content": node.content,
+                            "chunk_type": node.metadata.get('chunk_type', 'article' if node.level == 2 else 'document'),
+                            "article_number": node.metadata.get('article_number', int(node.id.split("_")[-1]) if node.level == 2 and "_article_" in node.id else None),
+                            "parent_doc_id": node.metadata.get('parent_doc_id', node.parent_id if node.level == 2 else None),
+                        })
 
                     # Enrich with relationship metadata if provided
                     if relationship_metadata and node.id in relationship_metadata:
@@ -282,7 +498,7 @@ class QdrantIndexer:
 
                     points.append(
                         PointStruct(
-                            id=node.id,
+                            id=qdrant_id,
                             vector=embedding.tolist(),
                             payload=payload,
                         )
@@ -301,10 +517,10 @@ class QdrantIndexer:
                     operation_name=f"Qdrant upsert batch {i//batch_size + 1}",
                 )
 
-                indexed_count += len(batch)
-                logger.debug(f"Indexed batch of {len(batch)} documents")
+                indexed_count += len(points)
+                logger.debug(f"Indexed batch of {len(points)} points ({len(batch)} documents + chunks)")
 
-            logger.info(f"Successfully indexed {indexed_count} documents to Qdrant")
+            logger.info(f"Successfully indexed {indexed_count} points to Qdrant")
             return indexed_count
 
         except Exception as e:
@@ -384,8 +600,8 @@ class OpenSearchIndexer:
                         self.settings.opensearch_user,
                         self.settings.opensearch_password,
                     ),
-                    use_ssl=False,
-                    verify_certs=False,
+                    use_ssl=self.settings.opensearch_use_ssl,
+                    verify_certs=self.settings.opensearch_verify_certs,
                     timeout=self._request_timeout,
                     max_retries=0,  # We handle retries ourselves
                     retry_on_timeout=False,
@@ -459,13 +675,20 @@ class OpenSearchIndexer:
                                 },
                             },
                             "document_number": {"type": "keyword"},
+                            "law_id": {"type": "keyword"},  # Explicit keyword mapping for exact matching
                             "keywords": {"type": "keyword"},
                             "parent_id": {"type": "keyword"},
                             "children_ids": {"type": "keyword"},
+                            "amendment_refs": {"type": "keyword"},
+                            "citation_refs": {"type": "keyword"},
                             # Relationship metadata fields
                             "related_doc_ids": {"type": "keyword"},
                             "relationship_types": {"type": "keyword"},
                             "related_doc_count": {"type": "integer"},
+                            # Chunk metadata fields
+                            "chunk_type": {"type": "keyword"},
+                            "chunk_index": {"type": "integer"},
+                            "parent_doc_id": {"type": "keyword"},
                         },
                     },
                 }
@@ -493,7 +716,7 @@ class OpenSearchIndexer:
                 {"doc_id": {"related_doc_ids": [...], "relationship_types": [...], "related_doc_count": N}}
 
         Returns:
-            Number of documents successfully indexed.
+            Number of documents successfully indexed (including chunks).
         """
         if not nodes:
             return 0
@@ -501,6 +724,11 @@ class OpenSearchIndexer:
         client = await self._get_client()
         index_name = self.settings.opensearch_index
         batch_size = batch_size or self._batch_size
+
+        # Get chunking parameters from config
+        chunk_size_tokens = getattr(self.settings, 'search_chunk_size_tokens', 400)
+        chunk_overlap = getattr(self.settings, 'search_chunk_overlap', 0.5)
+        min_chunk_tokens = getattr(self.settings, 'search_min_chunk_tokens', 100)
 
         # Ensure index exists
         await self.ensure_index()
@@ -512,34 +740,73 @@ class OpenSearchIndexer:
 
             def generate_actions():
                 for node in nodes:
-                    source = {
-                        "title": node.title,
-                        "content": node.content,
-                        "doc_type": node.doc_type.value,
-                        "level": node.level,
-                        "publish_date": node.publish_date.isoformat() if node.publish_date else None,
-                        "effective_date": node.effective_date.isoformat() if node.effective_date else None,
-                        "expiry_date": node.expiry_date.isoformat() if node.expiry_date else None,
-                        "issuing_body": node.issuing_body,
-                        "document_number": node.document_number,
-                        "keywords": node.keywords,
-                        "parent_id": node.parent_id,
-                        "children_ids": node.children_ids,
-                        "amendment_refs": node.amendment_refs,
-                        "citation_refs": node.citation_refs,
-                    }
+                    # Check if document should be chunked
+                    chunks = chunk_document(
+                        title=node.title,
+                        content=node.content,
+                        chunk_size_tokens=chunk_size_tokens,
+                        chunk_overlap=chunk_overlap,
+                        min_chunk_tokens=min_chunk_tokens,
+                    )
 
-                    # Enrich with relationship metadata if provided
-                    if relationship_metadata and node.id in relationship_metadata:
-                        rel_meta = relationship_metadata[node.id]
-                        source["related_doc_ids"] = rel_meta.get("related_doc_ids", [])
-                        source["relationship_types"] = rel_meta.get("relationship_types", [])
-                        source["related_doc_count"] = rel_meta.get("related_doc_count", 0)
+                    # Build base source for both chunks and full document
+                    def build_source(content: str, is_chunk: bool = False, chunk_index: int | None = None) -> dict:
+                        source = {
+                            "title": node.title,
+                            "content": content,
+                            "doc_type": node.doc_type.value,
+                            "level": node.level,
+                            "publish_date": node.publish_date.isoformat() if node.publish_date else None,
+                            "effective_date": node.effective_date.isoformat() if node.effective_date else None,
+                            "expiry_date": node.expiry_date.isoformat() if node.expiry_date else None,
+                            "issuing_body": node.issuing_body,
+                            "document_number": node.document_number,
+                            "law_id": node.law_id,
+                            "keywords": node.keywords,
+                            "parent_id": node.parent_id,
+                            "children_ids": node.children_ids,
+                            "amendment_refs": node.amendment_refs,
+                            "citation_refs": node.citation_refs,
+                        }
 
+                        if is_chunk:
+                            source.update({
+                                "chunk_type": "chunk",
+                                "chunk_index": chunk_index,
+                                "parent_doc_id": node.id,
+                                "article_number": node.metadata.get("article_number"),
+                            })
+                        else:
+                            source.update({
+                                "chunk_type": node.metadata.get('chunk_type', 'article' if node.level == 2 else 'document'),
+                                "article_number": node.metadata.get('article_number', int(node.id.split("_")[-1]) if node.level == 2 and "_article_" in node.id else None),
+                                "parent_doc_id": node.metadata.get('parent_doc_id', node.parent_id if node.level == 2 else None),
+                            })
+
+                        # Enrich with relationship metadata if provided
+                        if relationship_metadata and node.id in relationship_metadata:
+                            rel_meta = relationship_metadata[node.id]
+                            source["related_doc_ids"] = rel_meta.get("related_doc_ids", [])
+                            source["relationship_types"] = rel_meta.get("relationship_types", [])
+                            source["related_doc_count"] = rel_meta.get("related_doc_count", 0)
+
+                        return source
+
+                    # Yield chunks if document was chunked
+                    if chunks:
+                        for chunk in chunks:
+                            chunk_id = f"{node.id}_chunk_{chunk['chunk_index']}"
+                            yield {
+                                "_index": index_name,
+                                "_id": chunk_id,
+                                "_source": build_source(chunk["content"], is_chunk=True, chunk_index=chunk["chunk_index"]),
+                            }
+
+                    # Always yield the original full document (backward compatibility)
                     yield {
                         "_index": index_name,
                         "_id": node.id,
-                        "_source": source,
+                        "_source": build_source(node.content, is_chunk=False),
                     }
 
             # Perform bulk indexing with retry

@@ -90,6 +90,7 @@ class LegalGraphClient:
         indexes = [
             "CREATE INDEX document_year IF NOT EXISTS FOR (d:Document) ON (d.year)",
             "CREATE INDEX document_type IF NOT EXISTS FOR (d:Document) ON (d.doc_type)",
+            "CREATE INDEX document_law_id IF NOT EXISTS FOR (d:Document) ON (d.law_id)",
             "CREATE INDEX article_number IF NOT EXISTS FOR (a:Article) ON (a.number)",
         ]
         
@@ -116,6 +117,7 @@ class LegalGraphClient:
             d.expiry_date = $expiry_date,
             d.issuing_body = $issuing_body,
             d.document_number = $document_number,
+            d.law_id = $law_id,
             d.level = $level,
             d.keywords = $keywords
         RETURN d.id as id
@@ -132,6 +134,7 @@ class LegalGraphClient:
             "expiry_date": node.expiry_date.isoformat() if node.expiry_date else None,
             "issuing_body": node.issuing_body,
             "document_number": node.document_number,
+            "law_id": node.law_id,
             "level": node.level,
             "keywords": node.keywords,
         }
@@ -288,8 +291,20 @@ class LegalGraphClient:
         if not isinstance(max_depth, int) or max_depth < 1 or max_depth > 10:
             max_depth = 2  # Safe default
         
+        # Include RELATES_TO with amendment-type values from the dataset
+        # (dataset stores all rels as RELATES_TO {type: '<Vietnamese name>'})
         query = f"""
-        MATCH path = (d:Document {{id: $doc_id}})-[:AMENDED_BY*1..{max_depth}]->(amendment:Document)
+        MATCH path = (d:Document {{id: $doc_id}})-
+            [:AMENDED_BY|RELATES_TO*1..{max_depth}]->(amendment:Document)
+        WHERE amendment.id <> $doc_id
+          AND (
+            last(relationships(path)).type IS NULL OR
+            last(relationships(path)).type IN [
+                'V\u0103n b\u1ea3n \u0111\u01b0\u1ee3c s\u1eeda \u0111\u1ed5i',
+                'V\u0103n b\u1ea3n s\u1eeda \u0111\u1ed5i',
+                'AMENDED_BY'
+            ]
+          )
         RETURN amendment.id as id,
                amendment.title as title,
                amendment.content as content,
@@ -442,8 +457,9 @@ class LegalGraphClient:
         if not isinstance(max_hops, int) or max_hops < 1 or max_hops > 10:
             max_hops = 2
         
+        # RELATES_TO covers all dataset relationships; also support typed ones
         query = f"""
-        MATCH path = (d:Document {{id: $doc_id}})-[:REFERENCES|CITES*1..{max_hops}]-(related:Document)
+        MATCH path = (d:Document {{id: $doc_id}})-[:REFERENCES|CITES|RELATES_TO*1..{max_hops}]-(related:Document)
         WHERE related.id <> $doc_id
         RETURN related.id as id,
                related.title as title,
@@ -535,10 +551,12 @@ class LegalGraphClient:
         if not isinstance(max_hops, int) or max_hops < 1 or max_hops > 10:
             max_hops = 2
         
+        # RELATES_TO is the type used when ingesting from the dataset;
+        # also include domain-specific typed relationships for completeness
         query = f"""
         UNWIND $seed_ids as seed_id
         MATCH (seed {{id: seed_id}})
-        OPTIONAL MATCH path = (seed)-[:AMENDED_BY|CITES|REFERENCES*1..{max_hops}]-(related)
+        OPTIONAL MATCH path = (seed)-[:AMENDED_BY|CITES|REFERENCES|RELATES_TO*1..{max_hops}]-(related)
         WHERE related.id <> seed_id AND NOT related.id IN $seed_ids
         WITH related, min(length(path)) as distance, count(DISTINCT seed_id) as seed_count
         RETURN related.id as id,

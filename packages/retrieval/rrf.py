@@ -1,11 +1,88 @@
 """Reciprocal Rank Fusion (RRF) for combining BM25 and dense retrieval results."""
 
+import logging
 from collections import defaultdict
+from typing import TYPE_CHECKING
+
+from packages.common.config import get_settings
+
+if TYPE_CHECKING:
+    from packages.common.types import QueryPlan
+
+logger = logging.getLogger(__name__)
+
+
+def adaptive_rrf_params(query_plan: "QueryPlan | None") -> tuple[int, list[float]]:
+    """Compute adaptive RRF parameters based on query characteristics.
+
+    Based on IR literature principles:
+    - Short specific queries benefit from dense (semantic) retrieval
+    - Long/broad queries benefit from BM25 (exact term matching)
+    - Negation queries need BM25 for keyword-level negation detection
+
+    Args:
+        query_plan: Structured query plan with strategy and normalized_query fields
+
+    Returns:
+        Tuple of (k, weights) where:
+        - k: RRF damping constant
+        - weights: List of two weights [bm25_weight, dense_weight]
+    """
+    settings = get_settings()
+
+    # Default: use config values with slight BM25 boost for Vietnamese legal text
+    if query_plan is None:
+        return settings.search_rrf_k, [1.2, 1.0]
+
+    # Get query text for length calculation
+    query_text = query_plan.normalized_query or query_plan.original_query or ""
+    query_length = len(query_text.split())  # Whitespace-separated token count
+
+    # Get strategy (handle both enum and string)
+    strategy = query_plan.strategy
+    strategy_name = strategy.value if hasattr(strategy, 'value') else str(strategy)
+
+    # Rule 1: Short specific queries (CITATION) - favor dense for semantic matching
+    if query_length < 15 and strategy_name == "citation":
+        k = 30
+        weights = [0.6, 1.0]  # Favor dense
+        logger.debug(
+            f"Adaptive RRF: short citation query (len={query_length}), "
+            f"k={k}, weights={weights}"
+        )
+        return k, weights
+
+    # Rule 2: Long broad queries or SEMANTIC - favor BM25 for term matching
+    if query_length > 50 or strategy_name == "semantic":
+        k = 80
+        weights = [1.2, 0.8]  # Favor BM25
+        logger.debug(
+            f"Adaptive RRF: long/semantic query (len={query_length}), "
+            f"k={k}, weights={weights}"
+        )
+        return k, weights
+
+    # Rule 3: NEGATION queries - BM25 handles negation keywords better
+    if strategy_name == "negation":
+        k = 40
+        weights = [1.0, 0.6]  # Favor BM25
+        logger.debug(
+            f"Adaptive RRF: negation query (len={query_length}), "
+            f"k={k}, weights={weights}"
+        )
+        return k, weights
+
+    # Default: use config defaults with slight BM25 boost for Vietnamese legal text
+    logger.debug(
+        f"Adaptive RRF: default (len={query_length}, strategy={strategy_name}), "
+        f"k={settings.search_rrf_k}, weights=[1.2, 1.0]"
+    )
+    return settings.search_rrf_k, [1.2, 1.0]
 
 
 def reciprocal_rank_fusion(
     result_lists: list[list[tuple[str, float]]],
-    k: int = 60,
+    k: int | None = None,
     top_n: int = 20,
 ) -> list[tuple[str, float]]:
     """Fuse multiple ranked result lists using RRF.
@@ -14,12 +91,16 @@ def reciprocal_rank_fusion(
 
     Args:
         result_lists: List of ranked results, each is list of (doc_id, score)
-        k: RRF constant (default 60, higher = more uniform, lower = emphasizes top ranks)
+        k: RRF constant (default from config, higher = more uniform, lower = emphasizes top ranks)
         top_n: Number of results to return
 
     Returns:
         List of (doc_id, fused_score) sorted descending by score
     """
+    # Use config default if not provided
+    if k is None:
+        k = get_settings().search_rrf_k
+
     # Track fused scores for each document
     fused_scores: dict[str, float] = defaultdict(float)
 
@@ -42,7 +123,7 @@ def reciprocal_rank_fusion(
 def weighted_rrf(
     result_lists: list[list[tuple[str, float]]],
     weights: list[float],
-    k: int = 60,
+    k: int | None = None,
     top_n: int = 20,
 ) -> list[tuple[str, float]]:
     """Weighted Reciprocal Rank Fusion for combining ranked lists.
@@ -52,7 +133,7 @@ def weighted_rrf(
     Args:
         result_lists: List of ranked results, each is list of (doc_id, score)
         weights: Weight multiplier for each result list (must match len(result_lists))
-        k: RRF constant (default 60)
+        k: RRF constant (default from config)
         top_n: Number of results to return
 
     Returns:
@@ -61,6 +142,10 @@ def weighted_rrf(
     Raises:
         ValueError: If weights length doesn't match result_lists length
     """
+    # Use config default if not provided
+    if k is None:
+        k = get_settings().search_rrf_k
+
     if len(weights) != len(result_lists):
         raise ValueError(
             f"Number of weights ({len(weights)}) must match "
@@ -96,12 +181,14 @@ class ReciprocalRankFusion:
     of low-ranked items.
     """
 
-    def __init__(self, k: int = 60) -> None:
+    def __init__(self, k: int | None = None) -> None:
         """Initialize RRF with damping factor.
 
         Args:
-            k: RRF damping constant (default: 60)
+            k: RRF damping constant (default from config)
         """
+        if k is None:
+            k = get_settings().search_rrf_k
         self.k = k
 
     def fuse(

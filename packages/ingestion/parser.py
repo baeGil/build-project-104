@@ -68,8 +68,17 @@ DOC_TYPE_PATTERNS = {
 }
 
 # Document number patterns
+# Examples: "số: 36/1999/NĐ-CP", "số 61/2020/QH14", "Số: 71/HĐBT"
+# Use \d+ to match ANY number of digits - no hardcoded limits
 DOC_NUMBER_PATTERN = re.compile(
-    r"(?:số|Số)\s*[:\s]\s*(\d{2,4}/[\w\-]+(?:/[\w\-]+)?)",
+    r"(?:số|Số)\s*[:\s]\s*(\d+/[\w\-]+(?:/[\w\-]+)*)",
+    re.IGNORECASE | re.UNICODE,
+)
+
+# Alternative pattern: look for document number in first 200 chars with context
+# Matches patterns like "36/1999/NĐ-CP", "61/2020/QH14", "103/SL"
+DOC_NUMBER_CONTEXT_PATTERN = re.compile(
+    r"(?:văn\s+bản|công\s+văn|quyết\s+định|nghị\s+định|thông\s+tư|sắc\s+lệnh)?\s*(\d+/\d*/?[\w\-\u00C0-\u1EF9]*)",
     re.IGNORECASE | re.UNICODE,
 )
 
@@ -113,6 +122,7 @@ def extract_metadata(text: str) -> dict[str, Any]:
     - Document type
     - Publication/effective dates
     - Document number
+    - Law ID (extracted from document number)
     - Issuing body
 
     Args:
@@ -127,6 +137,7 @@ def extract_metadata(text: str) -> dict[str, Any]:
         "effective_date": None,
         "expiry_date": None,
         "document_number": None,
+        "law_id": None,  # New field
         "issuing_body": None,
     }
 
@@ -148,8 +159,79 @@ def extract_metadata(text: str) -> dict[str, Any]:
 
     # Extract document number
     doc_num_match = DOC_NUMBER_PATTERN.search(text)
+    
+    # If primary pattern doesn't match, try context-based extraction
+    if not doc_num_match:
+        # Look for document number in header (first 300 chars)
+        header = text[:300]
+        doc_num_match = DOC_NUMBER_CONTEXT_PATTERN.search(header)
+    
     if doc_num_match:
-        metadata["document_number"] = doc_num_match.group(1)
+        raw_doc_num = doc_num_match.group(1)
+        
+        # Clean up: detect truncated Vietnamese words
+        # Strategy: split by / and check if last part is a complete abbreviation or truncated word
+        parts = raw_doc_num.split('/')
+        
+        # Vietnamese document types typically end with:
+        # - Standard abbreviations: NĐ-CP, TT, QĐ, SL, CP, QH14, HĐBT, etc. (2-6 chars)
+        # - Full words: "Luật", "Pháp lệnh" (rare in number field)
+        # If a part is 4-6 chars and looks like Vietnamese word (not abbreviation), it's truncated
+        # Clean up: detect truncated Vietnamese words using GENERAL rules
+        # Strategy: Vietnamese legal document numbers follow pattern:
+        #   [number]/[year?]/[abbreviation]
+        # Where:
+        #   - number: digits only (e.g., "36", "103")
+        #   - year: 4 digits (e.g., "1999", "2020") - OPTIONAL
+        #   - abbreviation: UPPERCASE letters, may contain hyphens/digits (e.g., "NĐ-CP", "QH14")
+        #
+        # Truncated words are lowercase Vietnamese words with diacritics
+        
+        cleaned_parts = []
+        for i, part in enumerate(parts):
+            # Rule 1: First part must be pure digits (document number)
+            if i == 0:
+                if part.isdigit():
+                    cleaned_parts.append(part)
+                else:
+                    # Invalid format - stop processing
+                    break
+            
+            # Rule 2: Middle parts - accept if numeric (year) or abbreviation pattern
+            else:
+                # Check if this part matches abbreviation pattern:
+                # - All uppercase (may include Vietnamese uppercase like Đ, Ô)
+                # - OR contains structural chars (hyphen, digits)
+                # - NOT lowercase Vietnamese words
+                
+                is_numeric = part.isdigit()
+                
+                # Detect if it's a Vietnamese word (has lowercase + diacritics)
+                has_lowercase_diacritics = any(
+                    c in 'áàảãạăắằẳẵặâấầẩẫậéèẻẽẹêếềểễệíìỉĩịóòỏõọôốồổỗộơớờởợúùủũụưứừửữựýỳỷỹỵđ'
+                    for c in part  # Check original case, not lower()
+                ) and not part.isupper()
+                
+                # Vietnamese truncated words: lowercase with diacritics
+                # Examples: "Chính", "Nghị", "định" 
+                if has_lowercase_diacritics:
+                    # This is a Vietnamese word, not an abbreviation - stop
+                    break
+                
+                # Accept: pure numbers, uppercase abbreviations, or mixed with structural chars
+                if is_numeric or part.isupper() or '-' in part or any(c.isdigit() for c in part):
+                    cleaned_parts.append(part)
+                else:
+                    # Doesn't match any valid pattern - stop
+                    break
+        
+        metadata["document_number"] = '/'.join(cleaned_parts)
+        
+        # Extract law_id from document_number
+        # Use the cleaned document number as law_id
+        # General pattern: starts with digits followed by /
+        if re.match(r'\d+/', metadata["document_number"]):
+            metadata["law_id"] = metadata["document_number"]
 
     # Extract issuing body
     for pattern in ISSUING_BODY_PATTERNS:
@@ -278,24 +360,61 @@ def extract_citation_refs(text: str) -> list[str]:
     return refs
 
 
-def parse_legal_document(text: str, title: str | None = None) -> LegalNode:
+def parse_legal_document(
+    text: str,
+    title: str | None = None,
+    doc_id: str | None = None,
+    law_id: str | None = None,
+    document_number: str | None = None,
+    doc_type: "DocumentType | None" = None,
+    publish_date: "date | None" = None,
+    effective_date: "date | None" = None,
+    issuing_body: str | None = None,
+) -> LegalNode:
     """Parse a full legal document into a hierarchical LegalNode structure.
 
     Args:
         text: Raw document text.
         title: Optional document title. If not provided, will extract from text.
+        doc_id: Optional document ID from the source dataset. If not provided,
+                a new UUID will be generated.
+        law_id: Optional law_id directly from dataset (so_ky_hieu). Takes
+                priority over regex-extracted value from text.
+        document_number: Optional document number directly from dataset.
+        doc_type: Optional document type from dataset. Takes priority over
+                  the type inferred from content text.
+        publish_date: Optional publish date from dataset (ngay_ban_hanh).
+                      Takes priority over regex-extracted date.
+        effective_date: Optional effective date from dataset (ngay_co_hieu_luc).
+                        Takes priority over regex-extracted date.
+        issuing_body: Optional issuing organisation from dataset
+                      (co_quan_ban_hanh). Takes priority over regex-extracted.
 
     Returns:
         Root LegalNode containing the full document hierarchy.
     """
-    # Extract metadata
+    # Extract metadata from content text
     metadata = extract_metadata(text)
 
     # Use provided title or extract from first line
     doc_title = title or text.split("\n")[0].strip()
 
-    # Generate document ID
-    doc_id = str(uuid.uuid4())
+    # Use provided doc_id (from dataset) or generate UUID as fallback
+    doc_id = doc_id or str(uuid.uuid4())
+
+    # Dataset values take priority over regex-extracted values
+    if law_id:
+        metadata["law_id"] = law_id
+    if document_number:
+        metadata["document_number"] = document_number
+    if doc_type is not None:
+        metadata["doc_type"] = doc_type
+    if publish_date is not None:
+        metadata["publish_date"] = publish_date
+    if effective_date is not None:
+        metadata["effective_date"] = effective_date
+    if issuing_body:
+        metadata["issuing_body"] = issuing_body
 
     # Extract articles
     articles = extract_articles(text)
@@ -335,6 +454,7 @@ def parse_legal_document(text: str, title: str | None = None) -> LegalNode:
             expiry_date=metadata["expiry_date"],
             issuing_body=metadata["issuing_body"],
             document_number=metadata["document_number"],
+            law_id=metadata["law_id"],  # Add law_id
         )
         child_nodes.append(article_node)
 
@@ -351,6 +471,7 @@ def parse_legal_document(text: str, title: str | None = None) -> LegalNode:
         expiry_date=metadata["expiry_date"],
         issuing_body=metadata["issuing_body"],
         document_number=metadata["document_number"],
+        law_id=metadata["law_id"],  # Add law_id
         amendment_refs=amendment_refs,
         citation_refs=citation_refs,
     )

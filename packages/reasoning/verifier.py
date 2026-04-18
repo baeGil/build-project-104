@@ -45,16 +45,19 @@ class LegalVerifier:
     
     def __init__(self, settings: Settings):
         self.settings = settings
-        self._groq_client = None  # Lazy init
+        self._llm_client = None  # Lazy init
         self._cache: dict[str, dict] = {}  # In-memory cache for verification results
     
     @property
-    def groq_client(self):
-        """Lazy-init Groq client."""
-        if self._groq_client is None:
-            import groq
-            self._groq_client = groq.AsyncGroq(api_key=self.settings.groq_api_key)
-        return self._groq_client
+    def llm_client(self):
+        """Lazy-init LLM client (OpenAI-compatible: OpenRouter, Ollama, etc.)."""
+        if self._llm_client is None:
+            import openai
+            self._llm_client = openai.AsyncOpenAI(
+                base_url=self.settings.llm_base_url,
+                api_key=self.settings.llm_api_key or "no-key",
+            )
+        return self._llm_client
     
     async def verify(
         self,
@@ -195,7 +198,7 @@ class LegalVerifier:
         prompt = self._build_verification_prompt(clause, regulation, context)
         
         try:
-            response = await self._call_groq_with_fallback(
+            response = await self._call_llm(
                 prompt,
                 temperature=0,
                 max_tokens=200,
@@ -246,34 +249,26 @@ Definitions:
 Respond only with the structured format above."""
         return prompt
     
-    async def _call_groq_with_fallback(
+    async def _call_llm(
         self, prompt: str, temperature: float, max_tokens: int
     ) -> str:
-        """Call Groq API with fallback model on rate limit."""
-        models = [
-            self.settings.groq_model_primary,
-            self.settings.groq_model_fallback,
-        ]
-        
+        """Call LLM via OpenAI-compatible API (OpenRouter, Ollama, etc.)."""
+        model = self.settings.llm_model
         last_error = None
-        for model in models:
-            try:
-                response = await self.groq_client.chat.completions.create(
-                    model=model,
-                    messages=[{"role": "user", "content": prompt}],
-                    temperature=temperature,
-                    max_tokens=max_tokens,
-                )
-                return response.choices[0].message.content or ""
-            except Exception as e:
-                last_error = e
-                error_str = str(e).lower()
-                if "rate limit" in error_str or "ratelimit" in error_str or "429" in error_str:
-                    continue  # Try fallback model
-                raise  # Other errors propagate
+        try:
+            response = await self.llm_client.chat.completions.create(
+                model=model,
+                messages=[{"role": "user", "content": prompt}],
+                temperature=temperature,
+                max_completion_tokens=max_tokens,
+            )
+            return response.choices[0].message.content or ""
+        except Exception as e:
+            last_error = e
+            raise
         
-        # Both models failed
-        raise last_error or Exception("Groq API call failed")
+        # Unreachable but satisfies linter
+        raise last_error or Exception("LLM API call failed")
     
     def _parse_llm_response(self, response_text: str) -> dict[str, Any]:
         """Parse structured LLM response into verification result."""

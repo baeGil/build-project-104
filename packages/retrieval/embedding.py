@@ -3,6 +3,7 @@
 import gc
 import logging
 import os
+import time
 from typing import Any, Generator, Iterator
 
 import numpy as np
@@ -368,6 +369,43 @@ class EmbeddingService:
         if get_dim is None:
             get_dim = self._model.get_sentence_embedding_dimension
         return get_dim()
+
+    def warmup(self) -> None:
+        """Eagerly load the model and trigger JIT/ONNX compilation.
+
+        This method pre-loads the embedding model and encodes a dummy sentence
+        to trigger any JIT compilation or ONNX optimization, eliminating the
+        cold-start latency on the first real encoding request.
+
+        If the model is already loaded, this is a no-op.
+        """
+        if self._model is not None:
+            logger.debug("Embedding model already loaded, skipping warmup")
+            return
+
+        logger.info("Warming up embedding model...")
+        warmup_start = time.time()
+
+        # Load the model (calls _load_model)
+        model = self._load_model()
+
+        # Encode a dummy sentence to trigger JIT/ONNX compilation
+        try:
+            dummy_embedding = model.encode(
+                "warmup",
+                batch_size=1,
+                normalize_embeddings=True,
+                show_progress_bar=False,
+                convert_to_numpy=True,
+            )
+            warmup_time = time.time() - warmup_start
+            logger.info(
+                f"Embedding model warmed up in {warmup_time:.2f}s "
+                f"(dim={len(dummy_embedding)})"
+            )
+        except Exception as e:
+            logger.warning(f"Embedding warmup encoding failed (non-fatal): {e}")
+            # Don't raise - warmup failures should not block startup
 
     @classmethod
     def get_instance(cls, model_name: str | None = None) -> "EmbeddingService":

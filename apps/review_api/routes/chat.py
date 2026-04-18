@@ -1,6 +1,7 @@
 """Legal chat routes."""
 import json
 import logging
+import time
 
 from fastapi import APIRouter, HTTPException, Request, status
 from fastapi.responses import StreamingResponse
@@ -147,38 +148,60 @@ async def legal_chat(request: ChatRequest, http_request: Request) -> ChatAnswer:
         HTTPException: If query processing fails
     """
     try:
+        total_start = time.time()
         settings = get_settings()
         app_state = http_request.app.state
 
-        # Plan query
+        # Step 1: Plan query
+        t0 = time.time()
         planner = getattr(app_state, "query_planner", None) or QueryPlanner()
         query_plan = planner.plan(request.query)
+        t1 = time.time()
+        planner_time = (t1 - t0) * 1000
+        logger.info(f"[CHAT] Step 1 - Query Planner: {planner_time:.1f}ms")
 
-        # Retrieve documents
+        # Step 2: Retrieve documents
+        t0 = time.time()
         retriever = getattr(app_state, "hybrid_retriever", None) or HybridRetriever(settings)
         retrieved_docs = await retriever.search(
             query=query_plan.normalized_query,
             top_k=5,
             filters=request.filters or query_plan.search_filters,
         )
+        t1 = time.time()
+        retrieval_time = (t1 - t0) * 1000
+        logger.info(f"[CHAT] Step 2 - Hybrid Retriever: {retrieval_time:.1f}ms ({len(retrieved_docs)} docs)")
 
-        # Convert to RetrievedDocument objects
+        # Step 3: Convert to RetrievedDocument objects
+        t0 = time.time()
         retrieved_documents = [
             _coerce_retrieved_document(doc, i)
             for i, doc in enumerate(retrieved_docs)
         ]
+        t1 = time.time()
+        coerce_time = (t1 - t0) * 1000
+        logger.info(f"[CHAT] Step 3 - Coerce Documents: {coerce_time:.1f}ms")
 
-        # Build context with relationship enrichment
+        # Step 4: Build context with relationship enrichment
+        t0 = time.time()
         context_documents = await _build_context_documents(
             app_state, settings, retrieved_documents, request.include_relationships
         )
+        t1 = time.time()
+        context_time = (t1 - t0) * 1000
+        logger.info(f"[CHAT] Step 4 - Context Injector: {context_time:.1f}ms")
 
-        # Build citations (including related documents if available)
+        # Step 5: Build citations
+        t0 = time.time()
         citations = _build_citations_with_relationships(
             retrieved_documents[:3], include_related=request.include_relationships
         )
+        t1 = time.time()
+        citation_time = (t1 - t0) * 1000
+        logger.info(f"[CHAT] Step 5 - Citations: {citation_time:.1f}ms")
 
-        # Assemble EvidencePack
+        # Step 6: Assemble EvidencePack
+        t0 = time.time()
         evidence_pack = EvidencePack(
             clause=request.query,
             retrieved_documents=retrieved_documents,
@@ -186,12 +209,28 @@ async def legal_chat(request: ChatRequest, http_request: Request) -> ChatAnswer:
             citations=citations,
             verification_confidence=retrieved_documents[0].score if retrieved_documents else 0.0,
         )
+        t1 = time.time()
+        evidence_time = (t1 - t0) * 1000
+        logger.info(f"[CHAT] Step 6 - Evidence Pack: {evidence_time:.1f}ms")
 
-        # Generate answer
+        # Step 7: Generate answer (LLM)
+        t0 = time.time()
         generator = getattr(app_state, "legal_generator", None) or LegalGenerator(settings)
         answer = await generator.generate_chat_answer(
             query=request.query,
             evidence_pack=evidence_pack,
+        )
+        t1 = time.time()
+        llm_time = (t1 - t0) * 1000
+        logger.info(f"[CHAT] Step 7 - LLM Generation: {llm_time:.1f}ms")
+
+        total_time = (time.time() - total_start) * 1000
+        logger.info(
+            f"[CHAT] TOTAL: {total_time:.1f}ms | "
+            f"Planner: {planner_time:.1f}ms | "
+            f"Retrieval: {retrieval_time:.1f}ms | "
+            f"Context: {context_time:.1f}ms | "
+            f"LLM: {llm_time:.1f}ms ({llm_time/total_time*100:.0f}%)"
         )
 
         return answer

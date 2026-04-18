@@ -13,10 +13,11 @@ from __future__ import annotations
 import os
 import logging
 import time
-from typing import TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 
 from prometheus_client import Histogram
 
+from packages.common.config import get_settings
 from packages.common.types import RetrievedDocument
 
 if TYPE_CHECKING:
@@ -28,6 +29,11 @@ logger = logging.getLogger(__name__)
 os.environ.setdefault("TRANSFORMERS_NO_TF", "1")
 os.environ.setdefault("TRANSFORMERS_NO_FLAX", "1")
 os.environ.setdefault("USE_TF", "0")
+
+# Module-level model cache for singleton pattern
+_colbert_model_cache: Any = None
+_cross_encoder_cache: Any = None
+_model_type_cache: str | None = None
 
 RERANK_DURATION = Histogram(
     "reranker_duration_seconds",
@@ -46,22 +52,23 @@ class LegalReranker:
     Target: <100ms total for reranking top-20 candidates.
     """
 
-    def __init__(self, budget_ms: float = 150.0) -> None:
+    def __init__(self, budget_ms: float | None = None) -> None:
         """Initialize the LegalReranker.
 
         Args:
-            budget_ms: Maximum time allowed for reranking in milliseconds.
+            budget_ms: Maximum time allowed for reranking in milliseconds (defaults to config).
         """
         self._colbert_model = None  # Lazy load
         self._cross_encoder = None  # Fallback model
-        self.budget_ms = budget_ms
+        self.budget_ms = budget_ms if budget_ms is not None else get_settings().search_reranker_budget_ms
         self._model_type: str | None = None
 
     def _load_colbert(self) -> bool:
-        """Lazy-load ColBERTv2 model.
+        """Lazy-load ColBERTv2 model with singleton caching.
 
         Uses fastembed.LateInteractionTextEmbedding if available,
         otherwise falls back to sentence-transformers cross-encoder.
+        Models are cached at module level to avoid re-creation per request.
 
         Models tried in order:
         1. fastembed with colbert-ir/colbertv2.0
@@ -70,17 +77,30 @@ class LegalReranker:
         Returns:
             True if a model was successfully loaded, False otherwise.
         """
+        global _colbert_model_cache, _cross_encoder_cache, _model_type_cache
+
+        # Check instance-level cache first
         if self._colbert_model is not None or self._cross_encoder is not None:
+            return True
+
+        # Check module-level cache
+        if _colbert_model_cache is not None or _cross_encoder_cache is not None:
+            self._colbert_model = _colbert_model_cache
+            self._cross_encoder = _cross_encoder_cache
+            self._model_type = _model_type_cache
+            logger.debug("Using cached model from module-level cache")
             return True
 
         # Try fastembed with ColBERT first
         try:
             from fastembed import LateInteractionTextEmbedding
 
-            self._colbert_model = LateInteractionTextEmbedding(
+            _colbert_model_cache = LateInteractionTextEmbedding(
                 "colbert-ir/colbertv2.0"
             )
+            self._colbert_model = _colbert_model_cache
             self._model_type = "colbert"
+            _model_type_cache = "colbert"
             logger.info("Loaded ColBERTv2 model via fastembed")
             return True
         except ImportError:
@@ -92,8 +112,10 @@ class LegalReranker:
         try:
             from sentence_transformers import CrossEncoder
 
-            self._cross_encoder = CrossEncoder("cross-encoder/ms-marco-MiniLM-L-6-v2")
+            _cross_encoder_cache = CrossEncoder("cross-encoder/ms-marco-MiniLM-L-6-v2")
+            self._cross_encoder = _cross_encoder_cache
             self._model_type = "cross_encoder"
+            _model_type_cache = "cross_encoder"
             logger.info("Loaded cross-encoder model (ms-marco-MiniLM-L-6-v2)")
             return True
         except Exception as e:
@@ -172,7 +194,7 @@ class LegalReranker:
         """Apply fast position-decay scoring (< 5ms).
 
         Score = alpha * original_score + (1 - alpha) * (1 - position/total)
-        where alpha = 0.7 (weight towards original retrieval score)
+        where alpha = 0.5 (balanced weight between original score and position)
 
         Eliminates bottom half of candidates.
 
@@ -183,7 +205,7 @@ class LegalReranker:
             Top half of candidates after position-decay scoring.
         """
         total = len(candidates)
-        alpha = 0.7
+        alpha = 0.5  # Hardcoded: balanced weight for fairer "second opinion"
 
         scored_candidates = []
         for position, doc in enumerate(candidates):
@@ -400,7 +422,7 @@ class SimpleReranker:
 
         with RERANK_DURATION.labels(stage="simple_rerank").time():
             total = len(candidates)
-            alpha = 0.7
+            alpha = 0.5  # Hardcoded: balanced weight for fairer "second opinion"
 
             scored_candidates = []
             for position, doc in enumerate(candidates):
@@ -420,19 +442,22 @@ class SimpleReranker:
 
 
 def create_reranker(
-    use_model: bool = True, budget_ms: float = 150.0
+    use_model: bool = True, budget_ms: float | None = None
 ) -> LegalReranker | SimpleReranker:
     """Create appropriate reranker based on configuration.
 
     Args:
         use_model: Whether to use model-based reranking (ColBERT/cross-encoder).
             If False, returns SimpleReranker.
-        budget_ms: Maximum time allowed for reranking in milliseconds.
+        budget_ms: Maximum time allowed for reranking in milliseconds (defaults to config).
 
     Returns:
         LegalReranker if use_model is True and models are available,
         otherwise SimpleReranker.
     """
+    if budget_ms is None:
+        budget_ms = get_settings().search_reranker_budget_ms
+
     if not use_model:
         logger.info("Creating SimpleReranker (model-based reranking disabled)")
         return SimpleReranker()

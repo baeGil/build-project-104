@@ -235,12 +235,13 @@ class IngestionPipeline:
             async with pool.acquire() as conn:
                 await conn.execute(
                     """
-                    INSERT INTO legal_documents (id, title, content, doc_type, metadata)
-                    VALUES ($1, $2, $3, $4, $5)
+                    INSERT INTO legal_documents (id, title, content, doc_type, law_id, metadata)
+                    VALUES ($1, $2, $3, $4, $5, $6)
                     ON CONFLICT (id) DO UPDATE SET
                         title = EXCLUDED.title,
                         content = EXCLUDED.content,
                         doc_type = EXCLUDED.doc_type,
+                        law_id = EXCLUDED.law_id,
                         metadata = EXCLUDED.metadata,
                         updated_at = CURRENT_TIMESTAMP
                     """,
@@ -248,6 +249,7 @@ class IngestionPipeline:
                     node.title or "",
                     original_content,
                     node.doc_type.value if hasattr(node.doc_type, 'value') else str(node.doc_type),
+                    node.law_id,
                     json.dumps(metadata)
                 )
                 logger.debug(f"Stored document in PostgreSQL: {node.id}")
@@ -293,11 +295,57 @@ class IngestionPipeline:
         except Exception as e:
             logger.debug(f"Neo4j sync failed for {node.id}: {type(e).__name__}: {e}")
 
-        # Stage 5: Index with retry
+        # Stage 5: Index BOTH root documents AND articles with retry
         indexing_result = None
         async def _do_index():
             nonlocal indexing_result
-            indexing_result = await self.indexer.index([node])
+            
+            # Build list of all chunks to index: root document + articles
+            from packages.ingestion.parser import extract_articles
+            from packages.common.types import LegalNode
+            
+            articles = extract_articles(node.content)
+            
+            if not articles:
+                # If no articles extracted, index the root document only
+                logger.info(f"No articles extracted from {node.id}, indexing root document")
+                indexing_result = await self.indexer.index([node])
+                return indexing_result
+            
+            # Build list: root document first, then articles
+            chunks_to_index = [node]  # Root document
+            
+            for article in articles:
+                article_number = str(article["number"])
+                article_id = f"{node.id}_article_{article_number}"
+                article_title = f"Điều {article_number}. {article['title']}".strip(". ")
+                article_content = article["content"] or article_title
+                
+                article_node = LegalNode(
+                    id=article_id,
+                    title=article_title,
+                    content=article_content,
+                    doc_type=node.doc_type,
+                    parent_id=node.id,
+                    level=2,  # Article level
+                    publish_date=node.publish_date,
+                    effective_date=node.effective_date,
+                    expiry_date=node.expiry_date,
+                    issuing_body=node.issuing_body,
+                    document_number=node.document_number,
+                    law_id=node.law_id,
+                    keywords=node.keywords,
+                    metadata={
+                        'chunk_type': 'article',
+                        'article_number': int(article_number),
+                        'parent_doc_id': node.id,
+                    }
+                )
+                
+                chunks_to_index.append(article_node)
+            
+            logger.info(f"Indexing {len(chunks_to_index)} chunks (1 root + {len(articles)} articles) for doc {node.id}")
+            indexing_result = await self.indexer.index(chunks_to_index)
             return indexing_result
         
         try:
@@ -315,16 +363,21 @@ class IngestionPipeline:
     async def ingest_batch_documents(
         self,
         documents: list[dict[str, str]],
-        batch_size: int = 50,
+        batch_size: int = 100,
+        progress_callback=None,
     ) -> dict[str, Any]:
-        """Ingest multiple documents with optimized batching.
+        """Ingest multiple documents with optimized parallel processing.
         
-        Uses concurrent embedding generation and batch indexing
-        for much better throughput.
+        Features:
+        - Parallel parsing (6 workers)
+        - GPU-accelerated embeddings (CUDA > MPS > CPU)
+        - Batch indexing for throughput
+        - Progress callbacks for UI tracking
         
         Args:
             documents: List of {title, content} dicts
-            batch_size: Number of docs to process in parallel
+            batch_size: Number of docs per batch (default: 100)
+            progress_callback: Optional callback(current, total, stage) for progress updates
             
         Returns:
             Stats dict
@@ -338,7 +391,7 @@ class IngestionPipeline:
         # Preload embedding model BEFORE processing to avoid cold start
         logger.info("Preloading embedding model...")
         model_start = time.time()
-        await self.indexer.qdrant_indexer._get_embedding_model()
+        model = await self.indexer.qdrant_indexer._get_embedding_model()
         model_elapsed = time.time() - model_start
         logger.info(f"✓ Embedding model loaded in {model_elapsed:.1f}s")
         
@@ -352,32 +405,82 @@ class IngestionPipeline:
         }
         
         start_time = time.time()
+        total_docs = len(documents)
+        processed_docs = 0
         
-        # Process in batches for better parallelism
-        for batch_start in range(0, len(documents), batch_size):
-            batch_end = min(batch_start + batch_size, len(documents))
+        # Calculate total batches for progress tracking
+        total_batches = (total_docs + batch_size - 1) // batch_size
+        
+        # Process in batches
+        for batch_idx, batch_start in enumerate(range(0, total_docs, batch_size)):
+            batch_end = min(batch_start + batch_size, total_docs)
             batch = documents[batch_start:batch_end]
+            batch_num = batch_idx + 1
             
             batch_start_time = time.time()
-            logger.info(f"Processing batch {batch_start//batch_size + 1}: {len(batch)} docs")
+            logger.info(f"Processing batch {batch_num}/{total_batches}: {len(batch)} docs")
             
-            # Stage 1-2: Normalize & Parse (CPU-bound, can parallelize)
+            # Update progress: Parsing stage
+            if progress_callback:
+                progress_callback(processed_docs, total_docs, f"Parsing batch {batch_num}/{total_batches}")
+            
+            # Stage 1-2: Normalize & Parse (CPU-bound, parallel with 6 workers)
             nodes = []
             failed_docs = []
             
-            # Use thread pool for CPU-bound parsing
-            with ThreadPoolExecutor(max_workers=4) as executor:
+            # Use thread pool for CPU-bound parsing (6 workers)
+            with ThreadPoolExecutor(max_workers=6) as executor:
                 loop = asyncio.get_event_loop()
                 
                 def parse_doc(doc):
                     try:
                         normalized = normalize_legal_text(doc["content"])
-                        node = parse_legal_document(normalized, doc["title"])
+                        doc_metadata = doc.get("metadata", {})
+                        so_ky_hieu = doc_metadata.get("so_ky_hieu") or None
+
+                        from packages.common.types import DocumentType
+                        doc_type_str = doc.get("doc_type") or "other"
+                        try:
+                            doc_type_enum = DocumentType(doc_type_str)
+                        except ValueError:
+                            doc_type_enum = DocumentType.OTHER
+
+                        from datetime import date as _date, datetime as _datetime
+
+                        def _to_date(v):
+                            if v is None:
+                                return None
+                            if isinstance(v, _datetime):
+                                return v.date()
+                            if isinstance(v, _date):
+                                return v
+                            s = str(v).strip()
+                            import re as _re
+                            m = _re.match(r'(\d{4})-(\d{2})-(\d{2})', s)
+                            if m:
+                                return _date(int(m.group(1)), int(m.group(2)), int(m.group(3)))
+                            return None
+
+                        publish_date = _to_date(doc_metadata.get("ngay_ban_hanh"))
+                        effective_date = _to_date(doc_metadata.get("ngay_co_hieu_luc"))
+                        issuing_body = doc_metadata.get("co_quan_ban_hanh") or None
+
+                        node = parse_legal_document(
+                            normalized,
+                            doc["title"],
+                            doc_id=doc.get("id"),
+                            law_id=so_ky_hieu,
+                            document_number=so_ky_hieu,
+                            doc_type=doc_type_enum,
+                            publish_date=publish_date,
+                            effective_date=effective_date,
+                            issuing_body=issuing_body,
+                        )
                         return (node, normalized, None)
                     except Exception as e:
                         return (None, None, (doc["id"], str(e)))
                 
-                # Parse all docs in parallel
+                # Parse all docs in parallel (6 workers)
                 futures = [loop.run_in_executor(executor, parse_doc, doc) for doc in batch]
                 results = await asyncio.gather(*futures)
                 
@@ -393,26 +496,31 @@ class IngestionPipeline:
             if not nodes:
                 continue
             
+            # Update progress: PostgreSQL stage
+            if progress_callback:
+                progress_callback(processed_docs + len(nodes) * 0.2, total_docs, f"Storing to PostgreSQL (batch {batch_num})")
+            
             # Stage 3: Batch store in PostgreSQL
             try:
                 pool = await self._get_postgres_pool()
                 async with pool.acquire() as conn:
-                    # Use COPY for faster bulk insert
                     records = [
                         (node.id, node.title or "", normalized,
                          node.doc_type.value if hasattr(node.doc_type, 'value') else str(node.doc_type),
+                         node.law_id,
                          json.dumps(self._build_storage_metadata(node, "batch_ingestion")))
                         for node, normalized in nodes
                     ]
                     
                     await conn.executemany(
                         """
-                        INSERT INTO legal_documents (id, title, content, doc_type, metadata)
-                        VALUES ($1, $2, $3, $4, $5)
+                        INSERT INTO legal_documents (id, title, content, doc_type, law_id, metadata)
+                        VALUES ($1, $2, $3, $4, $5, $6)
                         ON CONFLICT (id) DO UPDATE SET
                             title = EXCLUDED.title,
                             content = EXCLUDED.content,
                             doc_type = EXCLUDED.doc_type,
+                            law_id = EXCLUDED.law_id,
                             metadata = EXCLUDED.metadata,
                             updated_at = CURRENT_TIMESTAMP
                         """,
@@ -424,7 +532,6 @@ class IngestionPipeline:
                 
             except Exception as e:
                 logger.error(f"Batch PostgreSQL store failed: {e}")
-                # Fallback to individual stores
                 for node, normalized in nodes:
                     try:
                         await self._store_in_postgres(node, normalized)
@@ -433,17 +540,63 @@ class IngestionPipeline:
                         stats["failed"] += 1
                         stats["errors"].append(f"{node.id}: {str(store_err)[:100]}")
 
+            # Update progress: Neo4j stage
+            if progress_callback:
+                progress_callback(processed_docs + len(nodes) * 0.4, total_docs, f"Syncing to Neo4j (batch {batch_num})")
+
+            # Stage 4: Sync to Neo4j
             for node, _ in nodes:
                 try:
                     await self.graph_sync.sync_legal_node(node)
                 except Exception as e:
                     logger.debug(f"Neo4j sync failed for {node.id}: {type(e).__name__}: {e}")
             
-            # Stage 5: Batch index (embedding generation is the bottleneck)
+            # Update progress: Indexing stage
+            if progress_callback:
+                progress_callback(processed_docs + len(nodes) * 0.6, total_docs, f"Indexing to Qdrant/OpenSearch (batch {batch_num})")
+            
+            # Stage 5: Batch index BOTH root documents AND articles
             if nodes:
                 try:
-                    nodes_only = [node for node, _ in nodes]
-                    indexing_result = await self.indexer.index(nodes_only)
+                    from packages.ingestion.parser import extract_articles
+                    from packages.common.types import LegalNode
+                    
+                    all_chunks = []
+                    for node, _ in nodes:
+                        all_chunks.append(node)  # Root document
+                        
+                        # Extract and create article chunks
+                        articles = extract_articles(node.content)
+                        for article in articles:
+                            article_number = str(article["number"])
+                            article_id = f"{node.id}_article_{article_number}"
+                            article_title = f"Điều {article_number}. {article['title']}".strip(". ")
+                            article_content = article["content"] or article_title
+                            
+                            article_node = LegalNode(
+                                id=article_id,
+                                title=article_title,
+                                content=article_content,
+                                doc_type=node.doc_type,
+                                parent_id=node.id,
+                                level=2,
+                                publish_date=node.publish_date,
+                                effective_date=node.effective_date,
+                                expiry_date=node.expiry_date,
+                                issuing_body=node.issuing_body,
+                                document_number=node.document_number,
+                                law_id=node.law_id,
+                                keywords=node.keywords,
+                                metadata={
+                                    'chunk_type': 'article',
+                                    'article_number': int(article_number),
+                                    'parent_doc_id': node.id,
+                                }
+                            )
+                            
+                            all_chunks.append(article_node)
+                    
+                    indexing_result = await self.indexer.index(all_chunks)
                     
                     qdrant_count = indexing_result.get("qdrant_indexed", 0)
                     opensearch_count = indexing_result.get("opensearch_indexed", 0)
@@ -451,10 +604,17 @@ class IngestionPipeline:
                     stats["qdrant_indexed"] += qdrant_count
                     stats["opensearch_indexed"] += opensearch_count
                     
-                    logger.info(f"Indexed batch: Qdrant={qdrant_count}, OpenSearch={opensearch_count}")
+                    logger.info(f"Indexed batch: {len(all_chunks)} chunks ({len(nodes)} roots + {len(all_chunks) - len(nodes)} articles), Qdrant={qdrant_count}, OpenSearch={opensearch_count}")
                     
                 except Exception as e:
                     logger.debug(f"Batch indexing failed: {e}")
+            
+            # Update processed count
+            processed_docs += len(batch)
+            
+            # Update progress: Batch complete
+            if progress_callback:
+                progress_callback(processed_docs, total_docs, f"Batch {batch_num}/{total_batches} complete")
             
             batch_elapsed = time.time() - batch_start_time
             docs_in_batch = stats["success"] + stats["failed"]
@@ -931,6 +1091,7 @@ class IngestionPipeline:
                     MATCH (t:Document {id: rel.target_id})
                     MERGE (s)-[r:RELATES_TO {type: rel.rel_type}]->(t)
                     ON CREATE SET r.created_at = datetime()
+                    ON MATCH SET r.last_updated = datetime()
                     RETURN count(r) AS count
                     """
 

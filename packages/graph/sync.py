@@ -117,8 +117,10 @@ class GraphSyncService:
     async def sync_existing_documents(self, limit: int | None = None) -> dict[str, Any]:
         """Backfill Neo4j from documents already stored in PostgreSQL."""
         pool = await self._get_postgres_pool()
+        # Include doc_type and law_id so we use the stored values rather than
+        # re-inferring them with regex (which can be inaccurate for historical docs).
         query = """
-            SELECT id, title, content, metadata
+            SELECT id, title, content, doc_type, law_id, metadata
             FROM legal_documents
             ORDER BY created_at ASC
         """
@@ -159,8 +161,39 @@ class GraphSyncService:
                 elif isinstance(metadata_value, dict):
                     metadata = metadata_value
 
-                if metadata.get("document_number") and not node.document_number:
+                # Override with stored DB values (ground truth from ingestion)
+                # These take priority over anything regex-extracted from content.
+                db_doc_type = row.get("doc_type")
+                if db_doc_type:
+                    try:
+                        node.doc_type = DocumentType(db_doc_type)
+                    except ValueError:
+                        pass  # Keep regex-inferred value
+
+                db_law_id = row.get("law_id")
+                if db_law_id:
+                    node.law_id = db_law_id
+                    node.document_number = db_law_id
+                elif metadata.get("document_number") and not node.document_number:
                     node.document_number = metadata["document_number"]
+
+                # Read dates from metadata JSON (stored during ingestion)
+                if not node.publish_date and metadata.get("publish_date"):
+                    from datetime import date as _date
+                    try:
+                        node.publish_date = _date.fromisoformat(str(metadata["publish_date"]))
+                    except (ValueError, TypeError):
+                        pass
+
+                if not node.effective_date and metadata.get("effective_date"):
+                    from datetime import date as _date
+                    try:
+                        node.effective_date = _date.fromisoformat(str(metadata["effective_date"]))
+                    except (ValueError, TypeError):
+                        pass
+
+                if not node.issuing_body and metadata.get("issuing_body"):
+                    node.issuing_body = metadata["issuing_body"]
 
                 result = await self.sync_legal_node(node)
                 for key in ("documents", "articles", "subsections", "reference_links", "amendment_links", "citation_links"):

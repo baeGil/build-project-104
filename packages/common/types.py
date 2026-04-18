@@ -76,6 +76,7 @@ class LegalNode(BaseModel):
     expiry_date: date | None = None
     issuing_body: str | None = None
     document_number: str | None = None
+    law_id: str | None = Field(None, description="Law identifier (e.g., '61/2020/QH14') extracted from document_number")
 
     # Relationships
     amendment_refs: list[str] = Field(default_factory=list, description="IDs of amended documents")
@@ -85,6 +86,9 @@ class LegalNode(BaseModel):
     # Search metadata
     embedding_id: str | None = Field(None, description="Vector DB reference")
     keywords: list[str] = Field(default_factory=list)
+    
+    # Chunk metadata (for article-level indexing)
+    metadata: dict[str, Any] = Field(default_factory=dict, description="Additional chunk metadata")
 
 
 class QueryPlan(BaseModel):

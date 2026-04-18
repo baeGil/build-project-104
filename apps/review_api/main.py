@@ -1,12 +1,57 @@
 """FastAPI application for Vietnamese Legal Contract Review API."""
 import asyncio
 import logging
+import sys
+import warnings
 from contextlib import asynccontextmanager
 from typing import AsyncGenerator
+
+# Suppress multiprocessing resource tracker warnings (macOS only, harmless)
+warnings.filterwarnings("ignore", message="resource_tracker")
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from prometheus_fastapi_instrumentator import Instrumentator
+
+# Configure logging with custom formatter for better visibility
+class CustomFormatter(logging.Formatter):
+    """Custom formatter with colors and cleaner output."""
+    
+    grey = "\x1b[38;20m"
+    green = "\x1b[32;20m"
+    yellow = "\x1b[33;20m"
+    red = "\x1b[31;20m"
+    bold_red = "\x1b[31;1m"
+    reset = "\x1b[0m"
+    
+    format_string = "%(asctime)s | %(levelname)-7s | %(name)s | %(message)s"
+    
+    FORMATS = {
+        logging.DEBUG: grey + format_string + reset,
+        logging.INFO: green + format_string + reset,
+        logging.WARNING: yellow + format_string + reset,
+        logging.ERROR: red + format_string + reset,
+        logging.CRITICAL: bold_red + format_string + reset,
+    }
+    
+    def format(self, record):
+        log_fmt = self.FORMATS.get(record.levelno)
+        formatter = logging.Formatter(log_fmt)
+        return formatter.format(record)
+
+# Setup logging
+logging.basicConfig(
+    level=logging.WARNING,  # Only show warnings and above by default
+    format='%(asctime)s | %(levelname)-7s | %(name)s | %(message)s',
+    handlers=[logging.StreamHandler(sys.stdout)]
+)
+
+# Silence noisy third-party libraries
+logging.getLogger("httpx").setLevel(logging.WARNING)
+logging.getLogger("opensearch").setLevel(logging.WARNING)
+logging.getLogger("neo4j.notifications").setLevel(logging.WARNING)
+logging.getLogger("datasets").setLevel(logging.WARNING)
+logging.getLogger("sentence_transformers").setLevel(logging.WARNING)
 
 from apps.review_api.middleware.timing import TimingMiddleware
 from apps.review_api.routes import chat, citations, dataset_ingestion, graph, ingest, review
@@ -48,6 +93,33 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     app.state.review_pipeline.verifier = app.state.legal_verifier
     app.state.review_pipeline.context_injector = app.state.context_injector
     app.state.embedding_service = EmbeddingService.get_instance(settings.embedding_model)
+    
+    # Warm-up: Pre-load embedding model and database connections
+    # This eliminates cold start latency for first user query
+    print("\n" + "="*60)
+    print("🚀 Starting Vietnamese Legal AI Backend...")
+    print("="*60 + "\n")
+    
+    try:
+        # Load embedding model into memory
+        embedding_service = app.state.embedding_service
+        _ = embedding_service.encode("warm up query")
+        print("✅ Embedding model loaded (768 dimensions)")
+        
+        # Initialize database connections
+        await app.state.hybrid_retriever._get_qdrant_client()
+        print("✅ Qdrant connected (Vector Search)")
+        
+        await app.state.hybrid_retriever._get_opensearch_client()
+        print("✅ OpenSearch connected (Full-text Search)")
+        
+        # Run a dummy search to warm up all pipelines
+        await app.state.hybrid_retriever.search("warm up", top_k=1, bm25_candidates=1, dense_candidates=1)
+        print("✅ Retrieval system warmed up")
+    except Exception as e:
+        logger.warning(f"⚠️  Warm-up failed (non-critical): {e}")
+    
+    print("\n✅ API Server Ready!\n")
 
     warmup_tasks = (
         app.state.hybrid_retriever._get_qdrant_client(),
@@ -84,7 +156,6 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
 
     # Perform a warmup retrieval query to eliminate cold start latency
     # This ensures the first user request is fast (no embedding load delay)
-    logger.info("Performing retrieval warmup query...")
     try:
         warmup_start = asyncio.get_event_loop().time()
         await app.state.hybrid_retriever.search(
@@ -94,7 +165,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
             dense_candidates=1,
         )
         warmup_duration = asyncio.get_event_loop().time() - warmup_start
-        logger.info(f"✓ Retrieval warmup complete in {warmup_duration:.2f}s - First request will be fast!")
+        print(f"✅ Warmup query completed in {warmup_duration:.2f}s\n")
     except Exception as exc:
         logger.warning(f"Retrieval warmup query failed (non-critical): {exc}")
 

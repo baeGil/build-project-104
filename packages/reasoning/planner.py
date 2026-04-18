@@ -189,6 +189,50 @@ LEGAL_SYNONYMS: dict[str, list[str]] = {
     "nghỉ_hằng_năm": ["nghỉ_phép", "nghỉ_phép_năm", "nghỉ_hằng_năm"],
 }
 
+# Verb form patterns for Vietnamese legal texts
+# Maps base verbs to their common derivational/nominalized forms
+VERB_FORM_PATTERNS: dict[str, list[str]] = {
+    "quản lý": ["được quản lý", "việc quản lý", "công tác quản lý"],
+    "thành lập": ["được thành lập", "việc thành lập"],
+    "cung cấp": ["được cung cấp", "việc cung cấp"],
+    "quy định": ["được quy định", "theo quy định", "các quy định"],
+    "báo cáo": ["việc báo cáo", "chế độ báo cáo"],
+    "thanh toán": ["việc thanh toán", "được thanh toán"],
+    "sử dụng": ["được sử dụng", "việc sử dụng", "quyền sử dụng"],
+    "bảo vệ": ["được bảo vệ", "việc bảo vệ", "công tác bảo vệ"],
+    "kiểm tra": ["được kiểm tra", "việc kiểm tra", "công tác kiểm tra"],
+    "giám sát": ["được giám sát", "việc giám sát", "công tác giám sát"],
+    "xử lý": ["được xử lý", "việc xử lý"],
+    "phê duyệt": ["được phê duyệt", "việc phê duyệt"],
+    "cấp phép": ["được cấp phép", "việc cấp phép", "giấy phép"],
+    "đăng ký": ["được đăng ký", "việc đăng ký", "thủ tục đăng ký"],
+    "thu phí": ["việc thu phí", "mức thu phí"],
+    "giao đất": ["được giao đất", "việc giao đất"],
+    "trồng rừng": ["việc trồng rừng", "công tác trồng rừng"],
+}
+
+# Legal concept clusters for domain expansion
+# Maps broad legal categories to related specific terms
+LEGAL_CONCEPT_CLUSTERS: dict[str, list[str]] = {
+    "phí dịch vụ": ["giá dịch vụ", "lệ phí", "phí bến bãi", "mức phí", "biểu phí"],
+    "giá cả": ["giá dịch vụ", "niêm yết giá", "quy định giá", "mức giá"],
+    "đất đai": ["đất lâm nghiệp", "đất nông nghiệp", "quyền sử dụng đất", "quản lý đất"],
+    "tài nguyên": ["tài nguyên thiên nhiên", "môi trường", "khoáng sản", "rừng"],
+    "tổ chức bộ máy": ["cơ cấu tổ chức", "bộ máy hành chính", "phân cấp quản lý", "nhân sự"],
+    "ban quản lý": ["ban quản lý dự án", "ban điều hành", "hội đồng quản lý"],
+    "thủ tục hành chính": ["thủ tục hành chính công", "giấy phép", "đăng ký", "cấp phép"],
+    "báo cáo": ["báo cáo định kỳ", "chế độ báo cáo", "báo cáo tài chính"],
+    "hợp đồng": ["giao kết hợp đồng", "thực hiện hợp đồng", "điều khoản hợp đồng"],
+    "xử phạt": ["xử phạt vi phạm", "xử phạt hành chính", "chế tài"],
+    "môi trường": ["bảo vệ môi trường", "phục hồi môi trường", "ký quỹ môi trường", "ô nhiễm"],
+    "ngân sách": ["ngân sách nhà nước", "thu chi ngân sách", "tài chính công"],
+    "đầu tư": ["dự án đầu tư", "vốn đầu tư", "quản lý đầu tư"],
+    "giữ xe": ["dịch vụ giữ xe", "phí giữ xe", "bến bãi", "trông giữ xe"],
+    "niêm yết": ["niêm yết giá", "niêm yết công khai", "công bố"],
+    "phục hồi": ["phục hồi môi trường", "ký quỹ phục hồi", "cải tạo phục hồi"],
+    "lâm nghiệp": ["đất lâm nghiệp", "rừng", "trồng rừng", "quản lý rừng"],
+}
+
 # Negation patterns (Vietnamese)
 NEGATION_PATTERNS: list[tuple[re.Pattern, str]] = [
     # Strong negation/prohibition
@@ -356,23 +400,20 @@ class LegalQueryPlanner:
     
     def expand_synonyms(self, text: str) -> list[str]:
         """
-        Expand legal synonyms to create query variants.
+        Expand legal synonyms, verb forms, and concept clusters to create query variants.
         
-        Uses Vietnamese legal synonym dictionary to generate
-        semantically equivalent query variations for better retrieval.
+        Uses Vietnamese legal synonym dictionary, verb form patterns, and concept
+        clusters to generate semantically equivalent query variations for better retrieval.
         
         Args:
             text: Input text (after abbreviation expansion)
             
         Returns:
-            List of expanded query variants including original
+            List of expanded query variants including original (capped at ~10 variants)
         """
-        # Normalize text for matching (replace spaces with underscores for dict keys)
-        normalized_text = text.replace(' ', '_')
-        
         variants: set[str] = {text}
         
-        # Find and expand synonyms
+        # Step 1: Expand synonyms (existing logic)
         for term, synonyms in LEGAL_SYNONYMS.items():
             # Check if term appears in text (as word or with underscores)
             term_pattern = term.replace('_', r'\s+')
@@ -391,7 +432,42 @@ class LegalQueryPlanner:
                         )
                         variants.add(variant)
         
-        return list(variants)
+        
+        # Step 2: Expand verb forms
+        # Vietnamese legal texts use different verb forms for the same concept
+        for verb, forms in VERB_FORM_PATTERNS.items():
+            if verb in text:
+                # Add each verb form variant
+                for form in forms:
+                    if form != verb:
+                        variant = text.replace(verb, form)
+                        variants.add(variant)
+        
+        
+        # Step 3: Expand legal concept clusters
+        # Map broad legal categories to related specific terms
+        for concept, related_terms in LEGAL_CONCEPT_CLUSTERS.items():
+            if concept in text:
+                # Add each related term as a variant
+                for related in related_terms:
+                    if related != concept:
+                        variant = text.replace(concept, related)
+                        variants.add(variant)
+        
+        
+        # Step 4: De-duplicate and cap total variants
+        # The caller (hybrid.py) will further limit to config.search_expansion_max_variants
+        # We cap here to prevent explosion before the caller's cap
+        MAX_VARIANTS = 10
+        unique_variants = list(variants)
+        
+        # Always keep the original text first
+        if text in unique_variants:
+            unique_variants.remove(text)
+            unique_variants.insert(0, text)
+        
+        
+        return unique_variants[:MAX_VARIANTS]
     
     def detect_negation(self, text: str) -> tuple[bool, Optional[str]]:
         """

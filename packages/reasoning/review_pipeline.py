@@ -27,6 +27,7 @@ from packages.reasoning.verifier import LegalVerifier
 from packages.reasoning.web_search import WebSearchTool
 from packages.retrieval.context import ContextInjector
 from packages.retrieval.hybrid import HybridRetriever
+from packages.retrieval.reranker import LegalReranker
 
 logger = logging.getLogger(__name__)
 
@@ -54,7 +55,26 @@ class ContractReviewPipeline:
         self.verifier = LegalVerifier(settings)
         self.generator = LegalGenerator(settings)
         self.web_search = WebSearchTool()
+        self.reranker = LegalReranker(budget_ms=settings.search_reranker_budget_ms)
         self._semaphore = asyncio.Semaphore(max_concurrent)
+
+    async def warmup(self) -> None:
+        """Warm up the pipeline by pre-loading models and connections.
+
+        This method calls the retriever's warmup to:
+        - Load the embedding model and trigger JIT compilation
+        - Establish Qdrant and OpenSearch connections
+        - Run health-check queries against both backends
+
+        Should be called before processing clauses to eliminate cold-start latency.
+        """
+        logger.info("Warming up review pipeline...")
+        warmup_start = time.time()
+
+        await self.retriever.warmup()
+
+        warmup_time = time.time() - warmup_start
+        logger.info(f"Review pipeline warmup completed in {warmup_time:.2f}s")
 
     async def review_contract(
         self,
@@ -207,6 +227,13 @@ class ContractReviewPipeline:
             # Skip very short fragments (likely headers)
             if len(part) < 20:
                 continue
+            
+            # Skip content before first "Điều" marker (header/preamble)
+            if not re.match(r'.*Điều\s+\d+', part, re.IGNORECASE):
+                # Check if this is just preamble without actual clause content
+                if 'Điều' not in part or part.count('Điều') == 0:
+                    # This is likely header/preamble, skip it
+                    continue
 
             clauses.append((clause_index, part))
             clause_index += 1
@@ -238,20 +265,55 @@ class ContractReviewPipeline:
         # a. Plan query
         query_plan = self.planner.plan(clause_text)
 
-        # b. Hybrid retrieve
-        retrieved_docs = await self.retriever.search(
+        # b. Hybrid retrieve with reranker optimization
+        # Fetch more candidates than needed to feed the reranker a richer pool
+        reranker_input_k = self.settings.search_reranker_input_k  # default 15
+        final_top_k = 10  # Final number of documents after reranking
+        
+        retrieved_documents = await self.retriever.search(
             query=query_plan.normalized_query,
-            top_k=5,
+            query_plan=query_plan,              # Pass full plan for expansion_variants in BM25
+            top_k=reranker_input_k,             # Get more candidates for reranker
+            bm25_candidates=100,                # Large BM25 pool for better recall
+            dense_candidates=100,               # Large Dense pool
+            sandwich_reorder=True,              # Better diversity
             filters=filters or query_plan.search_filters,
         )
+        
+        # c. Rerank the retrieved documents
+        reranked_documents = await self.reranker.rerank(
+            query=query_plan.normalized_query,
+            candidates=retrieved_documents,
+            top_k=final_top_k,                  # Trim to final top_k after reranking
+        )
+        retrieved_documents = reranked_documents
 
-        # Retrieved docs are already RetrievedDocument objects, no conversion needed
-        retrieved_documents = retrieved_docs if retrieved_docs else []
-
-        # c. Assemble EvidencePack with relationship enrichment
-        # Use top retrieved doc as primary regulation
+        # d. Assemble EvidencePack with relationship enrichment
+        # Build context from articles, grouping by law for coherence
+        from collections import defaultdict
+        
+        law_articles = defaultdict(list)
+        for doc in retrieved_documents:
+            law_id = doc.metadata.get('law_id', doc.doc_id)
+            law_articles[law_id].append(doc)
+        
+        # Primary regulation: top article
         primary_regulation = retrieved_documents[0].content if retrieved_documents else ""
-        context = "\n\n".join([d.content for d in retrieved_documents[1:3]]) if len(retrieved_documents) > 1 else ""
+        
+        # Context: Increase coverage - top 5 laws, 3 articles each for better LLM context
+        context_parts = []
+        for law_id, articles in list(law_articles.items())[:5]:  # Top 5 laws (increased from 3)
+            for article in articles[:3]:  # Top 3 articles per law (increased from 2)
+                article_title = article.title or ""
+                context_parts.append(f"[{article_title}]\n{article.content}")
+        
+        context = "\n\n".join(context_parts) if context_parts else ""
+        
+        logger.debug(
+            f"Context assembled: {len(law_articles)} unique laws, "
+            f"{len(context_parts)} article contexts"
+        )
+        
         context_documents = []
 
         # Enrich with relationships from PostgreSQL (primary source)
